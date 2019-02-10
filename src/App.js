@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 
+import withSplashScreen from './components/withSplashScreen';
+
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
@@ -34,5 +36,5 @@ class App extends Component
   }
 }
 
-export default App;
+export default withSplashScreen(App);
 

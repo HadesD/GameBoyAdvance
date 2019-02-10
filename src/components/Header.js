@@ -7,7 +7,7 @@ import { Menu, Icon } from 'antd';
 // const SubMenu = Menu.SubMenu;
 // const MenuItemGroup = Menu.ItemGroup;
 
-class _Header extends Component
+class Header extends Component
 {
   constructor(props)
   {
@@ -36,7 +36,5 @@ class _Header extends Component
   }
 }
 
-const Header = withRouter(_Header);
-
-export default Header;
+export default withRouter(Header);
 

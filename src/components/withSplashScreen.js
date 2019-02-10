@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {
   Layout,
-  Spin,
-  Tag
+  Spin
 } from 'antd';
 
 class LoadingMessage extends Component

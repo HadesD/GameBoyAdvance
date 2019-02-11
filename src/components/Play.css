@@ -4,5 +4,6 @@
   background-size: cover;
   border: none;
   outline: none;
+  display: inline-block;
 }
 

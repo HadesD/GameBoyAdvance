@@ -1,28 +1,27 @@
 import React from 'react';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
+import DPad from './DPad';
+
 import emuBKG from '../images/emu-background.svg';
-import dpadIcon from '../images/dpad.svg';
 
 import './Play.css';
 
 class Play extends BodyScrollUnAble
 {
+  constructor(props)
+  {
+    super(props);
+
+    console.log('Play.constructor called');
+  }
+
   render()
   {
-    const dPadSize = 100;
     return (
       <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">
-        <button
-          type="button"
-          className="console-btn"
-          style={{
-            backgroundImage: 'url('+dpadIcon+')',
-            width: dPadSize + 'px',
-            height: dPadSize + 'px',
-          }}
-        >
-        </button>
+        <DPad
+        />
         <canvas id="emulator"></canvas>
       </div>
     );

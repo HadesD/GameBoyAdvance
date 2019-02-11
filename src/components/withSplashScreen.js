@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
   Layout,
   Spin
 } from 'antd';
+import BodyScrollUnAble from './BodyScrollUnAble';
 
-class LoadingMessage extends Component
+class LoadingMessage extends BodyScrollUnAble
 {
   render()
   {
@@ -32,7 +33,7 @@ class LoadingMessage extends Component
 }
 
 function withSplashScreen(WrappedComponent) {
-  return class extends Component {
+  return class extends React.Component {
     constructor(props) {
       super(props);
       this.state = {

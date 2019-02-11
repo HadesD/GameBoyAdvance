@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import BodyScrollUnAble from './BodyScrollUnAble';
 
-class Play extends Component
+class Play extends BodyScrollUnAble
 {
   render()
   {
     return (
       <div>
+        <canvas id="emulator"></canvas>
       </div>
     );
   }

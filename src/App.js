@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import {
+  Layout
+} from 'antd';
 
 import withSplashScreen from './components/withSplashScreen';
 
@@ -17,20 +19,12 @@ class App extends Component
   {
     return (
       <Layout>
-        <Layout.Header style={{ height:'inherit',lineHeight:'inherit' }}>
-          <Header />
-        </Layout.Header>
+        <Header />
         <Layout>
-          <Layout.Sider>
-            <Sider />
-          </Layout.Sider>
-          <Layout.Content>
-            <Main />
-          </Layout.Content>
+          <Sider />
+          <Main />
         </Layout>
-        <Layout.Footer>
-          <Footer />
-        </Layout.Footer>
+        <Footer />
       </Layout>
     );
   }

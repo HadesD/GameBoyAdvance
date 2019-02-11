@@ -1,7 +1,7 @@
 import React from 'react';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
-import DPad from './DPad';
+import JoyStick from './JoyStick';
 
 import emuBKG from '../images/emu-background.svg';
 
@@ -20,8 +20,7 @@ class Play extends BodyScrollUnAble
   {
     return (
       <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">
-        <DPad
-        />
+        <JoyStick />
         <canvas id="emulator"></canvas>
       </div>
     );

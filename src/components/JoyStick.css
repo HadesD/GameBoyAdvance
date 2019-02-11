@@ -1,5 +1,7 @@
 .console-btn .dpad-btn {
+  background-color: transparent;
   position: absolute;
   border: 0;
+  outline: none;
 }
 

@@ -112,12 +112,16 @@ class JoyStick extends React.Component
     const dPadArrowSize = 100 / 3;
     return (
       <div
-        className="console-btn"
+        className="console-dpad-btn"
         style={{
           backgroundImage: 'url('+dpadIcon+')',
           width: dPadSize + 'px',
           height: dPadSize + 'px',
-          position: 'relative',
+          position: 'absolute',
+          top: '50%',
+          left: '0',
+          marginTop: '-' + (dPadSize/2) + 'px',
+          marginLeft: '10px',
         }}
       >
         <button

@@ -1,4 +1,13 @@
-.console-btn .dpad-btn {
+.console-dpad-btn {
+  background-repeat: none;
+  background-color: transparent;
+  background-size: cover;
+  border: none;
+  outline: none;
+  display: inline-block;
+}
+
+.console-dpad-btn .dpad-btn {
   background-color: transparent;
   position: absolute;
   border: 0;

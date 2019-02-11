@@ -10,7 +10,7 @@ class LoadingMessage extends Component
   {
     const imgWidth = 100;
     return (
-      <Layout style={{ position: 'relative', height: 'calc(100vh - 100px)', backgroundColor: 'transparent', textAlign: 'center' }}>
+      <Layout style={{ position: 'relative', height: '100vh', backgroundColor: 'transparent', textAlign: 'center' }}>
         <div style={{ position: 'absolute', width: '100%', top: '50%', left: 0, marginTop: '-' + ((imgWidth + 10 + 22)/2) + 'px' }}>
           <div style={{ marginBottom: '10px' }}>
             <img
@@ -23,7 +23,7 @@ class LoadingMessage extends Component
             GameBoy Advance
           </div>
         </div>
-        <div style={{ position: 'absolute', width: '100%', bottom: 0, left: 0 }}>
+        <div style={{ position: 'absolute', width: '100%', bottom: '100px', left: 0 }}>
           <Spin />
         </div>
       </Layout>

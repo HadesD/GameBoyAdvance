@@ -4,8 +4,7 @@ import {
 } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 
-// const SubMenu = Menu.SubMenu;
-// const MenuItemGroup = Menu.ItemGroup;
+import GbaIcon from './game-boy-advance.svg';
 
 class Header extends Component
 {
@@ -29,6 +28,14 @@ class Header extends Component
         <Menu.Item key="/">
           <Link to="/">
             <Icon type="home" />Home
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="/play">
+          <Link to="/play">
+            <i className="anticon" style={{ verticalAlign: 'text-top', width: '22px' }}>
+              <img src={GbaIcon} alt="Play" />
+            </i>
+            Play
           </Link>
         </Menu.Item>
       </Menu>

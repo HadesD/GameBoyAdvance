@@ -11,14 +11,14 @@ class LoadingMessage extends Component
     const imgWidth = 100;
     return (
       <Layout style={{ height: '100vh', backgroundColor: 'transparent', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', width: '100%', top: '50%', left: 0, marginTop: '-' + (imgWidth/2) + 'px' }}>
-          <img
-            src="favicon.ico"
-            alt="Splash logo"
-            style={{ maxWidth: imgWidth + 'px', }}
-          />
-          <br />
-          <br />
+        <div style={{ position: 'absolute', width: '100%', top: '50%', left: 0, marginTop: '-' + ((imgWidth + 10 + 22)/2) + 'px' }}>
+          <div style={{ marginBottom: '10px' }}>
+            <img
+              src="favicon.ico"
+              alt="Splash logo"
+              style={{ maxWidth: imgWidth + 'px', }}
+            />
+          </div>
           <div className="ant-tag" style={{ marginRight: 0 }}>
             GameBoy Advance
           </div>
@@ -42,12 +42,11 @@ function withSplashScreen(WrappedComponent) {
 
     async componentDidMount() {
       try {
-        // await auth0Client.loadSession();
         setTimeout(() => {
           this.setState({
             loading: false,
           });
-        }, 1500)
+        }, 1500);
       } catch (err) {
         console.log(err);
         this.setState({

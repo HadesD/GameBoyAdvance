@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import { Layout, Menu, Icon } from 'antd';
 
-import GbaIcon from './game-boy-advance.svg';
+import GbaIcon from '../images/game-boy-advance.svg';
 
 class Header extends Component
 {

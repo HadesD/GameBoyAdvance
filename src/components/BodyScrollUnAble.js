@@ -3,12 +3,10 @@ import { disableBodyScroll/* , enableBodyScroll */, clearAllBodyScrollLocks } fr
 
 class BodyScrollUnAble extends React.Component
 {
-  root = document.querySelector('#root');
-
   componentDidMount()
   {
     window.scrollTo(0, 0);
-    disableBodyScroll(this.root);
+    disableBodyScroll(document.querySelector('#root'));
   }
 
   componentWillUnmount() {

@@ -10,12 +10,14 @@ class Header extends Component
 {
   render()
   {
+    const pathName = this.props.location.pathname;
     return (
       <Layout.Header style={{ height:'inherit',lineHeight:'inherit' }}>
         <Menu
           theme="dark"
-          selectedKeys={[this.props.location.pathname]}
+          selectedKeys={[pathName]}
           mode="horizontal"
+          style={{ lineHeight: pathName === '/play' ? '25px' : '46px' }}
         >
           <Menu.Item key="/">
             <Link to="/">

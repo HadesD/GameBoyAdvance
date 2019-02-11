@@ -1,11 +1,11 @@
 {
   "short_name": "GBA Emu",
-  "name": "Create React App Sample",
+  "name": "GameBoy Advance for Browser",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "icon.png",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/png"
     }
   ],
   "start_url": ".",

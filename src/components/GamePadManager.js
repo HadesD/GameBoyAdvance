@@ -3,6 +3,7 @@ class GamepadManager
   gamepads = [];
   rafId = null;
   scanIntervalId = null;
+  selectedIndex = 0;
 
   constructor()
   {
@@ -12,9 +13,6 @@ class GamepadManager
     this.onGamepadConnected = this.onGamepadConnected.bind(this);
     this.onGamepadDisconnected = this.onGamepadDisconnected.bind(this);
     this.scanGamepads = this.scanGamepads.bind(this);
-
-    window.addEventListener("gamepadconnected", this.onGamepadConnected);
-    window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected);
   }
 
   destroy()
@@ -31,6 +29,9 @@ class GamepadManager
 
   start()
   {
+    window.addEventListener("gamepadconnected", this.onGamepadConnected);
+    window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected);
+
     this.scanIntervalId = setInterval(this.scanGamepads, 500);
   }
 
@@ -38,7 +39,20 @@ class GamepadManager
   {
     console.log('GamepadManager.update called');
 
-    console.log(this.gamepads);
+    const gamepad = this.gamepads[this.selectedIndex];
+    console.log(gamepad);
+    for (let i = 0; i < gamepad.buttons.length; i++)
+    {
+      let val = gamepad.buttons[i];
+      let isPressed = (val === 1.0);
+      if (typeof(val) === 'object')
+      {
+        isPressed = val.pressed;
+        val = val.value;
+      }
+
+      console.log(val, isPressed);
+    }
 
     // At end, loop
     this.rafId = window.requestAnimationFrame(this.update);

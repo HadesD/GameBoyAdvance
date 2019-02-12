@@ -5,28 +5,38 @@ import {
 } from 'antd';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
-class LoadingMessage extends BodyScrollUnAble
+class LoadingMessage extends React.Component
 {
   render()
   {
     const imgWidth = 100;
     return (
       <Layout style={{ position: 'relative', height: '100vh', backgroundColor: 'transparent', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', width: '100%', top: '50%', left: 0, marginTop: '-' + ((imgWidth + 10 + 22)/2) + 'px' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <img
-              src="favicon.ico"
-              alt="Splash logo"
-              style={{ maxWidth: imgWidth + 'px', }}
-            />
+        <BodyScrollUnAble>
+          <div
+            style={{
+              position: 'absolute',
+              width: '100%',
+              top: '50%',
+              left: 0,
+              marginTop: '-' + ((imgWidth + 10 + 22)/2) + 'px'
+            }}
+          >
+            <div style={{ marginBottom: '10px' }}>
+              <img
+                src="favicon.ico"
+                alt="Splash logo"
+                style={{ maxWidth: imgWidth + 'px', }}
+              />
+            </div>
+            <div className="ant-tag" style={{ marginRight: 0 }}>
+              GameBoy Advance
+            </div>
           </div>
-          <div className="ant-tag" style={{ marginRight: 0 }}>
-            GameBoy Advance
+          <div style={{ position: 'absolute', width: '100%', bottom: '100px', left: 0 }}>
+            <Spin />
           </div>
-        </div>
-        <div style={{ position: 'absolute', width: '100%', bottom: '100px', left: 0 }}>
-          <Spin />
-        </div>
+        </BodyScrollUnAble>
       </Layout>
     );
   }

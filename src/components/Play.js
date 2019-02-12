@@ -26,20 +26,11 @@ class Play extends React.Component
     };
 
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    this.onContextMenu = this.onContextMenu.bind(this);
-
-    // document.addEventListener('contextmenu', this.onContextMenu);
-  }
-
-  componentDidMount()
-  {
-    window.addEventListener('resize', this.updateWindowDimensions);
   }
 
   componentWillUnmount()
   {
     window.removeEventListener('resize', this.updateWindowDimensions);
-    // document.removeEventListener('contextmenu', this.onContextMenu);
   }
 
   updateWindowDimensions()
@@ -50,11 +41,6 @@ class Play extends React.Component
         width: window.innerWidth, height: window.innerHeight
       },
     });
-  }
-
-  onContextMenu(e)
-  {
-    e.preventDefault();
   }
 
   render()
@@ -68,14 +54,18 @@ class Play extends React.Component
 
     let emuStyle = {
       backgroundImage: 'url('+emuCanvasBKG+')',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      padding: '2px',
-      position: 'absolute',
-      left: '50%',
     };
 
-    if (wHeight < wWidth)
+    if (wHeight > wWidth)
+    {
+      // Portrait
+      this.isPortrait = true;
+
+      emuStyle.top = '35px';
+      emuStyle.width = wWidth / d;
+      emuStyle.height = emuStyle.width / d;
+    }
+    else
     {
       // Landscape
       this.isPortrait = false;
@@ -85,24 +75,14 @@ class Play extends React.Component
       emuStyle.marginTop = '-' + ((emuStyle.height - 25)/2) + 'px';
       emuStyle.top = '50%';
     }
-    else
-    {
-      // Portrait
-      this.isPortrait = true;
-
-      emuStyle.top = '35px';
-      emuStyle.width = wWidth / d;
-      emuStyle.height = emuStyle.width / d;
-    }
 
     emuStyle.marginLeft = '-' + (emuStyle.width/2) + 'px';
 
     return (
       <BodyScrollUnAble
-        className="noselect"
         style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', }}
       >
-        <div style={emuStyle}>
+        <div className="emuWrapper" style={emuStyle}>
           <canvas
             id="emulator"
             style={{

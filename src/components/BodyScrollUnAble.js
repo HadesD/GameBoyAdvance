@@ -5,14 +5,36 @@ class BodyScrollUnAble extends React.Component
 {
   lastTouchEnd = 0;
 
-  // constructor(props)
-  // {
-  //   super(props);
+  constructor(props)
+  {
+    super(props);
 
     // this.touchstartHandle.bind(this);
     // this.touchendHandle.bind(this);
     // this.touchmoveHandle.bind(this);
-  // }
+    this.onContextMenu = this.onContextMenu.bind(this);
+  }
+
+  componentDidMount()
+  {
+    // document.addEventListener('touchstart', this.touchstartHandle, true);
+    // document.addEventListener('touchmove', this.touchmoveHandle, true);
+    // document.addEventListener('touchend', this.touchendHandle, true);
+
+    window.scrollTo(0, 0);
+    disableBodyScroll(document.querySelector('#root'));
+
+    document.addEventListener('contextmenu', this.onContextMenu);
+  }
+
+  componentWillUnmount() {
+    // document.removeEventListener('touchstart', this.touchstartHandle, true);
+    // document.removeEventListener('touchmove', this.touchmoveHandle, true);
+    // document.removeEventListener('touchend', this.touchendHandle, true);
+    document.removeEventListener('contextmenu', this.onContextMenu);
+
+    clearAllBodyScrollLocks();
+  }
 
   touchstartHandle(event)
   {
@@ -36,29 +58,20 @@ class BodyScrollUnAble extends React.Component
   //   this.lastTouchEnd = now;
   // }
 
-  componentDidMount()
+  onContextMenu(e)
   {
-    // document.addEventListener('touchstart', this.touchstartHandle, true);
-    // document.addEventListener('touchmove', this.touchmoveHandle, true);
-    // document.addEventListener('touchend', this.touchendHandle, true);
-
-    window.scrollTo(0, 0);
-    disableBodyScroll(document.querySelector('#root'));
-  }
-
-  componentWillUnmount() {
-    // document.removeEventListener('touchstart', this.touchstartHandle, true);
-    // document.removeEventListener('touchmove', this.touchmoveHandle, true);
-    // document.removeEventListener('touchend', this.touchendHandle, true);
-
-    clearAllBodyScrollLocks();
+    e.preventDefault();
   }
 
   render()
   {
+    const className = [
+      'noselect',
+      this.props.className ? this.props.className : false
+    ].join(' ');
     return (
       <div
-        className={this.props.className ? this.props.className : false}
+        className={className}
         style={this.props.style ? this.props.style : {}}
       >
         {this.props.children}

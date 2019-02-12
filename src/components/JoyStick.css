@@ -1,4 +1,6 @@
 .console-dpad-btn {
+  position: absolute;
+  left: 10px;
   background-repeat: none;
   background-color: transparent;
   background-size: cover;

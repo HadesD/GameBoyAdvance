@@ -1,0 +1,8 @@
+.emuWrapper {
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 2px;
+  position: absolute;
+  left: 50%;
+}
+

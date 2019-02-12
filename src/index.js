@@ -5,6 +5,11 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+//Create AnimationFrame
+window.requestAnimationFrame = window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame;
+
 ReactDOM.render(
   <Router basename={process.env.PUBLIC_URL}>
     <App />

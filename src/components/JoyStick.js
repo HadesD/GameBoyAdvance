@@ -124,9 +124,8 @@ class JoyStick extends React.Component
           height: dPadSize + 'px',
           position: 'absolute',
           top: '50%',
-          left: '0',
+          left: '10px',
           marginTop: '-' + ((dPadSize - 25)/2) + 'px',
-          marginLeft: '10px',
         }}
       >
         <button

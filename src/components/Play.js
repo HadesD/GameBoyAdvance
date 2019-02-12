@@ -20,8 +20,8 @@ class Play extends BodyScrollUnAble
 
     this.state = {
       winSize: {
-        width: 0,
-        height: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
     };
 
@@ -33,7 +33,6 @@ class Play extends BodyScrollUnAble
 
   componentDidMount()
   {
-    this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
@@ -60,8 +59,24 @@ class Play extends BodyScrollUnAble
 
   render()
   {
-    const emuWrapWidth = 165;
-    const emuWrapHeight = 148;
+    const wHeight = this.state.winSize.height;
+    const wWidth = this.state.winSize.width;
+
+    let emuWrapWidth = 165;
+    let emuWrapHeight = 148;
+    const d = emuWrapWidth / emuWrapHeight;
+
+    if (wHeight < wWidth)
+    {
+      // Landscape
+      emuWrapHeight = wHeight / d;
+      emuWrapWidth = emuWrapHeight * d;
+    }
+    else
+    {
+      // Portrait
+    }
+    console.log(1);
 
     return (
       <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">

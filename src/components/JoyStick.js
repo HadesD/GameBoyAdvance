@@ -113,20 +113,35 @@ class JoyStick extends React.Component
 
   render()
   {
-    const dPadSize = 100;
+    const wWidth = this.props.winSize.width;
+    const wHeight = this.props.winSize.height;
+
+    let dPadSize = 100;
     const dPadArrowSize = 100 / 3;
+
+    let dPadBtnStyle = {
+      backgroundImage: 'url('+dpadIcon+')',
+      position: 'absolute',
+      left: '10px',
+    };
+
+    if (this.props.isPortrait)
+    {
+    }
+    else
+    {
+      dPadSize = wWidth / 3 / 2 / 1.5;
+      dPadBtnStyle.top = '50%';
+    }
+
+    dPadBtnStyle.width = dPadSize + 'px';
+    dPadBtnStyle.height = dPadSize + 'px';
+    dPadBtnStyle.marginTop = '-' + ((dPadSize - 25)/2) + 'px';
+
     return (
       <div
         className="console-dpad-btn"
-        style={{
-          backgroundImage: 'url('+dpadIcon+')',
-          width: dPadSize + 'px',
-          height: dPadSize + 'px',
-          position: 'absolute',
-          top: '50%',
-          left: '10px',
-          marginTop: '-' + (dPadSize/2) + 'px',
-        }}
+        style={dPadBtnStyle}
       >
         <button
           className="dpad-btn"

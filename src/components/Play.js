@@ -98,7 +98,7 @@ class Play extends React.Component
     emuStyle.marginLeft = '-' + (emuStyle.width/2) + 'px';
 
     return (
-      <BodyScrollUnAble 
+      <BodyScrollUnAble
         className="noselect"
         style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', }}
       >
@@ -114,6 +114,7 @@ class Play extends React.Component
         </div>
         <JoyStick
           isPortrait={this.isPortrait}
+          winSize={this.state.winSize}
         />
       </BodyScrollUnAble>
     );

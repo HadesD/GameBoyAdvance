@@ -19,8 +19,18 @@ class JoyStick extends React.Component
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
 
-    document.addEventListener('mouseup', this.onMouseUp, false);
-    document.addEventListener('touchend', this.onMouseUp, false);
+    window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('touchend', this.onMouseUp);
+  }
+
+  componentDidMount()
+  {
+  }
+
+  componentWillUnmount()
+  {
+    window.removeEventListener('mouseup', this.onMouseUp);
+    window.removeEventListener('touchend', this.onMouseUp);
   }
 
   onMouseDown(e)
@@ -101,11 +111,6 @@ class JoyStick extends React.Component
     // alert('onMouseUp: ' + key);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('mouseup', this.onMouseUp, true);
-    document.removeEventListener('touchend', this.onMouseUp, true);
-  }
-
   render()
   {
     const dPadSize = 100;
@@ -120,7 +125,7 @@ class JoyStick extends React.Component
           position: 'absolute',
           top: '50%',
           left: '0',
-          marginTop: '-' + (dPadSize/2) + 'px',
+          marginTop: '-' + ((dPadSize - 25)/2) + 'px',
           marginLeft: '10px',
         }}
       >

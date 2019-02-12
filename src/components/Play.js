@@ -10,17 +10,59 @@ import './Play.css';
 
 class Play extends BodyScrollUnAble
 {
+  isPortrait = false;
+
   constructor(props)
   {
+    console.log('Play.constructor called');
+
     super(props);
 
-    console.log('Play.constructor called');
+    this.state = {
+      winSize: {
+        width: 0,
+        height: 0,
+      },
+    };
+
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.onContextMenu = this.onContextMenu.bind(this);
+
+    document.addEventListener('contextmenu', this.onContextMenu);
+  }
+
+  componentDidMount()
+  {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentWillUnmount()
+  {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+    document.removeEventListener('contextmenu', this.onContextMenu);
+  }
+
+  updateWindowDimensions()
+  {
+    console.log('updateWindowDimensions called');
+    this.setState({
+      winSize: {
+        width: window.innerWidth, height: window.innerHeight
+      },
+    });
+  }
+
+  onContextMenu(e)
+  {
+    e.preventDefault();
   }
 
   render()
   {
     const emuWrapWidth = 165;
     const emuWrapHeight = 148;
+
     return (
       <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">
         <div
@@ -34,7 +76,7 @@ class Play extends BodyScrollUnAble
             position: 'absolute',
             top: '50%',
             left: '50%',
-            marginTop: '-' + (emuWrapHeight/2) + 'px',
+            marginTop: '-' + ((emuWrapHeight - 25)/2) + 'px',
             marginLeft: '-' + (emuWrapWidth/2) + 'px',
           }}
         >

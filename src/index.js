@@ -5,10 +5,12 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-//Create AnimationFrame
+// Create AnimationFrame
 window.requestAnimationFrame = window.requestAnimationFrame ||
   window.mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame;
+
+window.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads;
 
 ReactDOM.render(
   <Router basename={process.env.PUBLIC_URL}>

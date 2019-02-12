@@ -1,66 +1,92 @@
-class GamePadManager
+class GamepadManager
 {
-  gamepad = null;
+  gamepads = [];
   rafId = null;
+  scanIntervalId = null;
 
   constructor()
   {
-    console.log('GamePadManager.constructor called');
+    console.log('GamepadManager.constructor called');
 
     this.update = this.update.bind(this);
-    this.onGamePadConnected = this.onGamePadConnected.bind(this);
-    this.onGamePadDisconnected = this.onGamePadDisconnected.bind(this);
+    this.onGamepadConnected = this.onGamepadConnected.bind(this);
+    this.onGamepadDisconnected = this.onGamepadDisconnected.bind(this);
+    this.scanGamepads = this.scanGamepads.bind(this);
 
-    window.addEventListener("gamepadconnected", this.onGamePadConnected);
-    window.addEventListener("gamepaddisconnected", this.onGamePadDisconnected);
+    window.addEventListener("gamepadconnected", this.onGamepadConnected);
+    window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected);
   }
 
   destroy()
   {
-    console.log('GamePadManager.destroy called');
+    console.log('GamepadManager.destroy called');
 
-    window.removeEventListener("gamepadconnected", this.onGamePadConnected);
-    window.removeEventListener("gamepaddisconnected", this.onGamePadDisconnected);
+    window.removeEventListener("gamepadconnected", this.onGamepadConnected);
+    window.removeEventListener("gamepaddisconnected", this.onGamepadDisconnected);
 
     window.cancelAnimationFrame(this.rafId);
+
+    clearInterval(this.scanIntervalId);
   }
 
   start()
   {
+    this.scanIntervalId = setInterval(this.scanGamepads, 500);
   }
 
   update()
   {
-    console.log('GamePadManager.update called');
+    console.log('GamepadManager.update called');
 
-    console.log(this.gamepad);
+    console.log(this.gamepads);
 
     // At end, loop
     this.rafId = window.requestAnimationFrame(this.update);
   }
 
-  onGamePadConnected(e)
+  scanGamepads()
+  {
+    console.log('GamepadManager.scanGamepads called');
+    let gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    for (let i = 0; i < gamepads.length; i++)
+    {
+      if (!gamepads[i])
+      {
+        continue;
+      }
+
+      if (gamepads[i].index in this.gamepads)
+      {
+        this.gamepads[i] = gamepads[i];
+      }
+      else
+      {
+        this.addGamepad(gamepads[i]);
+      }
+    }
+  }
+
+  addGamepad(gamepad)
+  {
+    this.gamepads[gamepad.index] = gamepad;
+
+    this.rafId = window.requestAnimationFrame(this.update);
+    console.log('GamepadManager.start.id:' + this.rafId);
+  }
+
+  onGamepadConnected(e)
   {
     console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
       e.gamepad.index, e.gamepad.id,
       e.gamepad.buttons.length, e.gamepad.axes.length);
 
-    var pads = navigator.getGamepads ? navigator.getGamepads() :
-      (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-    this.gamepad = pads[e.gamepad.index];
-
-    console.log('GamePadManager.start called');
-
-    this.rafId = window.requestAnimationFrame(this.update);
-
-    console.log('GamePadManager.start.id:' + this.rafId);
   }
 
-  onGamePadDisconnected(e)
+  onGamepadDisconnected(e)
   {
-    this.destroy();
+    delete this.gamepads[e.gamepad.index];
   }
 }
 
-export default GamePadManager;
+export default GamepadManager;
 

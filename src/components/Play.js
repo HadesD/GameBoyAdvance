@@ -2,7 +2,7 @@ import React from 'react';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
 import JoyStick from './JoyStick';
-import GamePadManager from './GamePadManager';
+import GamepadManager from './GamepadManager';
 
 import emuBKG from '../images/emu-background.svg';
 import emuCanvasBKG from '../images/emu-canvas-bg.svg';
@@ -29,9 +29,11 @@ class Play extends React.Component
 
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 
-    // Use GamePad
-    // if ()
-    this.gamePadManager = new GamePadManager();
+    // Use Gamepad
+    if (window.getGamepads)
+    {
+      this.gamePadManager = new GamepadManager();
+    }
   }
 
   componentDidMount()
@@ -43,7 +45,11 @@ class Play extends React.Component
   componentWillUnmount()
   {
     window.removeEventListener('resize', this.updateWindowDimensions);
-    this.gamePadManager.destroy();
+
+    if (this.gamePadManager)
+    {
+      this.gamePadManager.destroy();
+    }
   }
 
   updateWindowDimensions()

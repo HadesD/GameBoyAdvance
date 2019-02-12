@@ -53,6 +53,18 @@ class BodyScrollUnAble extends React.Component
 
     clearAllBodyScrollLocks();
   }
+
+  render()
+  {
+    return (
+      <div
+        className={this.props.className ? this.props.className : false}
+        style={this.props.style ? this.props.style : {}}
+      >
+        {this.props.children}
+      </div>
+    );
+  }
 }
 
 export default BodyScrollUnAble;

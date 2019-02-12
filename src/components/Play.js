@@ -8,7 +8,7 @@ import emuCanvasBKG from '../images/emu-canvas-bg.svg';
 
 import './Play.css';
 
-class Play extends BodyScrollUnAble
+class Play extends React.Component
 {
   isPortrait = false;
 
@@ -28,7 +28,7 @@ class Play extends BodyScrollUnAble
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.onContextMenu = this.onContextMenu.bind(this);
 
-    document.addEventListener('contextmenu', this.onContextMenu);
+    // document.addEventListener('contextmenu', this.onContextMenu);
   }
 
   componentDidMount()
@@ -39,7 +39,7 @@ class Play extends BodyScrollUnAble
   componentWillUnmount()
   {
     window.removeEventListener('resize', this.updateWindowDimensions);
-    document.removeEventListener('contextmenu', this.onContextMenu);
+    // document.removeEventListener('contextmenu', this.onContextMenu);
   }
 
   updateWindowDimensions()
@@ -98,7 +98,10 @@ class Play extends BodyScrollUnAble
     emuStyle.marginLeft = '-' + (emuStyle.width/2) + 'px';
 
     return (
-      <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">
+      <BodyScrollUnAble 
+        className="noselect"
+        style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', }}
+      >
         <div style={emuStyle}>
           <canvas
             id="emulator"
@@ -112,7 +115,7 @@ class Play extends BodyScrollUnAble
         <JoyStick
           isPortrait={this.isPortrait}
         />
-      </div>
+      </BodyScrollUnAble>
     );
   }
 }

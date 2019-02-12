@@ -66,35 +66,40 @@ class Play extends BodyScrollUnAble
     let emuWrapHeight = 148;
     const d = emuWrapWidth / emuWrapHeight;
 
+    let emuStyle = {
+      backgroundImage: 'url('+emuCanvasBKG+')',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      padding: '2px',
+      position: 'absolute',
+      left: '50%',
+    };
+
     if (wHeight < wWidth)
     {
       // Landscape
-      emuWrapHeight = wHeight / d;
-      emuWrapWidth = emuWrapHeight * d;
+      this.isPortrait = false;
+
+      emuStyle.height = (wHeight - 25) / d;
+      emuStyle.width = emuStyle.height * d
+      emuStyle.marginTop = '-' + ((emuStyle.height - 25)/2) + 'px';
+      emuStyle.top = '50%';
     }
     else
     {
       // Portrait
+      this.isPortrait = true;
+
+      emuStyle.top = '35px';
+      emuStyle.width = wWidth / d;
+      emuStyle.height = emuStyle.width / d;
     }
-    console.log(1);
+
+    emuStyle.marginLeft = '-' + (emuStyle.width/2) + 'px';
 
     return (
       <div style={{ backgroundImage: 'url('+emuBKG+')', height: 'calc(100vh - 25px)', touchAction: 'manipulation', }} className="noselect">
-        <div
-          style={{
-            backgroundImage: 'url('+emuCanvasBKG+')',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            padding: '2px',
-            width: emuWrapWidth + 'px',
-            height: emuWrapHeight + 'px',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            marginTop: '-' + ((emuWrapHeight - 25)/2) + 'px',
-            marginLeft: '-' + (emuWrapWidth/2) + 'px',
-          }}
-        >
+        <div style={emuStyle}>
           <canvas
             id="emulator"
             style={{
@@ -104,7 +109,9 @@ class Play extends BodyScrollUnAble
           >
           </canvas>
         </div>
-        <JoyStick />
+        <JoyStick
+          isPortrait={this.isPortrait}
+        />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Link, withRouter
+  Link,
+  withRouter
 } from 'react-router-dom';
 import { Layout, Menu, Icon } from 'antd';
 

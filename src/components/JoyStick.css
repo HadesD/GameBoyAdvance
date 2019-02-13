@@ -16,3 +16,9 @@
   outline: none;
 }
 
+.console-dpad-btn .dpad-btn.active,
+.console-dpad-btn:active .dpad-btn:hover {
+  background-color: #000;
+  opacity: .4;
+}
+

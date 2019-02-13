@@ -116,8 +116,10 @@ class JoyStick extends React.Component
     const wWidth = this.props.winSize.width;
     const wHeight = this.props.winSize.height;
 
-    let dPadSize = 100;
-    const dPadArrowSize = 100 / 3;
+    const dWH = wWidth / wHeight;
+
+    let dPadSize = 100.0;
+    const dPadArrowSize = 100.0 / 3;
 
     let dPadBtnStyle = {
       backgroundImage: 'url('+dpadIcon+')',
@@ -127,16 +129,21 @@ class JoyStick extends React.Component
     {
       dPadSize = wWidth / 2 / 1.5;
       dPadBtnStyle.bottom = (100 / 3) / 2 + '%';
+      dPadBtnStyle.marginTop = '-' + ((dPadSize - 25)/2) + 'px';
     }
     else
     {
-      dPadSize = wHeight / 3;
-      dPadBtnStyle.top = '50%';
+      dPadSize = wWidth / 7.43;
+      // dPadBtnStyle.backgroundImage = 'none';
+      dPadBtnStyle.top = dWH + '%';
+      // dPadBtnStyle.marginTop = '-';
+      dPadBtnStyle.left = '4.9%';
+      // dPadBtnStyle.marginLeft = '-' + ((dPadSize - 25)/2) + 'px';
     }
+    const dPadArrowBR = dPadSize / 9.9; // BorderRadius Size
 
     dPadBtnStyle.width = dPadSize + 'px';
     dPadBtnStyle.height = dPadSize + 'px';
-    dPadBtnStyle.marginTop = '-' + ((dPadSize - 25)/2) + 'px';
 
     return (
       <div>
@@ -153,7 +160,7 @@ class JoyStick extends React.Component
               height: dPadArrowSize + '%',
               left: 0,
               marginTop: (dPadArrowSize / -2) + '%',
-              borderRadius: `5px ${dPadArrowSize}px ${dPadArrowSize}px 5px`,
+              borderRadius: `${dPadArrowBR}px ${dPadArrowSize}px ${dPadArrowSize}px ${dPadArrowBR}px`,
             }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
@@ -172,7 +179,7 @@ class JoyStick extends React.Component
               height: (dPadArrowSize * 1.5) + '%',
               left: '50%',
               marginLeft: (dPadArrowSize / -2) + '%',
-              borderRadius: `5px 5px ${dPadArrowSize}px ${dPadArrowSize}px`,
+              borderRadius: `${dPadArrowBR}px ${dPadArrowBR}px ${dPadArrowSize}px ${dPadArrowSize}px`,
             }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
@@ -191,7 +198,7 @@ class JoyStick extends React.Component
               height: dPadArrowSize + '%',
               right: 0,
               marginTop: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowSize}px 5px 5px ${dPadArrowSize}px`,
+              borderRadius: `${dPadArrowSize}px ${dPadArrowBR}px ${dPadArrowBR}px ${dPadArrowSize}px`,
             }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
@@ -210,7 +217,7 @@ class JoyStick extends React.Component
               width: dPadArrowSize + '%',
               height: (dPadArrowSize * 1.5) + '%',
               marginLeft: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowSize}px ${dPadArrowSize}px 5px 5px`,
+              borderRadius: `${dPadArrowSize}px ${dPadArrowSize}px ${dPadArrowBR}px ${dPadArrowBR}px`,
             }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}

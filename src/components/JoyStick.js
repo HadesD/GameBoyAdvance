@@ -7,13 +7,16 @@ class JoyStick extends React.Component
 {
   isPushed = false;
   lastKey = null;
-  hasOnTouchStart = ('ontouchstart' in document.documentElement);
-  hasOnTouchMove = ('ontouchmove' in document.documentElement);
-  hasOnTouchEnd = ('ontouchend' in document.documentElement);
+
+  ref = null;
+
+  hasSupportTouch = ('ontouchstart' in document.documentElement);
 
   constructor(props)
   {
     super(props);
+
+    this.ref = React.createRef();
 
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -22,30 +25,57 @@ class JoyStick extends React.Component
 
   componentDidMount()
   {
-    window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('touchend', this.onMouseUp);
+    const current = this.ref.current;
+    console.log(current);
+
+    // Mouse
+    if (this.hasSupportTouch)
+    {
+      current.addEventListener('touchstart', this.onMouseDown);
+      current.addEventListener('touchmove', this.onMouseMove);
+      current.addEventListener('touchend', this.onMouseUp);
+    }
+    else
+    {
+      current.addEventListener('mousedown', this.onMouseDown);
+      current.addEventListener('mousemove', this.onMouseMove);
+      current.addEventListener('mouseup', this.onMouseUp);
+    }
+
+    // window.addEventListener('touchstart', function onFirstHover() {
+    //   current.removeEventListener('mousedown', this.onMouseDown);
+    //   current.removeEventListener('mousemove', this.onMouseMove);
+    //   current.removeEventListener('mouseup', this.onMouseUp);
+    //   window.removeEventListener('touchstart', onFirstHover, false);
+    // }, false);
   }
 
   componentWillUnmount()
   {
-    window.removeEventListener('mouseup', this.onMouseUp);
-    window.removeEventListener('touchend', this.onMouseUp);
+    const current = this.ref.current;
+
+    current.removeEventListener('mousedown', this.onMouseDown);
+    current.removeEventListener('mousemove', this.onMouseMove);
+    current.removeEventListener('mouseup', this.onMouseUp);
+
+    current.removeEventListener('touchstart', this.onMouseDown);
+    current.removeEventListener('touchmove', this.onMouseMove);
+    current.removeEventListener('touchend', this.onMouseUp);
   }
 
   onMouseDown(e)
   {
-    if (this.hasOnTouchStart && (e.type === 'mousedown'))
-    {
-      return;
-    }
-    // alert(1);
-
+    console.log('%s', e.type);
     this.isPushed = true;
 
     const target = e.target;
     const key = target.getAttribute('data-joykey');
+    if (!key)
+    {
+      return;
+    }
 
-    console.log('onMouseDown: ' + key);
+    console.log('%s: %s', e.type, key);
     // alert('onMouseDown: ' + key);
 
     this.lastKey = key;
@@ -53,11 +83,7 @@ class JoyStick extends React.Component
 
   onMouseMove(e)
   {
-    if (this.hasOnTouchMove && (e.type === 'mousemove'))
-    {
-      return;
-    }
-
+    console.log('%s', e.type);
     if (!this.isPushed)
     {
       return;
@@ -66,11 +92,10 @@ class JoyStick extends React.Component
     let posX = e.clientX;
     let posY = e.clientY;
 
-    if (this.hasOnTouchMove && (e.type === 'touchmove'))
+    if (e.type === 'touchmove')
     {
-      e.persist();
-      // console.log(e);
-      let touchPos = e.changedTouches[0];
+      // e.persist();
+      const touchPos = e.changedTouches[0];
       posX = touchPos.clientX;
       posY = touchPos.clientY;
     }
@@ -86,17 +111,13 @@ class JoyStick extends React.Component
       return;
     }
     this.lastKey = key;
-    console.log('onMouseMove: ' + key);
+    console.log('%s: %s', e.type, key);
     // alert('onMouseMove: ' + key);
   }
 
   onMouseUp(e)
   {
-    if (this.hasOnTouchEnd && (e.type === 'mouseup'))
-    {
-      return;
-    }
-
+    console.log('%s', e.type);
     // If all key released
     if (!this.isPushed)
     {
@@ -112,7 +133,8 @@ class JoyStick extends React.Component
     {
       return;
     }
-    console.log('onMouseUp: ' + key);
+
+    console.log('%s: %s', e.type, key);
     // alert('onMouseUp: ' + key);
   }
 
@@ -127,7 +149,7 @@ class JoyStick extends React.Component
     }
 
     return (
-      <div>
+      <div ref={this.ref}>
         <div
           className="console-dpad-btn"
           style={dPadBtnStyle}
@@ -135,65 +157,65 @@ class JoyStick extends React.Component
           <button
             className="dpad-btn"
             data-joykey="left"
-            onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-            onTouchStart={this.onMouseDown}
-            onTouchMove={this.onMouseMove}
-            onTouchEnd={this.onMouseUp}
+            // onMouseDown={this.onMouseDown}
+            // onMouseMove={this.onMouseMove}
+            // onMouseUp={this.onMouseUp}
+            // onTouchStart={this.onMouseDown}
+            // onTouchMove={this.onMouseMove}
+            // onTouchEnd={this.onMouseUp}
           />
           <button
             className="dpad-btn"
             data-joykey="up"
-            onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-            onTouchStart={this.onMouseDown}
-            onTouchMove={this.onMouseMove}
-            onTouchEnd={this.onMouseUp}
+            // onMouseDown={this.onMouseDown}
+            // onMouseMove={this.onMouseMove}
+            // onMouseUp={this.onMouseUp}
+            // onTouchStart={this.onMouseDown}
+            // onTouchMove={this.onMouseMove}
+            // onTouchEnd={this.onMouseUp}
           />
           <button
             className="dpad-btn"
             data-joykey="right"
-            onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-            onTouchStart={this.onMouseDown}
-            onTouchMove={this.onMouseMove}
-            onTouchEnd={this.onMouseUp}
+            // onMouseDown={this.onMouseDown}
+            // onMouseMove={this.onMouseMove}
+            // onMouseUp={this.onMouseUp}
+            // onTouchStart={this.onMouseDown}
+            // onTouchMove={this.onMouseMove}
+            // onTouchEnd={this.onMouseUp}
           />
           <button
             className="dpad-btn"
             data-joykey="down"
-            onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-            onTouchStart={this.onMouseDown}
-            onTouchMove={this.onMouseMove}
-            onTouchEnd={this.onMouseUp}
+            // onMouseDown={this.onMouseDown}
+            // onMouseMove={this.onMouseMove}
+            // onMouseUp={this.onMouseUp}
+            // onTouchStart={this.onMouseDown}
+            // onTouchMove={this.onMouseMove}
+            // onTouchEnd={this.onMouseUp}
           />
         </div>
         <button
           className="circle-btn"
           data-joykey="a"
-          onMouseDown={this.onMouseDown}
-          onMouseMove={this.onMouseMove}
-          onMouseUp={this.onMouseUp}
-          onTouchStart={this.onMouseDown}
-          onTouchMove={this.onMouseMove}
-          onTouchEnd={this.onMouseUp}
+          // onMouseDown={this.onMouseDown}
+          // onMouseMove={this.onMouseMove}
+          // onMouseUp={this.onMouseUp}
+          // onTouchStart={this.onMouseDown}
+          // onTouchMove={this.onMouseMove}
+          // onTouchEnd={this.onMouseUp}
         >
           A
         </button>
         <button
           className="circle-btn"
           data-joykey="b"
-          onMouseDown={this.onMouseDown}
-          onMouseMove={this.onMouseMove}
-          onMouseUp={this.onMouseUp}
-          onTouchStart={this.onMouseDown}
-          onTouchMove={this.onMouseMove}
-          onTouchEnd={this.onMouseUp}
+          // onMouseDown={this.onMouseDown}
+          // onMouseMove={this.onMouseMove}
+          // onMouseUp={this.onMouseUp}
+          // onTouchStart={this.onMouseDown}
+          // onTouchMove={this.onMouseMove}
+          // onTouchEnd={this.onMouseUp}
         >
           B
         </button>

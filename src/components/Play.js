@@ -33,7 +33,7 @@ class Play extends React.Component
     // Use Gamepad
     if (window.getGamepads)
     {
-      this.gamePadManager = new GamepadManager();
+      this.gamePadManager = new GamepadManager(this);
     }
   }
 
@@ -117,6 +117,7 @@ class Play extends React.Component
           <canvas id="emulator"></canvas>
         </div>
         <JoyStick
+          parent={this}
           isPortrait={this.isPortrait}
           winSize={this.state.winSize}
         />

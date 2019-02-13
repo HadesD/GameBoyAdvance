@@ -13,6 +13,7 @@ class BodyScrollUnAble extends React.Component
     // this.touchendHandle.bind(this);
     // this.touchmoveHandle.bind(this);
     this.onContextMenu = this.onContextMenu.bind(this);
+    this.onScroll = this.onScroll.bind(this);
   }
 
   componentDidMount()
@@ -25,6 +26,7 @@ class BodyScrollUnAble extends React.Component
     disableBodyScroll(document.querySelector('#root'));
 
     document.addEventListener('contextmenu', this.onContextMenu);
+    window.addEventListener('scroll', this.onScroll);
   }
 
   componentWillUnmount() {
@@ -32,6 +34,7 @@ class BodyScrollUnAble extends React.Component
     // document.removeEventListener('touchmove', this.touchmoveHandle, true);
     // document.removeEventListener('touchend', this.touchendHandle, true);
     document.removeEventListener('contextmenu', this.onContextMenu);
+    window.removeEventListener('scroll', this.onScroll);
 
     clearAllBodyScrollLocks();
   }
@@ -61,6 +64,12 @@ class BodyScrollUnAble extends React.Component
   onContextMenu(e)
   {
     e.preventDefault();
+  }
+
+  onScroll(e)
+  {
+    // e.preventDefault();
+    window.scrollTo(0, 0);
   }
 
   render()

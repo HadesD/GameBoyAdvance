@@ -76,66 +76,45 @@ class Play extends React.Component
     const wHeight = this.state.winSize.height;
     const wWidth = this.state.winSize.width;
 
-    let emuWrapWidth = 165;
-    let emuWrapHeight = 148;
-    const d = emuWrapWidth / emuWrapHeight;
-
-    let emuStyle = {
-      backgroundImage: 'url('+emuCanvasBKG+')',
-    };
+    let emuStyle = {};
 
     let emuSvg = emuBKG;
-    let wrapperStyle = {
-      height: 'calc(100vh - 25px)',
-    }
+    let wrapperStyle = {};
+
+    let wrapperClasses = [
+      'play-wrapper'
+    ];
+    let screenTypeClass = 'landscape';
 
     if (wHeight > wWidth)
     {
       // Portrait
       this.isPortrait = true;
+      screenTypeClass = 'portrait';
 
       emuSvg = emuBKG;
-      wrapperStyle.backgroundSize = 'cover';
-      wrapperStyle.backgroundColor = 'transparent';
-      wrapperStyle.backgroundRepeat = 'repeat';
 
-      emuStyle.top = '35px';
-      emuStyle.width = wWidth / d;
-      emuStyle.height = emuStyle.width / d;
+      emuStyle.backgroundImage = 'url('+emuCanvasBKG+')';
     }
     else
     {
       // Landscape
       this.isPortrait = false;
       emuSvg = emuLandscape;
-      wrapperStyle.backgroundColor = '#36393f';
-      wrapperStyle.backgroundSize = '105%';
-      wrapperStyle.backgroundPosition = 'center';
-      wrapperStyle.backgroundRepeat = 'no-repeat';
 
-      emuStyle.height = (wHeight - 25) / d;
-      emuStyle.width = emuStyle.height * d
-      emuStyle.marginTop = '-' + ((emuStyle.height - 25)/2) + 'px';
-      emuStyle.top = '50%';
+      emuStyle.backgroundImage = 'url('+emuCanvasBKG+')'; // Debug
     }
+    wrapperClasses.push(screenTypeClass);
 
     wrapperStyle.backgroundImage = 'url('+emuSvg+')';
 
-    emuStyle.marginLeft = '-' + (emuStyle.width/2) + 'px';
-
     return (
       <BodyScrollUnAble
+        className={wrapperClasses.join(' ')}
         style={wrapperStyle}
       >
-        <div className="emuWrapper" style={emuStyle}>
-          <canvas
-            id="emulator"
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-          >
-          </canvas>
+        <div className="emu-wrapper" style={emuStyle}>
+          <canvas id="emulator"></canvas>
         </div>
         <JoyStick
           isPortrait={this.isPortrait}

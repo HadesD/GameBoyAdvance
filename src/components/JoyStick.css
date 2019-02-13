@@ -1,6 +1,5 @@
 .console-dpad-btn {
   position: absolute;
-  left: 10px;
   background-repeat: none;
   background-color: transparent;
   background-size: cover;
@@ -9,8 +8,21 @@
   display: inline-block;
 }
 
+.portrait .console-dpad-btn {
+  width: 34vw;
+  height: 34vw;
+  left: 10px;
+}
+
+.landscape .console-dpad-btn {
+  width: 13.35vw;
+  height: 13.35vw;
+  top: calc(100vw / 1.75 / 3.16); /* Screen.width / Console.height / 3.16 */
+}
+
 .console-dpad-btn .dpad-btn {
   background-color: transparent;
+  /* background-color: #FFF; */
   position: absolute;
   border: 0;
   outline: none;
@@ -20,5 +32,97 @@
 .console-dpad-btn:active .dpad-btn:hover {
   background-color: #000;
   opacity: .4;
+}
+
+.dpad-btn[data-joykey="left"] {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: calc(100% / 2);
+  height: calc(100% / 3);
+}
+
+.dpad-btn[data-joykey="up"] {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% / 3);
+  height: calc(100% / 2);
+}
+
+.dpad-btn[data-joykey="right"] {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: calc(100% / 2);
+  height: calc(100% / 3);
+}
+
+.dpad-btn[data-joykey="down"] {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% / 3);
+  height: calc(100% / 2);
+}
+
+.portrait .console-dpad-btn {
+  bottom: 17%;
+}
+
+.landscape .console-dpad-btn {
+  left: 4.88%;
+  background-image: none;
+}
+
+.play-wrapper .circle-btn {
+  position: absolute;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+}
+
+.landscape .circle-btn {
+  width: 7vw;
+  height: 7vw;
+  font-size: 3vw;
+}
+
+.landscape .circle-btn:active {
+  background-color: #000;
+  opacity: .4;
+}
+
+.landscape .circle-btn[data-joykey="a"] {
+  top: calc(100vw / 1.75 / 2.91);
+  right: 2.5%;
+}
+
+.landscape .circle-btn[data-joykey="b"] {
+  top: calc(100vw / 1.75 / 2.51);
+  right: 12.1%;
+}
+
+.portrait .circle-btn {
+  background-color: #111;
+  width: 15vw;
+  height: 15vw;
+  color: #FFF;
+  font-size: 6vw;
+}
+
+.portrait .circle-btn.active,
+.portrait .circle-btn:active {
+  opacity: .7;
+}
+
+.portrait .circle-btn[data-joykey="a"] {
+  right: 10px;
+  bottom: 27%;
+}
+
+.portrait .circle-btn[data-joykey="b"] {
+  right: calc(15vw + 10px + 10px);
+  bottom: 23%;
 }
 

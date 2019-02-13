@@ -18,13 +18,12 @@ class JoyStick extends React.Component
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-
-    window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('touchend', this.onMouseUp);
   }
 
   componentDidMount()
   {
+    window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('touchend', this.onMouseUp);
   }
 
   componentWillUnmount()
@@ -39,6 +38,7 @@ class JoyStick extends React.Component
     {
       return;
     }
+    // alert(1);
 
     this.isPushed = true;
 
@@ -53,6 +53,11 @@ class JoyStick extends React.Component
 
   onMouseMove(e)
   {
+    if (this.hasOnTouchMove && (e.type === 'mousemove'))
+    {
+      return;
+    }
+
     if (!this.isPushed)
     {
       return;
@@ -113,37 +118,13 @@ class JoyStick extends React.Component
 
   render()
   {
-    const wWidth = this.props.winSize.width;
-    const wHeight = this.props.winSize.height;
-
-    const dWH = wWidth / wHeight;
-
-    let dPadSize = 100.0;
-    const dPadArrowSize = 100.0 / 3;
-
-    let dPadBtnStyle = {
-      backgroundImage: 'url('+dpadIcon+')',
-    };
+    let dPadBtnStyle = {};
 
     if (this.props.isPortrait)
     {
-      dPadSize = wWidth / 2 / 1.5;
-      dPadBtnStyle.bottom = (100 / 3) / 2 + '%';
-      dPadBtnStyle.marginTop = '-' + ((dPadSize - 25)/2) + 'px';
+      // Dpad block
+      dPadBtnStyle.backgroundImage = 'url('+dpadIcon+')';
     }
-    else
-    {
-      dPadSize = wWidth / 7.43;
-      // dPadBtnStyle.backgroundImage = 'none';
-      dPadBtnStyle.top = dWH + '%';
-      // dPadBtnStyle.marginTop = '-';
-      dPadBtnStyle.left = '4.9%';
-      // dPadBtnStyle.marginLeft = '-' + ((dPadSize - 25)/2) + 'px';
-    }
-    const dPadArrowBR = dPadSize / 9.9; // BorderRadius Size
-
-    dPadBtnStyle.width = dPadSize + 'px';
-    dPadBtnStyle.height = dPadSize + 'px';
 
     return (
       <div>
@@ -154,80 +135,68 @@ class JoyStick extends React.Component
           <button
             className="dpad-btn"
             data-joykey="left"
-            style={{
-              top: '50%',
-              width: (dPadArrowSize * 1.5) + '%',
-              height: dPadArrowSize + '%',
-              left: 0,
-              marginTop: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowBR}px ${dPadArrowSize}px ${dPadArrowSize}px ${dPadArrowBR}px`,
-            }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
             onMouseUp={this.onMouseUp}
             onTouchStart={this.onMouseDown}
             onTouchMove={this.onMouseMove}
             onTouchEnd={this.onMouseUp}
-          >
-          </button>
+          />
           <button
             className="dpad-btn"
             data-joykey="up"
-            style={{
-              top: 0,
-              width: dPadArrowSize + '%',
-              height: (dPadArrowSize * 1.5) + '%',
-              left: '50%',
-              marginLeft: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowBR}px ${dPadArrowBR}px ${dPadArrowSize}px ${dPadArrowSize}px`,
-            }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
             onMouseUp={this.onMouseUp}
             onTouchStart={this.onMouseDown}
             onTouchMove={this.onMouseMove}
             onTouchEnd={this.onMouseUp}
-          >
-          </button>
+          />
           <button
             className="dpad-btn"
             data-joykey="right"
-            style={{
-              top: '50%',
-              width: (dPadArrowSize * 1.5) + '%',
-              height: dPadArrowSize + '%',
-              right: 0,
-              marginTop: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowSize}px ${dPadArrowBR}px ${dPadArrowBR}px ${dPadArrowSize}px`,
-            }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
             onMouseUp={this.onMouseUp}
             onTouchStart={this.onMouseDown}
             onTouchMove={this.onMouseMove}
             onTouchEnd={this.onMouseUp}
-          >
-          </button>
+          />
           <button
             className="dpad-btn"
             data-joykey="down"
-            style={{
-              top: dPadSize / 2,
-              left: '50%',
-              width: dPadArrowSize + '%',
-              height: (dPadArrowSize * 1.5) + '%',
-              marginLeft: (dPadArrowSize / -2) + '%',
-              borderRadius: `${dPadArrowSize}px ${dPadArrowSize}px ${dPadArrowBR}px ${dPadArrowBR}px`,
-            }}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
             onMouseUp={this.onMouseUp}
             onTouchStart={this.onMouseDown}
             onTouchMove={this.onMouseMove}
             onTouchEnd={this.onMouseUp}
-          >
-          </button>
+          />
         </div>
+        <button
+          className="circle-btn"
+          data-joykey="a"
+          onMouseDown={this.onMouseDown}
+          onMouseMove={this.onMouseMove}
+          onMouseUp={this.onMouseUp}
+          onTouchStart={this.onMouseDown}
+          onTouchMove={this.onMouseMove}
+          onTouchEnd={this.onMouseUp}
+        >
+          A
+        </button>
+        <button
+          className="circle-btn"
+          data-joykey="b"
+          onMouseDown={this.onMouseDown}
+          onMouseMove={this.onMouseMove}
+          onMouseUp={this.onMouseUp}
+          onTouchStart={this.onMouseDown}
+          onTouchMove={this.onMouseMove}
+          onTouchEnd={this.onMouseUp}
+        >
+          B
+        </button>
       </div>
     );
   }

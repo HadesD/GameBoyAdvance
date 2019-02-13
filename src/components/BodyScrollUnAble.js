@@ -67,7 +67,7 @@ class BodyScrollUnAble extends React.Component
   {
     const className = [
       'noselect',
-      this.props.className ? this.props.className : false
+      this.props.className ? this.props.className : ''
     ].join(' ');
     return (
       <div

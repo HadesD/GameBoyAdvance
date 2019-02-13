@@ -1,7 +1,7 @@
 import React from 'react';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
-import JoyStick from './JoyStick';
+import Joystick from './Joystick';
 import GamepadManager from './GamepadManager';
 
 import emuLandscape from '../images/gba-console-landscape.svg';
@@ -20,6 +20,9 @@ class Play extends React.Component
     console.log('Play.constructor called');
 
     super(props);
+
+    this.selfRef = React.createRef();
+    this.joystickRef = React.createRef();
 
     this.state = {
       winSize: {
@@ -116,7 +119,8 @@ class Play extends React.Component
         <div className="emu-wrapper" style={emuStyle}>
           <canvas id="emulator"></canvas>
         </div>
-        <JoyStick
+        <Joystick
+          ref={this.joystickRef}
           parent={this}
           isPortrait={this.isPortrait}
           winSize={this.state.winSize}

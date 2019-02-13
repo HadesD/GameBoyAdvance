@@ -1,14 +1,12 @@
 import React from 'react';
 import dpadIcon from '../images/dpad.svg';
 
-import './JoyStick.css';
+import './Joystick.css';
 
-class JoyStick extends React.Component
+class Joystick extends React.Component
 {
   isPushed = false;
   lastKey = null;
-
-  ref = null;
 
   hasSupportTouch = ('ontouchstart' in document.documentElement);
 
@@ -16,7 +14,7 @@ class JoyStick extends React.Component
   {
     super(props);
 
-    this.ref = React.createRef();
+    this.selfRef = React.createRef();
 
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -25,7 +23,7 @@ class JoyStick extends React.Component
 
   componentDidMount()
   {
-    const current = this.ref.current;
+    const current = this.selfRef.current;
     console.log(current);
 
     // Mouse
@@ -41,18 +39,11 @@ class JoyStick extends React.Component
       current.addEventListener('mousemove', this.onMouseMove);
       current.addEventListener('mouseup', this.onMouseUp);
     }
-
-    // window.addEventListener('touchstart', function onFirstHover() {
-    //   current.removeEventListener('mousedown', this.onMouseDown);
-    //   current.removeEventListener('mousemove', this.onMouseMove);
-    //   current.removeEventListener('mouseup', this.onMouseUp);
-    //   window.removeEventListener('touchstart', onFirstHover, false);
-    // }, false);
   }
 
   componentWillUnmount()
   {
-    const current = this.ref.current;
+    const current = this.selfRef.current;
 
     current.removeEventListener('mousedown', this.onMouseDown);
     current.removeEventListener('mousemove', this.onMouseMove);
@@ -149,74 +140,17 @@ class JoyStick extends React.Component
     }
 
     return (
-      <div ref={this.ref}>
-        <div
-          className="console-dpad-btn"
-          style={dPadBtnStyle}
-        >
-          <button
-            className="dpad-btn"
-            data-joykey="left"
-            // onMouseDown={this.onMouseDown}
-            // onMouseMove={this.onMouseMove}
-            // onMouseUp={this.onMouseUp}
-            // onTouchStart={this.onMouseDown}
-            // onTouchMove={this.onMouseMove}
-            // onTouchEnd={this.onMouseUp}
-          />
-          <button
-            className="dpad-btn"
-            data-joykey="up"
-            // onMouseDown={this.onMouseDown}
-            // onMouseMove={this.onMouseMove}
-            // onMouseUp={this.onMouseUp}
-            // onTouchStart={this.onMouseDown}
-            // onTouchMove={this.onMouseMove}
-            // onTouchEnd={this.onMouseUp}
-          />
-          <button
-            className="dpad-btn"
-            data-joykey="right"
-            // onMouseDown={this.onMouseDown}
-            // onMouseMove={this.onMouseMove}
-            // onMouseUp={this.onMouseUp}
-            // onTouchStart={this.onMouseDown}
-            // onTouchMove={this.onMouseMove}
-            // onTouchEnd={this.onMouseUp}
-          />
-          <button
-            className="dpad-btn"
-            data-joykey="down"
-            // onMouseDown={this.onMouseDown}
-            // onMouseMove={this.onMouseMove}
-            // onMouseUp={this.onMouseUp}
-            // onTouchStart={this.onMouseDown}
-            // onTouchMove={this.onMouseMove}
-            // onTouchEnd={this.onMouseUp}
-          />
+      <div ref={this.selfRef}>
+        <div className="console-dpad-btn" style={dPadBtnStyle}>
+          <button className="dpad-btn" data-joykey="left"/>
+          <button className="dpad-btn" data-joykey="up" />
+          <button className="dpad-btn" data-joykey="right" />
+          <button className="dpad-btn" data-joykey="down" />
         </div>
-        <button
-          className="circle-btn"
-          data-joykey="a"
-          // onMouseDown={this.onMouseDown}
-          // onMouseMove={this.onMouseMove}
-          // onMouseUp={this.onMouseUp}
-          // onTouchStart={this.onMouseDown}
-          // onTouchMove={this.onMouseMove}
-          // onTouchEnd={this.onMouseUp}
-        >
+        <button className="circle-btn" data-joykey="a">
           A
         </button>
-        <button
-          className="circle-btn"
-          data-joykey="b"
-          // onMouseDown={this.onMouseDown}
-          // onMouseMove={this.onMouseMove}
-          // onMouseUp={this.onMouseUp}
-          // onTouchStart={this.onMouseDown}
-          // onTouchMove={this.onMouseMove}
-          // onTouchEnd={this.onMouseUp}
-        >
+        <button className="circle-btn" data-joykey="b">
           B
         </button>
       </div>
@@ -224,5 +158,5 @@ class JoyStick extends React.Component
   }
 }
 
-export default JoyStick;
+export default Joystick;
 

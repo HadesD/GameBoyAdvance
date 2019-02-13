@@ -5,14 +5,24 @@ class GamepadManager
   scanIntervalId = null;
   selectedIndex = 0;
 
-  constructor()
+  constructor(parent)
   {
     console.log('GamepadManager.constructor called');
+
+    this.parentRef = parent;
 
     this.update = this.update.bind(this);
     this.onGamepadConnected = this.onGamepadConnected.bind(this);
     this.onGamepadDisconnected = this.onGamepadDisconnected.bind(this);
     this.scanGamepads = this.scanGamepads.bind(this);
+  }
+
+  start()
+  {
+    window.addEventListener("gamepadconnected", this.onGamepadConnected);
+    window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected);
+
+    this.scanIntervalId = setInterval(this.scanGamepads, 500);
   }
 
   destroy()
@@ -25,14 +35,6 @@ class GamepadManager
     window.cancelAnimationFrame(this.rafId);
 
     clearInterval(this.scanIntervalId);
-  }
-
-  start()
-  {
-    window.addEventListener("gamepadconnected", this.onGamepadConnected);
-    window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected);
-
-    this.scanIntervalId = setInterval(this.scanGamepads, 500);
   }
 
   update()

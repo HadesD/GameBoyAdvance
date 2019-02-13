@@ -3,6 +3,7 @@ import BodyScrollUnAble from './BodyScrollUnAble';
 
 import Joystick from './Joystick';
 import GamepadManager from './GamepadManager';
+import KeyboardManager from './KeyboardManager';
 
 import emuLandscape from '../images/gba-console-landscape.svg';
 import emuBKG from '../images/emu-background.svg';
@@ -38,6 +39,7 @@ class Play extends React.Component
     {
       this.gamePadManager = new GamepadManager(this);
     }
+    this.keyboardManager = new KeyboardManager(this);
   }
 
   componentDidMount()
@@ -48,6 +50,7 @@ class Play extends React.Component
     {
       this.gamePadManager.start();
     }
+    this.keyboardManager.start();
   }
 
   componentWillUnmount()
@@ -59,6 +62,7 @@ class Play extends React.Component
     {
       this.gamePadManager.destroy();
     }
+    this.keyboardManager.destroy();
   }
 
   updateWindowDimensions()

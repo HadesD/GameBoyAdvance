@@ -50,7 +50,7 @@ function GBMasterClass()
   window.requestAnimationFrame(update);
 };
 
-function GameBoy(file, canvas, options) {
+export default function GameBoy(file, canvas, options) {
 
   //alert(checkEndian());
 
@@ -279,7 +279,7 @@ function GameBoy(file, canvas, options) {
     this.loadROM(file);
   }
 
-  if (options.enableLoadBios)
+  if (this.options.enableLoadBios)
   {
     var amebo_script_filepath = document.getElementById('amebo_script').src.split('/');
     amebo_script_filepath.pop();

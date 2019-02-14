@@ -9,7 +9,7 @@ import emuLandscape from '../images/gba-console-landscape.svg';
 import emuBKG from '../images/emu-background.svg';
 import emuCanvasBKG from '../images/emu-canvas-bg.svg';
 
-import GBMasterClass from '../libs/amebo';
+import GameBoy from '../libs/amebo';
 
 import './Play.css';
 
@@ -56,6 +56,7 @@ class Play extends React.Component
     this.keyboardManager.start();
 
     console.log(this);
+    new GameBoy('', this.emuDisplayRef.current);
   }
 
   componentWillUnmount()

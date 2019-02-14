@@ -6,6 +6,7 @@ class KeyboardManager
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.pushedList = {};
   }
 
   start()
@@ -70,10 +71,18 @@ class KeyboardManager
     // console.log(e.keyCode);
 
     const keyCode = e.keyCode;
-    if (this.setActiveJoykey(keyCode, true))
+    if (this.pushedList[keyCode])
     {
-      e.preventDefault();
+      return;
     }
+
+    if (!this.setActiveJoykey(keyCode, true))
+    {
+      return;
+    }
+
+    e.preventDefault();
+    this.pushedList[keyCode] = true;
 
     // console.log(joystickRef);
   }
@@ -82,10 +91,12 @@ class KeyboardManager
   {
     // console.log(e);
     const keyCode = e.keyCode;
-    if (this.setActiveJoykey(keyCode, false))
+    if (!this.setActiveJoykey(keyCode, false))
     {
-      e.preventDefault();
+      return;
     }
+    e.preventDefault();
+    this.pushedList[keyCode] = false;
   }
 }
 

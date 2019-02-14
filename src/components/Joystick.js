@@ -56,7 +56,7 @@ class Joystick extends React.Component
 
   onMouseDown(e)
   {
-    console.log('%s', e.type);
+    // console.log('%s', e.type);
     this.isPushed = true;
 
     const target = e.target;
@@ -74,7 +74,7 @@ class Joystick extends React.Component
 
   onMouseMove(e)
   {
-    console.log('%s', e.type);
+    // console.log('%s', e.type);
     if (!this.isPushed)
     {
       return;
@@ -163,7 +163,7 @@ class Joystick extends React.Component
     }
 
     return (
-      <div ref={this.selfRef} class="joystick">
+      <div ref={this.selfRef} className="joystick">
         <div className="console-dpad-btn" style={dPadBtnStyle}>
           <button className="dpad-btn" data-joykey="left"/>
           <button className="dpad-btn" data-joykey="up" />

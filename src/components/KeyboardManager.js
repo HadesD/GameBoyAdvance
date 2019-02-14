@@ -65,7 +65,7 @@ class KeyboardManager
 
   onKeyDown(e)
   {
-    // e.preventDefault();
+    e.preventDefault();
     // console.log(e.keyCode);
 
     const keyCode = e.keyCode;
@@ -76,7 +76,7 @@ class KeyboardManager
 
   onKeyUp(e)
   {
-    // e.preventDefault();
+    e.preventDefault();
     // console.log(e);
     const keyCode = e.keyCode;
     this.setActiveJoykey(keyCode, false);

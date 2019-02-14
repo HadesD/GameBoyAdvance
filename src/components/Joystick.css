@@ -72,10 +72,10 @@
 
 .landscape .console-dpad-btn {
   left: 4.88%;
-  background-image: none;
+  background-image: none!important;
 }
 
-.play-wrapper .circle-btn {
+.joystick .circle-btn {
   position: absolute;
   border-radius: 50%;
   border: none;

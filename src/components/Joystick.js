@@ -154,17 +154,14 @@ class Joystick extends React.Component
 
   render()
   {
-    let dPadBtnStyle = {};
-
-    if (this.props.isPortrait)
-    {
-      // Dpad block
-      dPadBtnStyle.backgroundImage = 'url('+dpadIcon+')';
-    }
-
     return (
       <div ref={this.selfRef} className="joystick">
-        <div className="console-dpad-btn" style={dPadBtnStyle}>
+        <div
+          className="console-dpad-btn"
+          style={{
+            backgroundImage: 'url('+dpadIcon+')',
+          }}
+        >
           <button className="dpad-btn" data-joykey="left"/>
           <button className="dpad-btn" data-joykey="up" />
           <button className="dpad-btn" data-joykey="right" />

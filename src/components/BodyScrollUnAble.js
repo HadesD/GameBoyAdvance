@@ -80,6 +80,7 @@ class BodyScrollUnAble extends React.Component
     ].join(' ');
     return (
       <div
+        ref={this.props.ref ? this.props.ref : false}
         className={className}
         style={this.props.style ? this.props.style : {}}
       >

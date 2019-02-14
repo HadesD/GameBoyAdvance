@@ -24,6 +24,7 @@ class Play extends React.Component
 
     this.selfRef = React.createRef();
     this.joystickRef = React.createRef();
+    this.emuDisplayRef = React.createRef();
 
     this.state = {
       winSize: {
@@ -124,7 +125,7 @@ class Play extends React.Component
         style={wrapperStyle}
       >
         <div className="emu-wrapper" style={emuStyle}>
-          <canvas id="emulator"></canvas>
+          <canvas ref={this.emuDisplayRef}></canvas>
         </div>
         <Joystick
           ref={this.joystickRef}

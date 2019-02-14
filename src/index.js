@@ -7,8 +7,12 @@ import * as serviceWorker from './serviceWorker';
 
 // Create AnimationFrame
 window.requestAnimationFrame = window.requestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.webkitRequestAnimationFrame;
+    window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
+
+window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 window.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads;
 

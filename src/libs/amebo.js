@@ -1,6 +1,7 @@
 //"use strict"; despite my code conforming to strict mode, i'll keep it off because it just adds stupid extra checks which might slow things down
 
-function GBMasterClass(){
+function GBMasterClass()
+{
   this.gameboys = [];
 
   var gameboys = this.gameboys;
@@ -20,8 +21,8 @@ function GBMasterClass(){
   }
 
   function multiGBUpdate() {
-    var gbl = gameboys.length
-    var gbn;
+    let gbl = gameboys.length;
+    let gbn;
     for (gbn = 0; gbn < gbl; gbn++) {
       if (!(gameboys[gbn].options.cButByte))
       {
@@ -49,18 +50,14 @@ function GBMasterClass(){
   window.requestAnimationFrame(update);
 };
 
-window.gb = function(file, canvas, options) {
+function GameBoy(file, canvas, options) {
 
   //alert(checkEndian());
 
-  if (!options)
-  {
-    options = {
-      rootDir: '',
-      enableLoadBios: true,
-    }
-  }
-  this.options = options;
+  this.options = options ? options : {
+    rootDir: '',
+    enableLoadBios: true,
+  };
 
   window.GBMaster = window.GBMaster || (new GBMasterClass());
 
@@ -876,13 +873,13 @@ window.gb = function(file, canvas, options) {
   IOWriteFunctions[0x19] = function(a, b) {
     if (IORAM[0x26]&0x80) {
       var enabledLength = (!(IORAM[0x19]&64) && (a&64));
-      if (enabledLength && ((soundPhase&1) == 1) && (AudioEngine[1].lengthCtr != 0)) {
-        if (--AudioEngine[1].lengthCtr == 0) {
+      if (enabledLength && ((soundPhase&1) === 1) && (AudioEngine[1].lengthCtr !== 0)) {
+        if (--AudioEngine[1].lengthCtr === 0) {
           channelOff(1);
         }
       }
       IORAM[b] = a;
-      if ((a>>7) == 1) triggerChannel(1);
+      if ((a>>7) === 1) triggerChannel(1);
       else setChannelFrequency(1);
     }
   }
@@ -918,13 +915,13 @@ window.gb = function(file, canvas, options) {
   IOWriteFunctions[0x1E] = function(a, b) {
     if (IORAM[0x26]&0x80) {
       var enabledLength = (!(IORAM[0x1E]&64) && (a&64));
-      if (enabledLength && ((soundPhase&1) == 1) && (AudioEngine[2].lengthCtr != 0)) {
-        if (--AudioEngine[2].lengthCtr == 0) {
+      if (enabledLength && ((soundPhase&1) === 1) && (AudioEngine[2].lengthCtr !== 0)) {
+        if (--AudioEngine[2].lengthCtr === 0) {
           channelOff(2);
         }
       }
       IORAM[b] = a;
-      if ((a>>7) == 1) triggerChannel(2);
+      if ((a>>7) === 1) triggerChannel(2);
       else setChannelFrequency(2);
     }
   }
@@ -1651,7 +1648,7 @@ window.gb = function(file, canvas, options) {
     if ((yfine >= 0) && ((doubleHt?16:8) > yfine)) {
       var sprFlags = OAM[sprOff+3]
       if (CGB) {
-        var palettes = CGBInt32Spr
+        palettes = CGBInt32Spr
         var pnumoff = (sprFlags&7)*4
       } else {
         var pnumoff = (((sprFlags&0x10)>>4)+1)*4;
@@ -1671,7 +1668,7 @@ window.gb = function(file, canvas, options) {
       while (xfine < 8) {
         if (xdraw>=0 && xdraw<160) {
           pnum = (((tile1>>xfine)&1)+(((tile2>>xfine)&1)<<1));
-          if ((pnum != 0) && (!((tileLayerPalette[xdraw]&0x80) || behind) || (tileLayerData[xdraw] == 0))) {
+          if ((pnum !== 0) && (!((tileLayerPalette[xdraw]&0x80) || behind) || (tileLayerData[xdraw] === 0))) {
             pnum += pnumoff;
             GBScreenInt32[currentBit] = palettes[pnum];
           }
@@ -1905,7 +1902,7 @@ window.gb = function(file, canvas, options) {
     GBObj.onload = null;
     GBObj.ROMname = getROMName();
 
-    if (window.GBMaster.gameboys.indexOf(GBObj) == -1) window.GBMaster.gameboys.push(GBObj);
+    if (window.GBMaster.gameboys.indexOf(GBObj) === -1) window.GBMaster.gameboys.push(GBObj);
 
     GBObj.cycle = cycle; //expose certain functions
     GBObj.frameCycles = 0;
@@ -2590,7 +2587,7 @@ function haltSkip() {
       if ((soundPhase&1) === 0) {
         handleLengths();
       }
-      if (soundPhase == 7) {
+      if (soundPhase === 7) {
         handleEnvelope();
       }
       if ((soundPhase%4) === 2) {
@@ -3404,7 +3401,6 @@ function byteToString(byteArray, noBase64)
 {
   if (typeof byteArray === 'undefined') return;
   var string = '';
-  var i;
   var bal = byteArray.length;
   for (let i=0; i < bal; i++) {
     string += String.fromCharCode(byteArray[i]);
@@ -3415,7 +3411,7 @@ function byteToString(byteArray, noBase64)
 function stringToByte(string, noBase64)
 {
   if (typeof string === 'undefined') return; //so incomplete states don't cause errors.
-  var string = (noBase64 || false) ? string : atob(string);
+  string = (noBase64 || false) ? string : atob(string);
   var byteArray = new Uint8Array(string.length)
   var i;
   var bal = byteArray.length;

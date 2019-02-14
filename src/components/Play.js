@@ -101,12 +101,14 @@ class Play extends React.Component
     let reader = new FileReader();
     reader.onload = function(e) {
       // let arrayBuffer = e.result;
-      emu.loadROMBuffer(e.result);
+      console.log(e.target.result);
+      emu.loadROMBuffer(e.target.result);
       // let array = new Uint8Array(arrayBuffer);
         // binaryString = String.fromCharCode.apply(null, array);
 
       // console.log(binaryString);
     }
+    console.log(file);
     reader.readAsArrayBuffer(file);
   }
 

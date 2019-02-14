@@ -56,7 +56,7 @@ export default function GameBoy(file, canvas, options) {
 
   this.options = options ? options : {
     rootDir: '',
-    enableLoadBios: true,
+    enableLoadBios: false,
   };
 
   window.GBMaster = window.GBMaster || (new GBMasterClass());

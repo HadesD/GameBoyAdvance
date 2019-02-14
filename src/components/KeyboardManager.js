@@ -56,30 +56,36 @@ class KeyboardManager
 
     if (!joykey)
     {
-      return;
+      return false;
     }
 
     const joystickRef = this.parent.joystickRef.current;
     joystickRef.setActive(joykey, isActive);
+
+    return true;
   }
 
   onKeyDown(e)
   {
-    e.preventDefault();
     // console.log(e.keyCode);
 
     const keyCode = e.keyCode;
-    this.setActiveJoykey(keyCode, true);
+    if (this.setActiveJoykey(keyCode, true))
+    {
+      e.preventDefault();
+    }
 
     // console.log(joystickRef);
   }
 
   onKeyUp(e)
   {
-    e.preventDefault();
     // console.log(e);
     const keyCode = e.keyCode;
-    this.setActiveJoykey(keyCode, false);
+    if (this.setActiveJoykey(keyCode, false))
+    {
+      e.preventDefault();
+    }
   }
 }
 

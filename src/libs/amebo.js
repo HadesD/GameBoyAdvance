@@ -293,13 +293,13 @@ window.gb = function(file, canvas, options) {
     loadbios.responseType = "arraybuffer";
     loadbios.send();
     loadbios.onload = function() {
-      if (loadbios.status == 200) bios = new Uint8Array(loadbios.response);
+      if (loadbios.status === 200) bios = new Uint8Array(loadbios.response);
       biosLoaded++;
-      if (gameLoaded && (biosLoaded == 2)) init();
+      if (gameLoaded && (biosLoaded === 2)) init();
     }
     loadbios.onerror = function() {
       biosLoaded++;
-      if (gameLoaded && (biosLoaded == 2)) init();
+      if (gameLoaded && (biosLoaded === 2)) init();
     }
 
     var loadCGBbios = new XMLHttpRequest();
@@ -307,20 +307,20 @@ window.gb = function(file, canvas, options) {
     loadCGBbios.responseType = "arraybuffer";
     loadCGBbios.send();
     loadCGBbios.onload = function() {
-      if (loadCGBbios.status == 200) CGBbios = new Uint8Array(loadCGBbios.response);
+      if (loadCGBbios.status === 200) CGBbios = new Uint8Array(loadCGBbios.response);
       biosLoaded++;
-      if (gameLoaded && (biosLoaded == 2)) init();
+      if (gameLoaded && (biosLoaded === 2)) init();
     }
     loadCGBbios.onerror = function() {
       biosLoaded++;
-      if (gameLoaded && (biosLoaded == 2)) init();
+      if (gameLoaded && (biosLoaded === 2)) init();
     }
   }
   else
   {
     biosLoaded++;
     biosLoaded++;
-    if (gameLoaded && (biosLoaded == 2)) init();
+    if (gameLoaded && (biosLoaded === 2)) init();
   }
 
   var keysArray = new Array(256);
@@ -356,7 +356,7 @@ window.gb = function(file, canvas, options) {
   function getROMName() {
     var name = "";
     for (var i=0x134; i<=0x143; i++) {
-      if (game[i] == 0) break;
+      if (game[i] === 0) break;
       name += String.fromCharCode(game[i])
     }
     return name;
@@ -514,13 +514,13 @@ window.gb = function(file, canvas, options) {
     }
   }
 
-  function testSaveState() {
-    savewhatever = JSON.stringify(saveState());
-  }
+  // function testSaveState() {
+    // savewhatever = JSON.stringify(saveState());
+  // }
 
-  function testLoadState() {
-    loadState(JSON.parse(savewhatever));
-  }
+  // function testLoadState() {
+    // loadState(JSON.parse(savewhatever));
+  // }
 
   var audioEngineVolume = 0x1;
   this.setAudioEngineVolume = function (v) {
@@ -614,13 +614,12 @@ window.gb = function(file, canvas, options) {
   }
 
   IOWriteFunctions[0x40] = function(a, b){
-    if ((IORAM[0x40]&0x80) != (a&0x80)) {
+    if ((IORAM[0x40]&0x80) !== (a&0x80)) {
       if (a&0x80) {
         IORAM[0x44] = 0;
         lineCycles = 0;
         LCDstate = 2;
-        if (IORAM[0x44] == IORAM[0x45]) handleScanCoin();
-      } else {
+        if (IORAM[0x44] === IORAM[0x45]) handleScanCoin();
       }
       IORAM[0x0F] &= 0xFD
     }
@@ -633,8 +632,8 @@ window.gb = function(file, canvas, options) {
   }
 
   IOWriteFunctions[0x45] = function(a, b){
-    if ((IORAM[b] != a) && (IORAM[0x40]&0x80)) {
-      if (IORAM[0x44] == a) handleScanCoin();
+    if ((IORAM[b] !== a) && (IORAM[0x40]&0x80)) {
+      if (IORAM[0x44] === a) handleScanCoin();
     }
     IORAM[b] = a;
   }
@@ -654,7 +653,7 @@ window.gb = function(file, canvas, options) {
   };
 
   IOReadFunctions[0x4D] = function(a) {
-    if (CGB) { return (IORAM[a]&1)|((CPUSpeed==2)?0x80:0) }
+    if (CGB) { return (IORAM[a]&1)|((CPUSpeed===2)?0x80:0) }
     else return IORAM[a]
   }
 
@@ -723,7 +722,7 @@ window.gb = function(file, canvas, options) {
 
   IOWriteFunctions[0x70] = function(a, b){
     if (CGB) {
-      if ((a&7)==0) IORAM[b] = 1;
+      if ((a&7)===0) IORAM[b] = 1;
       else IORAM[b] = (a&7);
     } else {
       IORAM[b] = a;
@@ -805,17 +804,15 @@ window.gb = function(file, canvas, options) {
     if (IORAM[0x26]&0x80) {
 
       //ZOMBIE MODE
-      var attr = IORAM[esweepPtrs[0]];
-      if (IORAM[0x26]&(1<<0)) {
-        var period = attr&7
-
-      }
+      // var attr = IORAM[esweepPtrs[0]];
+      // if (IORAM[0x26]&(1<<0)) {
+      //   var period = attr&7
+      //
+      // }
 
       IORAM[b] = a;
       if (!(a&0xF8)) channelOff(0); //DAC Power Off
       soundPhase = 1;
-
-
     }
   }
 
@@ -829,14 +826,14 @@ window.gb = function(file, canvas, options) {
   IOWriteFunctions[0x14] = function(a, b) {
     if (IORAM[0x26]&0x80) {
       var enabledLength = (!(IORAM[0x14]&64) && (a&64))
-      if (enabledLength && ((soundPhase&1) == 1) && (AudioEngine[0].lengthCtr != 0)) {
-        if (--AudioEngine[0].lengthCtr == 0) {
+      if (enabledLength && ((soundPhase&1) === 1) && (AudioEngine[0].lengthCtr !== 0)) {
+        if (--AudioEngine[0].lengthCtr === 0) {
           channelOff(0);
         }
       }
       IORAM[b] = a;
 
-      if ((a>>7) == 1) triggerChannel(0);
+      if ((a>>7) === 1) triggerChannel(0);
       else setChannelFrequency(0);
 
     }
@@ -858,11 +855,11 @@ window.gb = function(file, canvas, options) {
     if (IORAM[0x26]&0x80) {
 
       //ZOMBIE MODE
-      var attr = IORAM[esweepPtrs[1]];
-      if (IORAM[0x26]&(1<<1)) {
-        var period = attr&7
-
-      }
+      // var attr = IORAM[esweepPtrs[1]];
+      // if (IORAM[0x26]&(1<<1)) {
+      //   var period = attr&7
+      //
+      // }
 
       IORAM[b] = a;
       if (!(a&0xF8)) channelOff(1); //DAC Power Off
@@ -946,11 +943,11 @@ window.gb = function(file, canvas, options) {
     if (IORAM[0x26]&0x80) {
 
       //ZOMBIE MODE
-      var attr = IORAM[esweepPtrs[3]];
-      if (IORAM[0x26]&(1<<3)) {
-        var period = attr&7
-
-      }
+      // var attr = IORAM[esweepPtrs[3]];
+      // if (IORAM[0x26]&(1<<3)) {
+      //   var period = attr&7
+      //
+      // }
 
       IORAM[b] = a;
       if (!(a&0xF8)) channelOff(3); //DAC Power Off
@@ -967,13 +964,13 @@ window.gb = function(file, canvas, options) {
   IOWriteFunctions[0x23] = function(a, b) {
     if (IORAM[0x26]&0x80) {
       var enabledLength = (!(IORAM[0x23]&64) && (a&64));
-      if (enabledLength && ((soundPhase&1) == 1) && (AudioEngine[3].lengthCtr != 0)) {
-        if (--AudioEngine[3].lengthCtr == 0) {
+      if (enabledLength && ((soundPhase&1) === 1) && (AudioEngine[3].lengthCtr !== 0)) {
+        if (--AudioEngine[3].lengthCtr === 0) {
           channelOff(3);
         }
       }
       IORAM[b] = a;
-      if ((a>>7) == 1) triggerChannel(3);
+      if ((a>>7) === 1) triggerChannel(3);
       else updateNoiseFrequency();
     }
   }
@@ -999,9 +996,9 @@ window.gb = function(file, canvas, options) {
   IOWriteFunctions[0x26] = function(a, b) {
     if ((IORAM[0x26]&0x80) && (!(a&0x80))) {
       //power off!!!
-      for (var i=0; i<4; i++) channelOff(i);
-      for (var i=0x10; i<0x26; i++) {
-        if ((lengthPtrs.indexOf(i) == -1) || CGB) IOWriteFunctions[i](0, i);
+      for (let i=0; i<4; i++) channelOff(i);
+      for (let i=0x10; i<0x26; i++) {
+        if ((lengthPtrs.indexOf(i) === -1) || CGB) IOWriteFunctions[i](0, i);
       }
       IORAM[b] = 0;
     } else if ((!(IORAM[0x26]&0x80)) && (a&0x80)) {
@@ -1064,11 +1061,11 @@ window.gb = function(file, canvas, options) {
     }
   }
 
-  for (var i=0x27; i<=0x2F; i++) {
+  for (let i=0x27; i<=0x2F; i++) {
     IOReadFunctions[i] = function(a) { return 0xFF; }
   }
 
-  for (var i=0x30; i<=0x3F; i++) {
+  for (let i=0x30; i<=0x3F; i++) {
     IOReadFunctions[i] = WaveRAMRead
     IOWriteFunctions[i] = WaveRAMWrite
   }
@@ -1105,7 +1102,7 @@ window.gb = function(file, canvas, options) {
     buf.set(targ.buffers[read]);
     targ.buffers[read].set(AudioEngine.emptyBuffer);
     if (stereo) {
-      var buf = evt.outputBuffer.getChannelData(1);
+      buf = evt.outputBuffer.getChannelData(1);
       buf.set(targ.buffersR[read]);
       targ.buffersR[read].set(AudioEngine.emptyBuffer);
     }
@@ -1171,7 +1168,7 @@ window.gb = function(file, canvas, options) {
       targ.curBufR.set(AudioEngine.emptyBuffer);
     }
     targ.bufferWrite = (targ.bufferWrite+1)%AudioEngine.buffers
-    if (targ.bufferWrite == targ.bufferRead) targ.bufferWrite = cbuf
+    if (targ.bufferWrite === targ.bufferRead) targ.bufferWrite = cbuf
   }
 
   function checkDACPower(channel) {
@@ -1184,6 +1181,8 @@ window.gb = function(file, canvas, options) {
         return IORAM[0x1A]&0x80;
       case 3:
         return IORAM[0x21]&0xF8;
+      default:
+        return;
     }
   }
 
@@ -1270,7 +1269,7 @@ window.gb = function(file, canvas, options) {
 
   function clockLength(channel) {
     if ((IORAM[lengthPtrs[channel]])&64) {
-      if (--AudioEngine[channel].lengthCtr == 0) {
+      if (--AudioEngine[channel].lengthCtr === 0) {
         channelOff(channel);
       }
     }
@@ -1319,7 +1318,7 @@ window.gb = function(file, canvas, options) {
   function envelopeTick(chan) {
     if (IORAM[0x26]&(1<<chan)) {
       var attr = IORAM[esweepPtrs[chan]];
-      var period = attr&7
+      var period = attr&7;
       if (period > 0) {
         if (--AudioEngine[chan].esweep <= 0) {
           AudioEngine[chan].esweep = period;
@@ -1356,7 +1355,7 @@ window.gb = function(file, canvas, options) {
   }
 
   function soundMasterGain() {
-    if ((IORAM[0x26]>>7) == 1) {
+    if ((IORAM[0x26]>>7) === 1) {
       // Use mute or not first - this time
       AudioEngine.lVolume = audioEngineVolume * (((IORAM[0x24]>>4)&7)/7);
       AudioEngine.rVolume = audioEngineVolume * ((IORAM[0x24]&7)/7);
@@ -1377,7 +1376,7 @@ window.gb = function(file, canvas, options) {
 
   function triggerChannel(channel) { //todo: simplify.
     if (false) { //DISABLED until accurate timings are achieved
-      if ((channel == 2) && (IORAM[0x26]&4)) { //special dmg behaviour corrupts wave ram while on
+      if ((channel === 2) && (IORAM[0x26]&4)) { //special dmg behaviour corrupts wave ram while on
         var temp = Math.floor(AudioEngine[2].phase/2);
         if (temp > 3) { //corrupt first 3 bytes
           temp = Math.floor(temp/4)*4 //align with 4 byte section
@@ -1401,18 +1400,18 @@ window.gb = function(file, canvas, options) {
     if (checkDACPower(channel)) IORAM[0x26] |= 1<<channel;
     readAndUpdateVolume(channel);
     var unfrozen
-    if (AudioEngine[channel].lengthCtr == 0) {
-      if (channel == 2) AudioEngine[channel].lengthCtr = 256;
+    if (AudioEngine[channel].lengthCtr === 0) {
+      if (channel === 2) AudioEngine[channel].lengthCtr = 256;
       else AudioEngine[channel].lengthCtr = 64;
-      if ((IORAM[lengthPtrs[channel]]&64) && ((soundPhase&1) == 1)) AudioEngine[channel].lengthCtr -= 1;
+      if ((IORAM[lengthPtrs[channel]]&64) && ((soundPhase&1) === 1)) AudioEngine[channel].lengthCtr -= 1;
     }
 
     AudioEngine[channel].esweep = 0;
 
-    if (channel == 0) {
+    if (channel === 0) {
       var period = (IORAM[0x10]>>4)&0x7
       var shift = IORAM[0x10]&7
-      AudioEngine[0].fsweep = (period==0)?8:period;
+      AudioEngine[0].fsweep = (period===0)?8:period;
       AudioEngine[0].fSweepEnabled = (period+shift > 0);
       AudioEngine[0].freqreg = IORAM[0x13]+((IORAM[0x14]&7)<<8);
       if (IORAM[0x10]&7) { calculateSweep(false); } //i don't think this affects frequency, just checks
@@ -1427,31 +1426,34 @@ window.gb = function(file, canvas, options) {
   }
 
   function readAndUpdateVolume(channel) {
+    var volume;
     switch (channel) {
       case 0:
-        var volume = (IORAM[0x12]>>4)/15
+        volume = (IORAM[0x12]>>4)/15
         break;
       case 1:
-        var volume = (IORAM[0x17]>>4)/15
+        volume = (IORAM[0x17]>>4)/15
         break;
       case 2:
         switch ((IORAM[0x1C]>>5)&3) {
           case 0:
-            var volume = 0;
+            volume = 0;
             break;
           case 1:
-            var volume = 1;
+            volume = 1;
             break;
           case 2:
-            var volume = 0.5;
+            volume = 0.5;
             break;
           case 3:
-            var volume = 0.25;
+            volume = 0.25;
             break;
         }
         break;
       case 3:
-        var volume = (IORAM[0x21]>>4)/15
+        volume = (IORAM[0x21]>>4)/15
+        break;
+      default:
         break;
     }
     AudioEngine[channel].volreg = Math.round(volume*15);
@@ -1459,18 +1461,21 @@ window.gb = function(file, canvas, options) {
   }
 
   function setChannelFrequency(channel) {
+    var frequency;
     switch (channel) {
       case 0:
-        var frequency = IORAM[0x13]+((IORAM[0x14]&7)<<8)
+        frequency = IORAM[0x13]+((IORAM[0x14]&7)<<8)
         AudioEngine[channel].frequency = audioSampleRate/(524288/((2048-frequency)*4));
         break;
       case 1:
-        var frequency = IORAM[0x18]+((IORAM[0x19]&7)<<8)
+        frequency = IORAM[0x18]+((IORAM[0x19]&7)<<8)
         AudioEngine[channel].frequency = audioSampleRate/(524288/((2048-frequency)*4));
         break;
       case 2:
-        var frequency = IORAM[0x1D]+((IORAM[0x1E]&7)<<8)
+        frequency = IORAM[0x1D]+((IORAM[0x1E]&7)<<8)
         AudioEngine[channel].frequency = (4194304/((2048-frequency)*2))/audioSampleRate;
+        break;
+      default:
         break;
     }
 
@@ -1489,7 +1494,7 @@ window.gb = function(file, canvas, options) {
     if (lcdcont & 0x80) {
       tileLayerData.set(emptyTileLayer);
       if (CGB) tileLayerPalette.set(emptyTileLayer);
-      var hisprites = [];
+      // var hisprites = [];
 
       if ((lcdcont & 0x1) || CGB) {
         var xpos = IORAM[0x43];
@@ -1503,14 +1508,14 @@ window.gb = function(file, canvas, options) {
         var bgmaploc = (0x1800+((lcdcont>>3)&0x1)*1024)+ytileo;
         var tileLocation = 0x1000-((lcdcont>>4)&0x1)*0x1000;
 
+        let yflip = false;
         if (CGB) {
-          var attributes = VRAM[bgmaploc+xtile+0x2000]
-          var palnum = attributes&7
-          var yflip = (attributes&0x40)
-          var xfineDir = (attributes&0x20)?1:-1
-          if (xfineDir == 1) xfine = 7-xfine
+          var attributes = VRAM[bgmaploc+xtile+0x2000];
+          var palnum = attributes&7;
+          yflip = (attributes&0x40);
+          var xfineDir = (attributes&0x20)?1:-1;
+          if (xfineDir === 1) xfine = 7-xfine;
         } else {
-          var yflip=false
           xfineDir = -1;
         }
         var currentTile = VRAM[bgmaploc+xtile]
@@ -1522,7 +1527,7 @@ window.gb = function(file, canvas, options) {
         var tile2 = VRAM[tileOffset+1]
 
         var pnum
-        for (i=0; i<160; i++) {
+        for (let i=0; i<160; i++) {
           pnum = ((tile1>>xfine)&1)+(((tile2>>xfine)&1)<<1);
           tileLayerData[i] = pnum;
           if (CGB) tileLayerPalette[i] = palnum|(attributes&0x80);
@@ -1535,7 +1540,7 @@ window.gb = function(file, canvas, options) {
               palnum = attributes&7
               yflip = (attributes&0x40)
               xfineDir = (attributes&0x20)?1:-1
-              if (xfineDir == 1) xfine = 0
+              if (xfineDir === 1) xfine = 0
               else xfine = 7
             } else {
               xfine = 7;
@@ -1548,7 +1553,7 @@ window.gb = function(file, canvas, options) {
           }
         }
       } else {
-        for (i=0; i<160; i++) {
+        for (let i=0; i<160; i++) {
           tileLayerData[i] = 0;
           if (CGB) tileLayerPalette[i] = 0;
         }
@@ -1578,7 +1583,7 @@ window.gb = function(file, canvas, options) {
           var tile2 = VRAM[tileOffset+1]
 
           var pnum
-          for (i=0; i<160; i++) {
+          for (let i=0; i<160; i++) {
             pnum = ((tile1>>xfine)&1)+(((tile2>>xfine)&1)<<1);
             if ((xtile>-1) && (xtile < 21)) {
               tileLayerData[i] = pnum;
@@ -1602,12 +1607,12 @@ window.gb = function(file, canvas, options) {
         }
       }
 
-      var bitmapPos = num*160
-      var pnum
+      var bitmapPos = num*160;
+      var pnum;
       var palette = CGB?CGBInt32BG:palettesInt32;
       for (var i=0; i<160; i++) {
         pnum = tileLayerData[i];
-        if ((pnum != 0) || (GBScreenInt32[bitmapPos] == 0)) {
+        if ((pnum !== 0) || (GBScreenInt32[bitmapPos] === 0)) {
           if (CGB) pnum += (tileLayerPalette[i]&7)*4
           GBScreenInt32[bitmapPos++] = palette[pnum]
         } else {
@@ -1618,7 +1623,7 @@ window.gb = function(file, canvas, options) {
       if (lcdcont & 0x2) {
         //cgb ordering
         var sprOff = 39*4;
-        for (var i=0; i<40; i++) { //draw sprites
+        for (let i = 0; i < 40; i++) { //draw sprites
           drawSprite(sprOff, num, palettesInt32);
           sprOff -= 4;
         }
@@ -1628,7 +1633,7 @@ window.gb = function(file, canvas, options) {
       var bitmapPos = (num*160)*4
       if (CGB) var r=255, g=255, b=255;
       else var r=colours[0][0], g=colours[0][1], b=colours[0][2];
-      for (var i=0; i<160; i++) {
+      for (let i=0; i<160; i++) {
         GBScreen.data[bitmapPos++] = r
         GBScreen.data[bitmapPos++] = g
         GBScreen.data[bitmapPos++] = b
@@ -1726,9 +1731,9 @@ window.gb = function(file, canvas, options) {
 
   MBCWriteHandlers[1] = function(w, v) {
     if (w < 0x2000) {
-      MBC.RAMenable = ((v&0xF) == 0xA);
+      MBC.RAMenable = ((v&0xF) === 0xA);
     } else if (w < 0x4000) {
-      if ((v&0x1F) == 0) v = 1;
+      if ((v&0x1F) === 0) v = 1;
       MBC.ROMbank = (MBC.ROMbank&0x60) | (v&0x1F)
     } else if (w < 0x6000) {
       if (MBC.RAMBankMode) MBC.RAMbank = (v&3)
@@ -1742,7 +1747,7 @@ window.gb = function(file, canvas, options) {
 
   MBCWriteHandlers[3] = function(w, v){
     if (w < 0x2000) {
-      MBC.RAMenable = ((v&0xF) == 0xA);
+      MBC.RAMenable = ((v&0xF) === 0xA);
       if (!(MBC.RAMenable)) MBC.RAMbank = 0;
     } else if (w < 0x4000) {
       MBC.ROMbank = Math.max(v&0x7F, 1);
@@ -1750,10 +1755,10 @@ window.gb = function(file, canvas, options) {
       if ((v<4) || ((v>7) && (v<0xD))) MBC.RAMbank = v;
     } else if (w < 0x8000) {
       if (MBC.hardware.indexOf("TIMER")>-1) {
-        if ((!MBC.RTC.latch) && (v == 1)) {
+        if ((!MBC.RTC.latch) && (v === 1)) {
           updateRTC(true);
         }
-        MBC.RTC.latch = (v == 1)
+        MBC.RTC.latch = (v === 1)
       }
     } else if ((w < 0xC000) && (w >= 0xA000)) {
       if (MBC.RAMenable) {
@@ -1774,7 +1779,7 @@ window.gb = function(file, canvas, options) {
 
   MBCWriteHandlers[5] = function(w, v){
     if (w < 0x2000) {
-      MBC.RAMenable = ((v&0xF) == 0xA);
+      MBC.RAMenable = ((v&0xF) === 0xA);
     } else if (w < 0x3000) {
       MBC.ROMbank = (MBC.ROMbank&0x100)|v
     } else if (w < 0x4000) {
@@ -1817,11 +1822,11 @@ window.gb = function(file, canvas, options) {
     } else if ((a < 0xC000) && (a >= 0xA000)) {
       if (MBC.RAMenable) {
         if (MBC.RAMbank < 4) return CRAM[a-0xA000+MBC.RAMbank*0x2000];
-        else if (MBC.RAMbank == 8) return MBC.RTC.seconds;
-        else if (MBC.RAMbank == 9) return MBC.RTC.minutes;
-        else if (MBC.RAMbank == 10) return MBC.RTC.hours;
-        else if (MBC.RAMbank == 11) return MBC.RTC.lowDays;
-        else if (MBC.RAMbank == 11) return MBC.RTC.hiDays|(MBC.RTC.active?0:0x40)|(MBC.RTC.dayCarry?0x80:0);
+        else if (MBC.RAMbank === 8) return MBC.RTC.seconds;
+        else if (MBC.RAMbank === 9) return MBC.RTC.minutes;
+        else if (MBC.RAMbank === 10) return MBC.RTC.hours;
+        else if (MBC.RAMbank === 11) return MBC.RTC.lowDays;
+        else if (MBC.RAMbank === 11) return MBC.RTC.hiDays|(MBC.RTC.active?0:0x40)|(MBC.RTC.dayCarry?0x80:0);
       } else return 0;
     } else {
       return 0;
@@ -1869,8 +1874,8 @@ window.gb = function(file, canvas, options) {
 
   this.loadBattery = loadBattery;
   function loadBattery() {
-    var battery = localStorage["battery/"+ROMID]
-    if (MBC.type == 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
+    var battery = localStorage["battery/"+ROMID];
+    if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
     else CRAM = new Uint8Array(RAMsizes[Math.min(3, game[0x149])]);
     if (typeof battery != "undefined")
     {
@@ -1884,7 +1889,7 @@ window.gb = function(file, canvas, options) {
   this.saveBattery = saveBattery;
   function saveBattery () {
     if (!MBC) return;
-    if (MBC.hardware.indexOf("BATTERY") == -1) return;
+    if (MBC.hardware.indexOf("BATTERY") === -1) return;
     var battery = "";
     for (var i = 0; i < CRAM.length; i++)
     {
@@ -1900,7 +1905,7 @@ window.gb = function(file, canvas, options) {
     GBObj.onload = null;
     GBObj.ROMname = getROMName();
 
-    if (GBMaster.gameboys.indexOf(GBObj) == -1) GBMaster.gameboys.push(GBObj);
+    if (window.GBMaster.gameboys.indexOf(GBObj) == -1) window.GBMaster.gameboys.push(GBObj);
 
     GBObj.cycle = cycle; //expose certain functions
     GBObj.frameCycles = 0;
@@ -1911,7 +1916,7 @@ window.gb = function(file, canvas, options) {
     }
     ROMID = generateUniqueName();
 
-    CGB = ((game[0x143] == 0x80) || (game[0x143] == 0xC0));
+    CGB = ((game[0x143] === 0x80) || (game[0x143] === 0xC0));
     buttonByte = 255;
 
     reset(true);
@@ -1940,7 +1945,7 @@ window.gb = function(file, canvas, options) {
       if (reloadBattery) {
         if (MBC.hardware.indexOf("BATTERY") > -1) loadBattery();
         else {
-          if (MBC.type == 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
+          if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
           else CRAM = new Uint8Array(RAMsizes[Math.min(3, game[0x149])]);
         }
       }
@@ -2197,18 +2202,18 @@ function cycle() {
     squareWaveNode(1);
     waveNode(2);
     noiseNode(3);
-    if (++AudioEngine.out.bufferPos == bufferSize) advanceBufWrite(AudioEngine.out);
+    if (++AudioEngine.out.bufferPos === bufferSize) advanceBufWrite(AudioEngine.out);
   }
 
   while (masterClock-timerCycles >= 16) {
     divCounts = (divCounts+1)&63
     //timerCounts++
     timerCycles += 16;
-    if ((divCounts&15) == 0) IORAM[0x04] = (IORAM[0x04]+1)&0xFF; //"hey rhys why don't you just do IORAM[0x04]++ ???" i can't because apple decided to break the basic functionality of typed arrays like utter twats
-    if ((IORAM[0x07]&4) && ((divCounts&timerMods[IORAM[0x07]&3]) == 0)) {
+    if ((divCounts&15) === 0) IORAM[0x04] = (IORAM[0x04]+1)&0xFF; //"hey rhys why don't you just do IORAM[0x04]++ ???" i can't because apple decided to break the basic functionality of typed arrays like utter twats
+    if ((IORAM[0x07]&4) && ((divCounts&timerMods[IORAM[0x07]&3]) === 0)) {
       IORAM[0x05] = (IORAM[0x05]+1)&0xFF;
       //document.getElementById("debug").innerHTML = IORAM[0x05];
-      if (IORAM[0x05] == 0) {
+      if (IORAM[0x05] === 0) {
         IORAM[0x05] = IORAM[0x06];
         IORAM[0x0F] |= 0x4
       }
@@ -2478,7 +2483,7 @@ function haltSkip() {
       }
 
       if (IORAM[0x41]&0x8) { //mode 0: hblank interrupt
-        if ((IORAM[0x44]>143) || ((IORAM[0x44]==143) && lineCycles>252)) { //after lineCycle 252 in line 143 there are no more hblanks until the next interrupt.
+        if ((IORAM[0x44]>143) || ((IORAM[0x44] === 143) && lineCycles>252)) { //after lineCycle 252 in line 143 there are no more hblanks until the next interrupt.
           cycles = blankCycles+(252*CPUSpeed)
           if (interruptCycles[1]>cycles) interruptCycles[1] = cycles;
         } else {
@@ -2534,12 +2539,12 @@ function haltSkip() {
     if (IORAM[0x44] < 144 && lineCycles > 252) {
       if (CGBDMA.active && CGBDMA.mode) { CGBDMAStep(16); }
       if (!(frameskip)) drawScanline(IORAM[0x44]);
-    } else if (IORAM[0x44] == 144) {
+    } else if (IORAM[0x44] === 144) {
       drawFrame();
     }
   }
 
-  if ((IORAM[0x44] == IORAM[0x45]) && (IORAM[0x40]&0x80)) handleScanCoin(); //scanline coincidence
+  if ((IORAM[0x44] === IORAM[0x45]) && (IORAM[0x40]&0x80)) handleScanCoin(); //scanline coincidence
   else IORAM[0x41] &= 0xFB;
 
   if (IORAM[0x44] < 144) {
@@ -2577,18 +2582,18 @@ function haltSkip() {
       squareWaveNode(1);
       waveNode(2);
       noiseNode(3);
-      if (++AudioEngine.out.bufferPos == bufferSize) advanceBufWrite(AudioEngine.out);
+      if (++AudioEngine.out.bufferPos === bufferSize) advanceBufWrite(AudioEngine.out);
     }
 
     soundCycles += 8192*CPUSpeed
     if (IORAM[0x26]&0x80) {
-      if ((soundPhase&1) == 0) {
+      if ((soundPhase&1) === 0) {
         handleLengths();
       }
       if (soundPhase == 7) {
         handleEnvelope();
       }
-      if ((soundPhase%4) == 2) {
+      if ((soundPhase%4) === 2) {
         handleSweep(true);
       }
     }
@@ -2601,13 +2606,13 @@ function haltSkip() {
     squareWaveNode(1);
     waveNode(2);
     noiseNode(3);
-    if (++AudioEngine.out.bufferPos == bufferSize) advanceBufWrite(AudioEngine.out);
+    if (++AudioEngine.out.bufferPos === bufferSize) advanceBufWrite(AudioEngine.out);
   }
 
 
   //set interrupt flags
 
-  for (var i=0; i<5; i++) if (skipTo >= interruptCycles[i] && interruptCycles[i] != Infinity) IORAM[0x0F] |= 1<<i;
+  for (var i=0; i<5; i++) if (skipTo >= interruptCycles[i] && interruptCycles[i] !== Infinity) IORAM[0x0F] |= 1<<i;
   GBObj.frameCycles += skipTo/CPUSpeed;
 
   return skipTo;
@@ -2626,7 +2631,7 @@ function PrefixCB() {
 function RLC(reg) {
   flags[3] = registers[reg]>>7;
   registers[reg] = ((registers[reg]<<1)+flags[3])&0xFF;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2634,7 +2639,7 @@ function RLC(reg) {
 function RRC(reg) {
   flags[3] = registers[reg]&0x1;
   registers[reg] = ((registers[reg]>>1)+(flags[3]<<7))&0xFF;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2643,7 +2648,7 @@ function RL(reg) {
   var temp = registers[reg]>>7;
   registers[reg] = ((registers[reg]<<1)+flags[3])&0xFF;
   flags[3] = temp;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2652,7 +2657,7 @@ function RR(reg) {
   var temp = registers[reg]&0x1;
   registers[reg] = ((registers[reg]>>1)+(flags[3]<<7))&0xFF;
   flags[3] = temp;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2660,7 +2665,7 @@ function RR(reg) {
 function SLA(reg) {
   flags[3] = registers[reg]>>7;
   registers[reg] = ((registers[reg]<<1)&0xFF);
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2668,7 +2673,7 @@ function SLA(reg) {
 function SRA(reg) {
   flags[3] = registers[reg]&0x1;
   registers[reg] = (((registers[reg]>>1)+(registers[reg]&0x80))&0xFF);
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2676,13 +2681,13 @@ function SRA(reg) {
 function SWAP(reg) {
   var nib = registers[reg]&0xF
   registers[reg] = (registers[reg]>>4)+(nib<<4)
-  flags = [(registers[reg] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[reg] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function SRL(reg) {
   flags[3] = registers[reg]&0x1;
   registers[reg] = ((registers[reg]>>1)&0xFF);
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
 }
@@ -2695,7 +2700,7 @@ function RLCHL() {
   var HL = MemRead(HLN);
   flags[3] = HL>>7;
   HL = ((HL<<1)+flags[3])&0xFF;
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2706,7 +2711,7 @@ function RRCHL() {
   var HL = MemRead(HLN);
   flags[3] = HL&0x1;
   HL = ((HL>>1)+(flags[3]<<7))&0xFF;
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2718,7 +2723,7 @@ function RLHL() {
   var temp = HL>>7;
   HL = ((HL<<1)+flags[3])&0xFF;
   flags[3] = temp;
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2730,7 +2735,7 @@ function RRHL() {
   var temp = HL&0x1;
   HL = ((HL>>1)+(flags[3]<<7))&0xFF;
   flags[3] = temp;
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2741,7 +2746,7 @@ function SLAHL() {
   var HL = MemRead(HLN);
   flags[3] = HL>>7;
   HL = ((HL<<1)&0xFF);
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2752,7 +2757,7 @@ function SRAHL() {
   var HL = MemRead(HLN);
   flags[3] = HL&0x1;
   HL = (((HL>>1)+(HL&0x80))&0xFF);
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2764,7 +2769,7 @@ function SWAPHL() {
   var nib = HL&0xF
   HL = (HL>>4)+(nib<<4)
   MemWrite(HLN, HL);
-  flags = [(HL == 0)?1:0, 0, 0, 0, 1];
+  flags = [(HL === 0)?1:0, 0, 0, 0, 1];
 }
 
 function SRLHL() {
@@ -2772,7 +2777,7 @@ function SRLHL() {
   var HL = MemRead(HLN);
   flags[3] = HL&0x1;
   HL = ((HL>>1)&0xFF);
-  flags[0] = (HL == 0)?1:0;
+  flags[0] = (HL === 0)?1:0;
   flags[1] = 0;
   flags[2] = 0;
   MemWrite(HLN, HL);
@@ -2782,14 +2787,14 @@ function SRLHL() {
 
 
 function BIT(bit, reg) {
-  flags[0] = 1-(((bit == 0)?registers[reg]:(registers[reg]>>bit))&1); //bit == 0 check is to work around 32-bit iOS7 bug
+  flags[0] = 1-(((bit === 0)?registers[reg]:(registers[reg]>>bit))&1); //bit === 0 check is to work around 32-bit iOS7 bug
   flags[1] = 0;
   flags[2] = 1;
 }
 
 function BITHL(bit) {
   var val = MemRead((registers[5]<<8)+registers[6])
-  flags[0] = 1-(((bit == 0)?val:(val>>bit))&1); //bit == 0 check is to work around 32-bit iOS7 bug
+  flags[0] = 1-(((bit === 0)?val:(val>>bit))&1); //bit === 0 check is to work around 32-bit iOS7 bug
   flags[1] = 0;
   flags[2] = 1;
 }
@@ -2941,16 +2946,16 @@ function StackPop() { //Generic Pop Function
 
 function DAA() {
   var tempa = registers[0]
-  if (flags[1] == 0) {
-    if ((flags[3] == 1) || (tempa > 0x99)) { tempa += 96; flags[3] = 1; }
-    if ((flags[2] == 1) || ((tempa&0xF) > 0x9)) { tempa += 6; flags[2] = 0; }
+  if (flags[1] === 0) {
+    if ((flags[3] === 1) || (tempa > 0x99)) { tempa += 96; flags[3] = 1; }
+    if ((flags[2] === 1) || ((tempa&0xF) > 0x9)) { tempa += 6; flags[2] = 0; }
   } else {
-    if (flags[2] == 1) tempa -= 6;
-    if (flags[3] == 1) tempa -= 96;
+    if (flags[2] === 1) tempa -= 6;
+    if (flags[3] === 1) tempa -= 96;
   }
   flags[2] = 0;
   registers[0] = tempa & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
 }
 
 function CPL() {
@@ -2978,7 +2983,7 @@ function ADD(reg) { // ADD A, reg
   flags[2] = (((registers[0]&0xF) + (registers[reg]&0xF)))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -2988,7 +2993,7 @@ function ADDHL() { // ADD A, HL
   flags[2] = (((registers[0]&0xF) + (read&0xF)))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -2999,7 +3004,7 @@ function ADDM() { // ADD A, d8
   flags[2] = (((registers[0]&0xF) + (read&0xF)))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -3008,7 +3013,7 @@ function ADC(reg) { // ADC A, reg
   flags[2] = (((registers[0]&0xF) + (registers[reg]&0xF) + flags[3]))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -3018,7 +3023,7 @@ function ADCHL() { // ADC A, HL
   flags[2] = (((registers[0]&0xF) + (read&0xF) + flags[3]))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -3029,7 +3034,7 @@ function ADCM() { // ADC A, d8
   flags[2] = (((registers[0]&0xF) + (read&0xF) + flags[3]))>>4
   flags[3] = temp>>8
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -3038,7 +3043,7 @@ function SUB(reg) { // SUB A, reg
   flags[2] = (((registers[0]&0xF) - (registers[reg]&0xF))<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 }
 
@@ -3048,7 +3053,7 @@ function SUBHL() { // SUB A, HL
   flags[2] = (((registers[0]&0xF) - (read&0xF))<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 }
 
@@ -3059,7 +3064,7 @@ function SUBM() { // SUB A, d8
   flags[2] = (((registers[0]&0xF) - (read&0xF))<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 }
 
@@ -3068,7 +3073,7 @@ function SBC(reg) { // SBC A, reg
   flags[2] = (((registers[0]&0xF) - (registers[reg]&0xF) - flags[3])<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 
 }
@@ -3079,7 +3084,7 @@ function SBCHL() { // SBC A, HL
   flags[2] = (((registers[0]&0xF) - (read&0xF) - flags[3])<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 }
 
@@ -3090,74 +3095,74 @@ function SBCM() { // SBC A, d8
   flags[2] = (((registers[0]&0xF) - (read&0xF) - flags[3])<0)?1:0
   flags[3] = (temp<0)?1:0
   registers[0] = temp & 0xFF
-  flags[0] = (registers[0] == 0)?1:0;
+  flags[0] = (registers[0] === 0)?1:0;
   flags[1] = 1;
 }
 
 function AND(reg) { // AND A, reg
   registers[0] &= registers[reg];
-  flags = [(registers[0] == 0)?1:0, 0, 1, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 1, 0, 1]
 }
 
 function ANDHL() { // AND A, HL
   registers[0] &= MemRead((registers[5]<<8)+registers[6]);
-  flags = [(registers[0] == 0)?1:0, 0, 1, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 1, 0, 1]
 }
 
 function ANDM() { // AND A, d8
   PC &= 0xFFFF;
   registers[0] &= MemRead(PC++);
-  flags = [(registers[0] == 0)?1:0, 0, 1, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 1, 0, 1]
 }
 
 function XOR(reg) { // XOR A, reg
   registers[0] ^= registers[reg];
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function XORHL() { // XOR A, HL
   registers[0] ^= MemRead((registers[5]<<8)+registers[6]);
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function XORM() { // XOR A, d8
   PC &= 0xFFFF;
   registers[0] ^= MemRead(PC++);
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function OR(reg) { // OR A, reg
   registers[0] |= registers[reg];
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function ORHL() { // OR A, HL
   registers[0] |= MemRead((registers[5]<<8)+registers[6]);
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function ORM() { // OR A, d8
   PC &= 0xFFFF;
   registers[0] |= MemRead(PC++);
-  flags = [(registers[0] == 0)?1:0, 0, 0, 0, 1]
+  flags = [(registers[0] === 0)?1:0, 0, 0, 0, 1]
 }
 
 function CP(reg) { // CP A, reg
   var temp = registers[0] - registers[reg]
-  flags = [((temp&0xFF) == 0)?1:0, 1, (((registers[0]&0xF) - (registers[reg]&0xF))<0)?1:0, (temp<0)?1:0, 1]
+  flags = [((temp&0xFF) === 0)?1:0, 1, (((registers[0]&0xF) - (registers[reg]&0xF))<0)?1:0, (temp<0)?1:0, 1]
 }
 
 function CPHL() { // CP A, HL
   var read = MemRead((registers[5]<<8)+registers[6]);
   var temp = registers[0] - read
-  flags = [((temp&0xFF) == 0)?1:0, 1, (((registers[0]&0xF) - (read&0xF))<0)?1:0, (temp<0)?1:0, 1]
+  flags = [((temp&0xFF) === 0)?1:0, 1, (((registers[0]&0xF) - (read&0xF))<0)?1:0, (temp<0)?1:0, 1]
 }
 
 function CPM() { // CP A, d8
   PC &= 0xFFFF;
   var read = MemRead(PC++);
   var temp = registers[0] - read
-  flags = [((temp&0xFF) == 0)?1:0, 1, (((registers[0]&0xF) - (read&0xF))<0)?1:0, (temp<0)?1:0, 1]
+  flags = [((temp&0xFF) === 0)?1:0, 1, (((registers[0]&0xF) - (read&0xF))<0)?1:0, (temp<0)?1:0, 1]
 }
 
 
@@ -3176,7 +3181,7 @@ function NOP() {
 
 function STOP() {
   if (CGB && (IORAM[0x4D]&1)) {
-    if (CPUSpeed == 1) {
+    if (CPUSpeed === 1) {
       CPUSpeed = 2;
       // console.log("doublespeed!")
     } else {
@@ -3217,7 +3222,7 @@ function RST(pointer) {
 
 function JR(condition, target) { //Jump relative if the condition flag = the target value.
   Cycles += 4;
-  if (flags[condition] == target) {
+  if (flags[condition] === target) {
     PC &= 0xFFFF;
     var read = MemRead(PC++);
     if (read > 127) read -= 256;
@@ -3228,7 +3233,7 @@ function JR(condition, target) { //Jump relative if the condition flag = the tar
 }
 
 function JP(condition, target) {
-  if (flags[condition] == target) {
+  if (flags[condition] === target) {
     var whathaveibcome = PC;
     PC &= 0xFFFF;
     var read = MemRead(PC++);
@@ -3246,7 +3251,7 @@ function JPHL() { // JP (HL)
 }
 
 function CALL(condition, target) {
-  if (flags[condition] == target) {
+  if (flags[condition] === target) {
     PC &= 0xFFFF;
     StackPush((PC+2)&0xFFFF);
     var read = MemRead(PC++);
@@ -3265,7 +3270,7 @@ function NRET() { //normal ret since it takes less cycles
 }
 
 function RET(condition, target) {
-  if (flags[condition] == target) {
+  if (flags[condition] === target) {
     PC = StackPop();
     Cycles += 8;
   } else {
@@ -3329,7 +3334,7 @@ function DECSP() { // DEC SP
 function INC(reg) { // INC reg
   flags[2] = (((registers[reg]&0xF)+1)>>4);
   registers[reg] = (registers[reg]+1)&0xFF;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 0;
 }
 
@@ -3337,7 +3342,7 @@ function INCHL() { // INC (HL)
   var HL = (registers[5]<<8)+registers[6];
   var value = MemRead(HL);
   MemWrite(HL, (value+1)&0xFF);
-  flags[0] = (((value+1)&0xFF) == 0)?1:0;
+  flags[0] = (((value+1)&0xFF) === 0)?1:0;
   flags[1] = 0;
   flags[2] = (((value&0xF)+1)>>4);
 }
@@ -3345,7 +3350,7 @@ function INCHL() { // INC (HL)
 function DEC(reg) { // DEC reg
   flags[2] = (((registers[reg]&0xF)-1)<0)?1:0;
   registers[reg] = (registers[reg]-1)&0xFF;
-  flags[0] = (registers[reg] == 0)?1:0;
+  flags[0] = (registers[reg] === 0)?1:0;
   flags[1] = 1;
 
 }
@@ -3354,7 +3359,7 @@ function DECHL() { // DEC (HL)
   var HL = (registers[5]<<8)+registers[6];
   var value = MemRead(HL);
   MemWrite(HL, (value-1)&0xFF);
-  flags[0] = (((value-1)&0xFF) == 0)?1:0;
+  flags[0] = (((value-1)&0xFF) === 0)?1:0;
   flags[1] = 1;
   flags[2] = (((value&0xF)-1)<0)?1:0;
 }
@@ -3397,11 +3402,11 @@ function ADDHL16(reg16) { // ADD HL, reg16
 
 function byteToString(byteArray, noBase64)
 {
-  if (typeof byteArray == 'undefined') return;
+  if (typeof byteArray === 'undefined') return;
   var string = '';
   var i;
   var bal = byteArray.length;
-  for (var i=0; i < bal; i++) {
+  for (let i=0; i < bal; i++) {
     string += String.fromCharCode(byteArray[i]);
   }
   return (noBase64 || false) ? string : btoa(string); //i have to base64 encode because JSON.stringify encodes unusual characters like \u1234
@@ -3409,7 +3414,7 @@ function byteToString(byteArray, noBase64)
 
 function stringToByte(string, noBase64)
 {
-  if (typeof string == 'undefined') return; //so incomplete states don't cause errors.
+  if (typeof string === 'undefined') return; //so incomplete states don't cause errors.
   var string = (noBase64 || false) ? string : atob(string);
   var byteArray = new Uint8Array(string.length)
   var i;

@@ -24,7 +24,7 @@ class Joystick extends React.Component
   componentDidMount()
   {
     const current = this.selfRef.current;
-    console.log(current);
+    // console.log(current);
 
     // Mouse
     if (this.hasSupportTouch)

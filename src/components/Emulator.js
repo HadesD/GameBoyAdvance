@@ -14,13 +14,15 @@ class Emulator extends React.Component
     this.parent = props.parent;
     this.screenRef = React.createRef();
 
+    this.emulatorManager = new EmulatorManager(this);
+
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
   }
 
   componentDidMount()
   {
-    this.emulatorManager = new EmulatorManager(this);
+    this.emulatorManager.start();
   }
 
   componentWillUnMount()

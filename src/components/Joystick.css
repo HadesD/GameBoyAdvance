@@ -28,8 +28,8 @@
   outline: none;
 }
 
-.console-dpad-btn .dpad-btn.active,
-.console-dpad-btn:active .dpad-btn:hover {
+.joystick button.active,
+.joystick:active button:hover {
   background-color: #000;
   opacity: .4;
 }

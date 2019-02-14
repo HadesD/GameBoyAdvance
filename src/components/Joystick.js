@@ -129,6 +129,29 @@ class Joystick extends React.Component
     // alert('onMouseUp: ' + key);
   }
 
+  setActive(joykey, isActive)
+  {
+    const current = this.selfRef.current;
+    const btns = current.getElementsByTagName('button');
+    for (let i = 0; i < btns.length; i++)
+    {
+      const btn = btns[i];
+      if (!btn || btn.getAttribute('data-joykey') !== joykey)
+      {
+        continue;
+      }
+      console.log(btn, isActive);
+      if (isActive)
+      {
+        btn.classList.add('active');
+      }
+      else
+      {
+        btn.classList.remove('active');
+      }
+    }
+  }
+
   render()
   {
     let dPadBtnStyle = {};
@@ -140,7 +163,7 @@ class Joystick extends React.Component
     }
 
     return (
-      <div ref={this.selfRef}>
+      <div ref={this.selfRef} class="joystick">
         <div className="console-dpad-btn" style={dPadBtnStyle}>
           <button className="dpad-btn" data-joykey="left"/>
           <button className="dpad-btn" data-joykey="up" />

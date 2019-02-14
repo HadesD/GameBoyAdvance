@@ -51,6 +51,8 @@ class Play extends React.Component
       this.gamePadManager.start();
     }
     this.keyboardManager.start();
+
+    console.log(this);
   }
 
   componentWillUnmount()
@@ -117,6 +119,7 @@ class Play extends React.Component
 
     return (
       <BodyScrollUnAble
+        ref={this.selfRef}
         className={wrapperClasses.join(' ')}
         style={wrapperStyle}
       >

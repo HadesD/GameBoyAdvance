@@ -66,8 +66,6 @@ export default function GameBoy(file, canvas, options) {
   this.loadState = loadState;
   this.saveState = saveState;
 
-  var GBObj = this;
-
   /*
   this.loadROM = function(url, pauseAfter) {
     var loadfile = new XMLHttpRequest();
@@ -80,15 +78,15 @@ export default function GameBoy(file, canvas, options) {
       return;
     }
     var filename = url.split("/");
-    GBObj.filename = filename[filename.length-1];
-    GBObj.paused = true;
+    this.filename = filename[filename.length-1];
+    this.paused = true;
 
     loadfile.onprogress = drawProgress;
     loadfile.onreadystatechange = function() {
       this.mime = this.getResponseHeader('content-type');
     };
     loadfile.onload = function() {
-      GBObj.paused = (pauseAfter || false);
+      this.paused = (pauseAfter || false);
       if ((loadfile.mime === "application/zip") && (JSZip != null)) {
         var zip = new JSZip(loadfile.response);
         var file = zip.file(/.gb/)[0];
@@ -97,9 +95,9 @@ export default function GameBoy(file, canvas, options) {
           errorScreen('ROM not found');
           return;
         }
-        GBObj.filename = file.name;
-        GBObj.loadROMBuffer(file.asArrayBuffer()); //load first file with extension .gb or .gbc
-      } else GBObj.loadROMBuffer(loadfile.response);
+        this.filename = file.name;
+        this.loadROMBuffer(file.asArrayBuffer()); //load first file with extension .gb or .gbc
+      } else this.loadROMBuffer(loadfile.response);
     }
     loadfile.onerror = function() {
       loadfile.open("POST", url);
@@ -113,16 +111,8 @@ export default function GameBoy(file, canvas, options) {
   */
 
   this.loadROMBuffer = function(buffer, battery) { //battery is an optional parameter
-    if (buffer instanceof ArrayBuffer)
-    {
-      game = new Uint8Array(buffer);
-    }
-    else if (buffer instanceof Uint8Array)
-    {
-      game = buffer;
-    }
+    this.game = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
 
-    GBObj.game = game;
     gameLoaded = true;
     if (battery !== null)
     {
@@ -185,16 +175,28 @@ export default function GameBoy(file, canvas, options) {
     ctx = ctx || canvas.getContext('2d');
   }
 
-  if (typeof ctx.webkitImageSmoothingEnabled !== 'undefined') {
-    ctx.webkitImageSmoothingEnabled = false;
-  } else if (typeof ctx.imageSmoothingEnabled !== 'undefined') {
-    ctx.imageSmoothingEnabled = false;
-  } else {
-    console.warn("imageSmoothingEnabled not supported, falling back to css scaling")
-    canvas.style.width = canvas.width+"px";
-    canvas.style.height = canvas.height+"px";
-    canvas.width = 160;
-    canvas.height = 144;
+  if (ctx)
+  {
+    if (ctx.webkitImageSmoothingEnabled)
+    {
+      ctx.webkitImageSmoothingEnabled = false;
+    }
+    else if (ctx.imageSmoothingEnabled)
+    {
+      ctx.imageSmoothingEnabled = false;
+    }
+    else
+    {
+      console.warn("imageSmoothingEnabled not supported, falling back to css scaling")
+      canvas.style.width = canvas.width+"px";
+      canvas.style.height = canvas.height+"px";
+      canvas.width = 160;
+      canvas.height = 144;
+    }
+  }
+  else
+  {
+    console.warn('ctx not support');
   }
 
   this.ctx = ctx;
@@ -204,7 +206,7 @@ export default function GameBoy(file, canvas, options) {
   var biosLoaded = 0;
   var GBAudioContext = null;
 
-  var getGamepads = navigator.webkitGamepads || navigator.webkitGetGamepads || navigator.getGamepads;
+  var getGamepads = navigator.getGamePads;
 
   var NoAudioAPI = false;
   if (window.AudioContext)
@@ -244,7 +246,7 @@ export default function GameBoy(file, canvas, options) {
 
   this.scopeEval = function(code) {return eval(code)}
 
-  var registers, flags, SP, PC, Cycles, IME, game, bios, CGBbios, MemRead, MemWrite, VRAM, RAM, OAM, IORAM, ZRAM, CRAM, biosActive,
+  var registers, flags, SP, PC, Cycles, IME, bios, CGBbios, VRAM, RAM, OAM, IORAM, ZRAM, CRAM, biosActive,
     vblankComplete, lineCycles, GBScreen, buttonByte, paused, masterClock, frameskip, timeStart, sampleNumber,
     MBC, MBCReadHandler, MBCWriteHandler, AudioEngine, AudioMerge, soundLout, soundRout, audioSampleRate, LCDstate, halted,
     palettes, palettesInt32, ROMID, timerCounts, WaveRAMCycles, CGB, CGBDMA, CPUSpeed, CGBBGPal, CGBBGPalReg, CGBSprPal, CGBSprPalReg,
@@ -351,8 +353,8 @@ export default function GameBoy(file, canvas, options) {
   function getROMName() {
     var name = "";
     for (var i=0x134; i<=0x143; i++) {
-      if (game[i] === 0) break;
-      name += String.fromCharCode(game[i])
+      if (this.game[i] === 0) break;
+      name += String.fromCharCode(this.game[i])
     }
     return name;
   }
@@ -360,12 +362,12 @@ export default function GameBoy(file, canvas, options) {
   function generateUniqueName() {
     var sum = 0;
     var i;
-    for (i = 0; i < game.length; i++) {
-      sum = (sum + game[i])%4294967295
+    for (i = 0; i < this.game.length; i++) {
+      sum = (sum + this.game[i])%4294967295
     }
     var name = "";
     for (i = 0x134; i<=0x143; i++) {
-      name += String.fromCharCode(game[i])
+      name += String.fromCharCode(this.game[i])
     }
     return name+sum;
   }
@@ -510,11 +512,11 @@ export default function GameBoy(file, canvas, options) {
   }
 
   // function testSaveState() {
-    // savewhatever = JSON.stringify(saveState());
+  // savewhatever = JSON.stringify(saveState());
   // }
 
   // function testLoadState() {
-    // loadState(JSON.parse(savewhatever));
+  // loadState(JSON.parse(savewhatever));
   // }
 
   var audioEngineVolume = 0x1;
@@ -1104,7 +1106,7 @@ export default function GameBoy(file, canvas, options) {
     targ.bufferRead = (read+1)%AudioEngine.buffers
 
     //if (targ.bufferWrite == read) targ.bufferWrite = targ.bufferRead
-    if (!GBObj.paused) audioSyncFrames += (bufferSize/audioSampleRate)/(70224/4194304) //lots of bs values
+    if (!this.paused) audioSyncFrames += (bufferSize/audioSampleRate)/(70224/4194304) //lots of bs values
   }
 
   function noiseNode(channel) {
@@ -1788,9 +1790,9 @@ export default function GameBoy(file, canvas, options) {
 
   MBCReadHandlers[0] = function(a) {
     if (a < 0x4000) {
-      return game[a];
+      return this.game[a];
     } else if (a < 0x8000) {
-      return game[a];
+      return this.game[a];
     } else {
       return 0;
     }
@@ -1798,9 +1800,9 @@ export default function GameBoy(file, canvas, options) {
 
   MBCReadHandlers[1] = function(a) {
     if (a < 0x4000) {
-      return game[a];
+      return this.game[a];
     } else if (a < 0x8000) {
-      return game[(a-0x4000)+MBC.ROMbank*0x4000];
+      return this.game[(a-0x4000)+MBC.ROMbank*0x4000];
     } else if ((a < 0xC000) && (a >= 0xA000)) {
       if (MBC.RAMenable) return CRAM[a-0xA000+MBC.RAMbank*0x2000];
       else return 0;
@@ -1811,9 +1813,9 @@ export default function GameBoy(file, canvas, options) {
 
   MBCReadHandlers[3] = function(a) {
     if (a < 0x4000) {
-      return game[a];
+      return this.game[a];
     } else if (a < 0x8000) {
-      return game[(a-0x4000)+MBC.ROMbank*0x4000];
+      return this.game[(a-0x4000)+MBC.ROMbank*0x4000];
     } else if ((a < 0xC000) && (a >= 0xA000)) {
       if (MBC.RAMenable) {
         if (MBC.RAMbank < 4) return CRAM[a-0xA000+MBC.RAMbank*0x2000];
@@ -1830,9 +1832,9 @@ export default function GameBoy(file, canvas, options) {
 
   MBCReadHandlers[5] = function(a) {
     if (a < 0x4000) {
-      return game[a];
+      return this.game[a];
     } else if (a < 0x8000) {
-      return game[(a-0x4000)+MBC.ROMbank*0x4000];
+      return this.game[(a-0x4000)+MBC.ROMbank*0x4000];
     } else if ((a < 0xC000) && (a >= 0xA000)) {
       if (MBC.RAMenable) return CRAM[a-0xA000+MBC.RAMbank*0x2000];
       else { return 0; }
@@ -1856,10 +1858,10 @@ export default function GameBoy(file, canvas, options) {
       if (a-MBC.offset < 0) {
         return MBC.lowData[a] | 0;
       } else {
-        return game[(a-MBC.offset)+0x70];
+        return this.game[(a-MBC.offset)+0x70];
       }
     } else if (a < 0x8000) {
-      return game[((a-0x4000)+MBC.ROMbank*0x4000-MBC.offset)+0x70];
+      return this.game[((a-0x4000)+MBC.ROMbank*0x4000-MBC.offset)+0x70];
     } else if ((a < 0xC000) && (a >= 0xA000)) {
       return CRAM[a-0xA000];
     } else {
@@ -1870,8 +1872,8 @@ export default function GameBoy(file, canvas, options) {
   this.loadBattery = loadBattery;
   function loadBattery() {
     var battery = localStorage["battery/"+ROMID];
-    if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
-    else CRAM = new Uint8Array(RAMsizes[Math.min(3, game[0x149])]);
+    if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, this.game[0x149])]);
+    else CRAM = new Uint8Array(RAMsizes[Math.min(3, this.game[0x149])]);
     if (typeof battery != "undefined")
     {
       for (var i = 0; i<battery.length; i++)
@@ -1896,14 +1898,14 @@ export default function GameBoy(file, canvas, options) {
   // ----- CPU EMULATION -----
 
   function init() {
-    if (typeof GBObj.onload == "function") GBObj.onload(GBObj);
-    GBObj.onload = null;
-    GBObj.ROMname = getROMName();
+    if (typeof this.onload == "function") this.onload(this);
+    this.onload = null;
+    this.ROMname = getROMName();
 
-    if (window.GBMaster.gameboys.indexOf(GBObj) === -1) window.GBMaster.gameboys.push(GBObj);
+    if (window.GBMaster.gameboys.indexOf(this) === -1) window.GBMaster.gameboys.push(this);
 
-    GBObj.cycle = cycle; //expose certain functions
-    GBObj.frameCycles = 0;
+    this.cycle = cycle; //expose certain functions
+    this.frameCycles = 0;
 
     for (var i=0; i<0x80; i++) {
       if (IOReadFunctions[i] == null) IOReadFunctions[i] = IOReadDefault;
@@ -1911,7 +1913,7 @@ export default function GameBoy(file, canvas, options) {
     }
     ROMID = generateUniqueName();
 
-    CGB = ((game[0x143] === 0x80) || (game[0x143] === 0xC0));
+    CGB = ((this.game[0x143] === 0x80) || (this.game[0x143] === 0xC0));
     buttonByte = 255;
 
     reset(true);
@@ -1930,9 +1932,9 @@ export default function GameBoy(file, canvas, options) {
 
     tileLayerPalette.set(emptyTileLayer); //this needs to be init to all zeroes in DMG mode so CGB tile priority from the previously drawn CGB screen doesnt take effect.
 
-    var mbcid = (MBCTable[game[0x147]] != null)?game[0x147]:0;
+    var mbcid = (MBCTable[this.game[0x147]] != null)?this.game[0x147]:0;
     MBC = JSON.parse(JSON.stringify(MBCTable[mbcid]));
-    GBObj.MBC = MBC; //make MBC public
+    this.MBC = MBC; //make MBC public
 
     if (MBC.hardware.indexOf("RAM") > -1) {
       MBC.RAMenable = false;
@@ -1940,8 +1942,8 @@ export default function GameBoy(file, canvas, options) {
       if (reloadBattery) {
         if (MBC.hardware.indexOf("BATTERY") > -1) loadBattery();
         else {
-          if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, game[0x149])]);
-          else CRAM = new Uint8Array(RAMsizes[Math.min(3, game[0x149])]);
+          if (MBC.type === 5) CRAM = new Uint8Array(RAMsizesMBC5[Math.min(3, this.game[0x149])]);
+          else CRAM = new Uint8Array(RAMsizes[Math.min(3, this.game[0x149])]);
         }
       }
       if (MBC.hardware.indexOf("TIMER") > -1) {
@@ -2037,8 +2039,8 @@ export default function GameBoy(file, canvas, options) {
 
     timeStart = Date.now();
     prepareGBScreen();
-    if (typeof GBObj.onstart == "function") GBObj.onstart();
-    GBObj.onstart = null;
+    if (typeof this.onstart == "function") this.onstart();
+    this.onstart = null;
     //timeBetweenFrames = Date.now();
   }
 
@@ -2046,36 +2048,31 @@ export default function GameBoy(file, canvas, options) {
     buttonByte = b;
   }
 
-  this.prepareButtonByte = function() { //for default included controls system
+  //for default included controls system
+  this.prepareButtonByte = function() {
     buttonByte = ((keysArray[this.keyConfig.DOWN])<<3)+((keysArray[this.keyConfig.UP])<<2)+((keysArray[this.keyConfig.LEFT])<<1)+((keysArray[this.keyConfig.RIGHT])<<0)+ ((keysArray[this.keyConfig.START])<<7)+((keysArray[this.keyConfig.SELECT])<<6)+((keysArray[this.keyConfig.B])<<5)+(keysArray[this.keyConfig.A]<<4);
 
-    if (getGamepads) { //gamepad support present!
-      //if (navigator.webkitGetGamepads) var gamepads = navigator.webkitGetGamepads();
-      //if (navigator.webkitGamepads) var gamepads = navigator.webkitGamepads();
-      if (navigator.getGamepads)
-      {
-        var gamepads = navigator.getGamepads();
-        var gpl = gamepads.length;
-        var i;
-        for (i = 0; i < gpl; i++) {
-          if (gamepads[i] != null) {
-            var j = gamepads[i];
+    if (navigator.getGamepads) { //gamepad support present!
+      var gamepads = navigator.getGamepads();
+      var gpl = gamepads.length;
+      var i;
+      for (i = 0; i < gpl; i++) {
+        if (gamepads[i] != null) {
+          var j = gamepads[i];
 
-            //TODO: custom bindings for controllers
+          //TODO: custom bindings for controllers
 
-            if (j.axes[0] > 0.5 || j.buttons[15].pressed) buttonByte ^= 1<<0; //right
-            if (j.axes[0] < -0.5 || j.buttons[14].pressed) buttonByte ^= 1<<1; //left
-            if (j.axes[1] > 0.5 || j.buttons[13].pressed) buttonByte ^= 1<<3; //down
-            if (j.axes[1] < -0.5 || j.buttons[12].pressed) buttonByte ^= 1<<2; //up
+          if (j.axes[0] > 0.5 || j.buttons[15].pressed) buttonByte ^= 1<<0; //right
+          if (j.axes[0] < -0.5 || j.buttons[14].pressed) buttonByte ^= 1<<1; //left
+          if (j.axes[1] > 0.5 || j.buttons[13].pressed) buttonByte ^= 1<<3; //down
+          if (j.axes[1] < -0.5 || j.buttons[12].pressed) buttonByte ^= 1<<2; //up
 
-            if (j.buttons[9].pressed) buttonByte ^= 1<<7; //start
-            if (j.buttons[8].pressed) buttonByte ^= 1<<6; //select
-            if (j.buttons[0].pressed) buttonByte ^= 1<<5; //B
-            if (j.buttons[1].pressed) buttonByte ^= 1<<4; //A
-          }
+          if (j.buttons[9].pressed) buttonByte ^= 1<<7; //start
+          if (j.buttons[8].pressed) buttonByte ^= 1<<6; //select
+          if (j.buttons[0].pressed) buttonByte ^= 1<<5; //B
+          if (j.buttons[1].pressed) buttonByte ^= 1<<4; //A
         }
       }
-
     }
   }
 
@@ -2087,8 +2084,8 @@ this.audioSyncUpdate = function() {
   //document.getElementById("debug").innerHTML = Instructions[MemRead(535)]+"<br><br>"+PrefixCBI[MemRead(536)];
   //Cycles -= 8BI;
   try {
-    if (GBObj.paused) return; //don't run!
-    if (!GBObj.options.cButByte) GBObj.prepareButtonByte();
+    if (this.paused) return; //don't run!
+    if (!this.options.cButByte) this.prepareButtonByte();
     if (NoAudioAPI) audioSyncFrames++;
     frameskip = false;
     var firstFrame = (audioSyncFrames >= 1)
@@ -2096,11 +2093,11 @@ this.audioSyncUpdate = function() {
     while ((firstFrame) || audioSyncFrames >= 2) {
       firstFrame = false;
 
-      while (GBObj.frameCycles < 70224)
+      while (this.frameCycles < 70224)
       {
         cycle();
       }
-      GBObj.frameCycles -= 70224;
+      this.frameCycles -= 70224;
 
       audioSyncFrames--;
       if (Date.now()-frameStart > 16) {
@@ -2114,8 +2111,39 @@ this.audioSyncUpdate = function() {
   }
 }
 
+function MemWrite(pointer, value) {
+  Cycles += 4;
+  if (pointer < 0x8000) {
+    MBCWriteHandler(pointer, value);
+  } else if (pointer < 0xA000) {
+    if (CGB) VRAM[pointer-0x8000+0x2000*IORAM[0x4F]] = value;
+    else VRAM[pointer-0x8000] = value;
+  } else if (pointer < 0xC000) {
+    MBCWriteHandler(pointer, value);
+  } else if (pointer < 0xE000) {
+    if (CGB) {
+      if (pointer < 0xD000) RAM[pointer-0xC000] = value;
+      else RAM[(pointer-0xD000)+0x1000*IORAM[0x70]] = value;
+    } else RAM[pointer-0xC000] = value;
+  } else if (pointer < 0xFE00) {
+    // console.log("writing to shadow ram?")
+    // debugger;
+    if (CGB) {
+      if (pointer < 0xF000) RAM[pointer-0xE000] = value;
+      else RAM[(pointer-0xF000)+0x1000*IORAM[0x70]] = value;
+    } else RAM[pointer-0xE000] = value;
+  } else if (pointer < 0xFEA0) {
+    OAM[pointer-0xFE00] = value;
+  } else if (pointer < 0xFF00) {
+  } else if (pointer < 0xFF80) {
+    IOWriteFunctions[pointer-0xFF00](value, pointer-0xFF00);
+  } else {
+    ZRAM[pointer-0xFF80] = value;
+  }
+}
+
 function errorScreen(err) { //display when something goes horribly wrong
-  GBObj.paused = true; //stop executing before we cause any more damage
+  this.paused = true; //stop executing before we cause any more damage
 
   internalCtx.fillStyle = "#FFFFFF"
   internalCtx.fillRect(0, 0, 160, 144);
@@ -2215,7 +2243,7 @@ function cycle() {
     }
   }
 
-  GBObj.frameCycles += Cycles/CPUSpeed;
+  this.frameCycles += Cycles/CPUSpeed;
   lineCycles += Cycles/CPUSpeed;
 
   if (lineCycles >= 456) {
@@ -2382,37 +2410,6 @@ function MemRead(pointer) {
   }
 }
 
-function MemWrite(pointer, value) {
-  Cycles += 4;
-  if (pointer < 0x8000) {
-    MBCWriteHandler(pointer, value);
-  } else if (pointer < 0xA000) {
-    if (CGB) VRAM[pointer-0x8000+0x2000*IORAM[0x4F]] = value;
-    else VRAM[pointer-0x8000] = value;
-  } else if (pointer < 0xC000) {
-    MBCWriteHandler(pointer, value);
-  } else if (pointer < 0xE000) {
-    if (CGB) {
-      if (pointer < 0xD000) RAM[pointer-0xC000] = value;
-      else RAM[(pointer-0xD000)+0x1000*IORAM[0x70]] = value;
-    } else RAM[pointer-0xC000] = value;
-  } else if (pointer < 0xFE00) {
-    // console.log("writing to shadow ram?")
-    // debugger;
-    if (CGB) {
-      if (pointer < 0xF000) RAM[pointer-0xE000] = value;
-      else RAM[(pointer-0xF000)+0x1000*IORAM[0x70]] = value;
-    } else RAM[pointer-0xE000] = value;
-  } else if (pointer < 0xFEA0) {
-    OAM[pointer-0xFE00] = value;
-  } else if (pointer < 0xFF00) {
-  } else if (pointer < 0xFF80) {
-    IOWriteFunctions[pointer-0xFF00](value, pointer-0xFF00);
-  } else {
-    ZRAM[pointer-0xFF80] = value;
-  }
-}
-
 // ----- HALT CYCLE SKIP -----
 
 function haltSkip() {
@@ -2425,7 +2422,7 @@ function haltSkip() {
     Infinity,
   ]
 
-  var skipTo = Infinity; //(70224-GBObj.frameCycles)*CPUSpeed; //max skip distance is the next frame
+  var skipTo = Infinity; //(70224-this.frameCycles)*CPUSpeed; //max skip distance is the next frame
 
   //timer prediction
   var cycles;
@@ -2508,7 +2505,7 @@ function haltSkip() {
   //set all interrupt flags that should be set
   //advance the screen, audio and timer correctly.
 
-  var frameEnd = (70224-GBObj.frameCycles)*CPUSpeed;
+  var frameEnd = (70224-this.frameCycles)*CPUSpeed;
   if (frameEnd<skipTo) {
     skipTo = frameEnd; //we will remain halted after we skip to the end of this frame
     //todo: remember where we're meant to skip to?
@@ -2608,7 +2605,7 @@ function haltSkip() {
   //set interrupt flags
 
   for (var i=0; i<5; i++) if (skipTo >= interruptCycles[i] && interruptCycles[i] !== Infinity) IORAM[0x0F] |= 1<<i;
-  GBObj.frameCycles += skipTo/CPUSpeed;
+  this.frameCycles += skipTo/CPUSpeed;
 
   return skipTo;
 }
@@ -3209,7 +3206,7 @@ function DI() { //disables interrupts
 function RST(pointer) {
   PC &= 0xFFFF;
   StackPush(PC);
-  PC = pointer+((pointer<0x40)?GBObj.RSToff:0);
+  PC = pointer+((pointer<0x40)?this.RSToff:0);
   Cycles += 4;
 }
 

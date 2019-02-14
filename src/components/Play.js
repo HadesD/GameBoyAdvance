@@ -36,6 +36,10 @@ class Play extends React.Component
     };
 
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.onDrop = this.onDrop.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
+
+    this.emu = null;
 
     // Use Gamepad
     if (window.getGamepads)
@@ -55,8 +59,7 @@ class Play extends React.Component
     }
     this.keyboardManager.start();
 
-    console.log(this);
-    new GameBoy('', this.emuDisplayRef.current);
+    this.emu = new GameBoy('', this.emuDisplayRef.current);
   }
 
   componentWillUnmount()
@@ -82,6 +85,35 @@ class Play extends React.Component
         },
       });
     }), 250);
+  }
+
+  onDrop(e)
+  {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (!file)
+    {
+      return;
+    }
+
+    let emu = this.emu;
+
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      // let arrayBuffer = e.result;
+      emu.loadROMBuffer(e.result);
+      // let array = new Uint8Array(arrayBuffer);
+        // binaryString = String.fromCharCode.apply(null, array);
+
+      // console.log(binaryString);
+    }
+    reader.readAsArrayBuffer(file);
+  }
+
+  onDragOver(e)
+  {
+    e.preventDefault();
+    // console.log(e);
   }
 
   render()
@@ -128,7 +160,7 @@ class Play extends React.Component
         style={wrapperStyle}
       >
         <div className="emu-wrapper" style={emuStyle}>
-          <canvas ref={this.emuDisplayRef}></canvas>
+          <canvas ref={this.emuDisplayRef} onDrop={this.onDrop} onDragOver={this.onDragOver} />
         </div>
         <Joystick
           ref={this.joystickRef}

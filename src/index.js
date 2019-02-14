@@ -14,7 +14,7 @@ window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAni
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-window.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads;
+navigator.getGamepads = navigator.getGamepads || navigator.webkitGamepads || navigator.webkitGetGamepads;
 
 ReactDOM.render(
   <Router basename={`${process.env.PUBLIC_URL}/!#`}>

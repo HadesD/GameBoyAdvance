@@ -27,15 +27,15 @@
 .portrait .emu-wrapper {
   /* Console.dXY = 1.75 (420x320) */
   top: 15px;
-  width: calc(100vw / (165 / 148));
-  height: calc(100vw / (165 / 148) / (165 / 148));
+  width: calc(100vw / 1.5 * 1.4);
+  height: calc(100vw / 1.5 / 1.5 * 1.4);
 }
 
 .landscape .emu-wrapper {
   /* Console.dXY = 1.75 (420x320) */
-  top: calc(100vw / 1.75 / 5);
-  width: calc(100vw * 1.75 / 3.78);
-  height: calc(100vw / 1.75 / 1.835);
+  top: calc(100vw / 1.5 / 5.8);
+  width: calc(100vw * 1.5 / 3.25);
+  height: calc(100vw / 1.5 / 2.15);
 }
 
 .emu-wrapper > canvas {

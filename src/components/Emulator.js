@@ -28,7 +28,14 @@ class Emulator extends React.Component
   componentWillUnMount()
   {
     this.emulatorManager.destroy();
-    this.emulatorManager = undefined;
+    this.emulatorManager = null;
+  }
+
+  onDragOver(e)
+  {
+    e.preventDefault();
+
+    console.log(e.dataTransfer.files[0]);
   }
 
   onDrop(e)
@@ -54,12 +61,6 @@ class Emulator extends React.Component
     }
     console.log(file);
     reader.readAsArrayBuffer(file);
-  }
-
-  onDragOver(e)
-  {
-    e.preventDefault();
-    // console.log(e);
   }
 
   render()

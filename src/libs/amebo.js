@@ -356,25 +356,26 @@ export default function GameBoy(file, canvas, options) {
   }
 
   function getROMName() {
-    var name = "";
-    for (var i=0x134; i<=0x143; i++) {
-      if (game[i] == 0) break;
-      name += String.fromCharCode(game[i])
+    let name = '';
+    for (let i = 0x134; i <= 0x143; i++) {
+      const charCode = game[i];
+      if ((charCode === 0x80) || (charCode === 0xC0))
+      {
+        break;
+      }
+      name += String.fromCharCode(charCode)
     }
     return name;
   }
 
-  function generateUniqueName() {
+  function generateUniqueName()
+  {
     var sum = 0;
     var i;
     for (i = 0; i < game.length; i++) {
       sum = (sum + game[i])%4294967295
     }
-    var name = "";
-    for (i = 0x134; i<=0x143; i++) {
-      name += String.fromCharCode(game[i])
-    }
-    return name+sum;
+    return getROMName()+sum;
   }
 
   var Instructions = //cue ridiculously large table

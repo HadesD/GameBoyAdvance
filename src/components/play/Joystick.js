@@ -25,7 +25,7 @@ class Joystick extends React.Component
 
   componentDidMount()
   {
-    this.emulatorManager = this.emulatorRef.emulatorManager;
+    this.emulatorManager = this.emulatorRef.current.emulatorManager;
 
     const current = this.selfRef.current;
 
@@ -69,11 +69,8 @@ class Joystick extends React.Component
       return;
     }
 
-    console.log('%s: %s', e.type, key);
-    // alert('onMouseDown: ' + key);
-
     this.lastKey = key;
-    // this.emulatorManager.onPressed(key);
+    this.emulatorManager.onPressed(key);
   }
 
   onMouseMove(e)
@@ -106,13 +103,11 @@ class Joystick extends React.Component
       return;
     }
     this.lastKey = key;
-    console.log('%s: %s', e.type, key);
-    // alert('onMouseMove: ' + key);
+    this.emulatorManager.onPressed(key);
   }
 
   onMouseUp(e)
   {
-    console.log('%s', e.type);
     // If all key released
     if (!this.isPushed)
     {
@@ -128,9 +123,7 @@ class Joystick extends React.Component
     {
       return;
     }
-
-    console.log('%s: %s', e.type, key);
-    // alert('onMouseUp: ' + key);
+    this.emulatorManager.onReleased(key);
   }
 
   setActive(joykey, isActive)
@@ -144,7 +137,6 @@ class Joystick extends React.Component
       {
         continue;
       }
-      console.log(btn, isActive);
       if (isActive)
       {
         btn.classList.add('active');

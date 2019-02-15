@@ -19,16 +19,16 @@ class EmulatorManager
     // Main key codes
     // keyCode<KeyType, Code>
     this.keyCodes = {
-      A: 0,
-      B: 1,
-      SELECT: 2,
-      START: 3,
-      RIGHT: 4,
-      LEFT: 5,
-      UP: 6,
-      DOWN: 7,
-      R: 8,
-      L: 9,
+      A: 1,
+      B: 2,
+      SELECT: 3,
+      START: 4,
+      RIGHT: 5,
+      LEFT: 6,
+      UP: 7,
+      DOWN: 8,
+      R: 9,
+      L: 10,
     };
     this.pushedKeyList = {};
   }
@@ -105,6 +105,8 @@ class EmulatorManager
       return;
     }
     this.pushedKeyList[key] = true;
+
+    console.log('onPressed: %s', keyType);
   }
 
   onReleased(keyType)
@@ -115,6 +117,8 @@ class EmulatorManager
       return;
     }
     this.pushedKeyList[key] = false;
+
+    console.log('onRelease: %s', keyType);
   }
 }
 

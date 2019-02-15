@@ -262,7 +262,7 @@ export default function GameBoy(file, canvas, options) {
   var EmptyImageBuffer = new Uint8Array(GBScreen.data.length);
   var GBScreenInt32 = new Uint32Array(GBScreen.data.buffer);
 
-  var keyConfig = {
+  this.keyConfig = {
     A: 88,
     B: 90,
     SELECT: 32,
@@ -273,7 +273,7 @@ export default function GameBoy(file, canvas, options) {
     RIGHT: 39
   }
 
-  this.keyConfig = keyConfig; //allow public access
+  // this.keyConfig = keyConfig; //allow public access
 
   var controlKeyConfig = {
     STATES: [112, 113, 114, 115, /* 116,  */117, 118, 119, 120, 121]
@@ -2050,7 +2050,7 @@ export default function GameBoy(file, canvas, options) {
   }
 
   this.prepareButtonByte = function() { //for default included controls system
-    buttonByte = ((keysArray[keyConfig.DOWN])<<3)+((keysArray[keyConfig.UP])<<2)+((keysArray[keyConfig.LEFT])<<1)+((keysArray[keyConfig.RIGHT])<<0)+ ((keysArray[keyConfig.START])<<7)+((keysArray[keyConfig.SELECT])<<6)+((keysArray[keyConfig.B])<<5)+(keysArray[keyConfig.A]<<4);
+    buttonByte = ((keysArray[this.keyConfig.DOWN])<<3)+((keysArray[this.keyConfig.UP])<<2)+((keysArray[this.keyConfig.LEFT])<<1)+((keysArray[this.keyConfig.RIGHT])<<0)+ ((keysArray[this.keyConfig.START])<<7)+((keysArray[this.keyConfig.SELECT])<<6)+((keysArray[this.keyConfig.B])<<5)+(keysArray[this.keyConfig.A]<<4);
 
     if (getGamepads) { //gamepad support present!
       //if (navigator.webkitGetGamepads) var gamepads = navigator.webkitGetGamepads();

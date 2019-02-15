@@ -14,6 +14,19 @@ class EmulatorManager
   {
     console.log('EmulatorManager.constructor called');
 
+    this.keyCodes = {
+      A: 0,
+      B: 1,
+      SELECT: 2,
+      START: 3,
+      RIGHT: 4,
+      LEFT: 5,
+      UP: 6,
+      DOWN: 7,
+      R: 8,
+      L: 9,
+    };
+
     this.parent = parent;
   }
 
@@ -21,6 +34,8 @@ class EmulatorManager
   {
     this.emulatorScreen = this.parent.screenRef.current;
     this.gbApi = new GameBoy('', this.emulatorScreen);
+    this.gbApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
+    // console.log(this.parent.parent);
   }
 
   destroy()
@@ -99,6 +114,14 @@ class EmulatorManager
       }
     }
     console.log(filenames);
+  }
+
+  onPressed(btn)
+  {
+  }
+
+  onReleased(btn)
+  {
   }
 }
 

@@ -15,6 +15,8 @@ class Joystick extends React.Component
     super(props);
 
     this.selfRef = React.createRef();
+    this.emulatorRef = props.parent.emulatorRef;
+    this.emulatorManager = null;
 
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -23,8 +25,9 @@ class Joystick extends React.Component
 
   componentDidMount()
   {
+    this.emulatorManager = this.emulatorRef.emulatorManager;
+
     const current = this.selfRef.current;
-    // console.log(current);
 
     // Mouse
     if (this.hasSupportTouch)
@@ -70,6 +73,7 @@ class Joystick extends React.Component
     // alert('onMouseDown: ' + key);
 
     this.lastKey = key;
+    // this.emulatorManager.onPressed(key);
   }
 
   onMouseMove(e)
@@ -162,15 +166,15 @@ class Joystick extends React.Component
             backgroundImage: 'url('+dpadIcon+')',
           }}
         >
-          <button className="dpad-btn" data-joykey="left"/>
-          <button className="dpad-btn" data-joykey="up" />
-          <button className="dpad-btn" data-joykey="right" />
-          <button className="dpad-btn" data-joykey="down" />
+          <button className="dpad-btn" data-joykey="LEFT"/>
+          <button className="dpad-btn" data-joykey="UP" />
+          <button className="dpad-btn" data-joykey="RIGHT" />
+          <button className="dpad-btn" data-joykey="DOWN" />
         </div>
-        <button className="circle-btn" data-joykey="a">
+        <button className="circle-btn" data-joykey="A">
           A
         </button>
-        <button className="circle-btn" data-joykey="b">
+        <button className="circle-btn" data-joykey="B">
           B
         </button>
       </div>

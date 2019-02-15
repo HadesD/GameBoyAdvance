@@ -34,7 +34,7 @@
   opacity: .4;
 }
 
-.dpad-btn[data-joykey="left"] {
+.dpad-btn[data-joykey="LEFT"] {
   top: 50%;
   left: 0;
   transform: translateY(-50%);
@@ -42,7 +42,7 @@
   height: calc(100% / 3);
 }
 
-.dpad-btn[data-joykey="up"] {
+.dpad-btn[data-joykey="UP"] {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -50,7 +50,7 @@
   height: calc(100% / 2);
 }
 
-.dpad-btn[data-joykey="right"] {
+.dpad-btn[data-joykey="RIGHT"] {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
@@ -58,7 +58,7 @@
   height: calc(100% / 3);
 }
 
-.dpad-btn[data-joykey="down"] {
+.dpad-btn[data-joykey="DOWN"] {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -93,12 +93,12 @@
   opacity: .4;
 }
 
-.landscape .circle-btn[data-joykey="a"] {
+.landscape .circle-btn[data-joykey="A"] {
   top: calc(100vw / 1.75 / 2.91);
   right: 2.5%;
 }
 
-.landscape .circle-btn[data-joykey="b"] {
+.landscape .circle-btn[data-joykey="B"] {
   top: calc(100vw / 1.75 / 2.51);
   right: 12.1%;
 }
@@ -116,12 +116,12 @@
   opacity: .7;
 }
 
-.portrait .circle-btn[data-joykey="a"] {
+.portrait .circle-btn[data-joykey="A"] {
   right: 10px;
   bottom: 27%;
 }
 
-.portrait .circle-btn[data-joykey="b"] {
+.portrait .circle-btn[data-joykey="B"] {
   right: calc(15vw + 10px + 10px);
   bottom: 23%;
 }

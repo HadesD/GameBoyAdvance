@@ -6,6 +6,18 @@ class KeyboardManager
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.keyMapConfig = {
+      A: 90,
+      B: 88,
+      SELECT: 83,
+      START: 65,
+      RIGHT: 39,
+      LEFT: 37,
+      UP: 38,
+      DOWN: 40,
+      R: 87,
+      L: 81,
+    };
     this.pushedList = {};
   }
 
@@ -23,32 +35,9 @@ class KeyboardManager
 
   getJoykey(keyCode)
   {
-    let joykey;
-    switch (keyCode)
-    {
-      case 37:
-        joykey = 'left';
-        break;
-      case 38:
-        joykey = 'up';
-        break;
-      case 39:
-        joykey = 'right';
-        break;
-      case 40:
-        joykey = 'down';
-        break;
-      case 90:
-        joykey = 'a';
-        break;
-      case 88:
-        joykey = 'b';
-        break;
-      default:
-        return;
-    }
-
-    return joykey;
+    return Object.keys(this.keyMapConfig).find((elm) => {
+      return this.keyMapConfig[elm] === keyCode;
+    });
   }
 
   setActiveJoykey(keyCode, isActive)
@@ -73,6 +62,7 @@ class KeyboardManager
     const keyCode = e.keyCode;
     if (this.pushedList[keyCode])
     {
+      e.preventDefault();
       return;
     }
 

@@ -200,15 +200,16 @@
   border-radius: 20%;
   height: calc(100vw / 1.75 / 14);
   text-indent: -15px;
+  font-size: 2vw;
 }
 
 .landscape .rectangle-btn[data-joykey="SELECT"] {
   top: calc(100vw / 1.75 / 1.57);
-  left: calc(8.54vw);
+  left: calc(8.70vw);
 }
 
 .landscape .rectangle-btn[data-joykey="START"] {
   top: calc(100vw / 1.75 / 1.35);
-  left: calc(8.4vw);
+  left: calc(8.45vw);
 }
 

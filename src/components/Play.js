@@ -1,10 +1,10 @@
 import React from 'react';
 import BodyScrollUnAble from './BodyScrollUnAble';
 
-import Emulator from './Emulator';
-import Joystick from './Joystick';
-import GamepadManager from './GamepadManager';
-import KeyboardManager from './KeyboardManager';
+import Emulator from './play/Emulator';
+import Joystick from './play/Joystick';
+import GamepadManager from './play/GamepadManager';
+import KeyboardManager from './play/KeyboardManager';
 
 import gbaLandscape from '../images/gba-console-landscape.svg';
 import emuBKG from '../images/emu-background.svg';

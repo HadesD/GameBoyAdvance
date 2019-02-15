@@ -1,5 +1,5 @@
 import React from 'react';
-import dpadIcon from '../images/dpad.svg';
+import dpadIcon from '../../images/dpad.svg';
 
 import './Joystick.css';
 

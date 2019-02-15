@@ -1,4 +1,4 @@
-import GameBoy from '../libs/amebo';
+import GameBoy from './lib/amebo';
 
 class EmulatorManager
 {

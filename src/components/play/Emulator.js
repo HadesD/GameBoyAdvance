@@ -2,7 +2,7 @@ import React from 'react';
 
 import EmulatorManager from './EmulatorManager';
 
-import emuCanvasBKG from '../images/emu-canvas-bg.svg';
+import emuCanvasBKG from '../../images/emu-canvas-bg.svg';
 
 class Emulator extends React.Component
 {

@@ -6,6 +6,7 @@ class KeyboardManager
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+
     this.keyMapConfig = {
       A: 90,
       B: 88,
@@ -25,6 +26,8 @@ class KeyboardManager
   {
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("keyup", this.onKeyUp);
+
+    this.emulatorManager = this.parent.emulatorRef.current.emulatorManager;
   }
 
   destroy()
@@ -40,19 +43,10 @@ class KeyboardManager
     });
   }
 
-  setActiveJoykey(keyCode, isActive)
+  setActiveJoykey(keyType, isActive)
   {
-    let joykey = this.getJoykey(keyCode);
-
-    if (!joykey)
-    {
-      return false;
-    }
-
     const joystickRef = this.parent.joystickRef.current;
-    joystickRef.setActive(joykey, isActive);
-
-    return true;
+    joystickRef.setActive(keyType, isActive);
   }
 
   onKeyDown(e)
@@ -66,27 +60,41 @@ class KeyboardManager
       return;
     }
 
-    if (!this.setActiveJoykey(keyCode, true))
+    let keyType = this.getJoykey(keyCode);
+
+    if (!keyType)
     {
       return;
     }
 
     e.preventDefault();
+
     this.pushedList[keyCode] = true;
 
-    // console.log(joystickRef);
+    this.setActiveJoykey(keyType, true);
+
+    this.emulatorManager.onPressed(keyType);
   }
 
   onKeyUp(e)
   {
     // console.log(e);
     const keyCode = e.keyCode;
-    if (!this.setActiveJoykey(keyCode, false))
+
+    let keyType = this.getJoykey(keyCode);
+
+    if (!keyType)
     {
       return;
     }
+
     e.preventDefault();
+
     this.pushedList[keyCode] = false;
+
+    this.setActiveJoykey(keyType, false);
+
+    this.emulatorManager.onReleased(keyType);
   }
 }
 

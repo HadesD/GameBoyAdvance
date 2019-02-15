@@ -14,7 +14,10 @@ class EmulatorManager
   {
     console.log('EmulatorManager.constructor called');
 
+    this.parent = parent;
+
     // Main key codes
+    // keyCode<KeyType, Code>
     this.keyCodes = {
       A: 0,
       B: 1,
@@ -27,8 +30,7 @@ class EmulatorManager
       R: 8,
       L: 9,
     };
-
-    this.parent = parent;
+    this.pushedKeyList = {};
   }
 
   start()
@@ -95,12 +97,24 @@ class EmulatorManager
     console.log(filenames);
   }
 
-  onPressed(btn)
+  onPressed(keyType)
   {
+    const key = this.keyCodes[keyType];
+    if (!key)
+    {
+      return;
+    }
+    this.pushedKeyList[key] = true;
   }
 
-  onReleased(btn)
+  onReleased(keyType)
   {
+    const key = this.keyCodes[keyType];
+    if (!key)
+    {
+      return;
+    }
+    this.pushedKeyList[key] = false;
   }
 }
 

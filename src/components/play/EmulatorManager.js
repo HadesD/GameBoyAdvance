@@ -3,13 +3,6 @@ import { Zlib } from 'zlibjs/bin/unzip.min';
 
 class EmulatorManager
 {
-  gbApi = null;
-  gbaApi = null;
-
-  currentRomFileName = null; // The file name of rom
-  currentRomName = null; // Name in ROM OFFSET
-  currentRomGameType = null; // GBA/GB/GBC
-
   constructor(parent)
   {
     console.log('EmulatorManager.constructor called');
@@ -31,25 +24,36 @@ class EmulatorManager
       L: 10,
     };
     this.pushedKeyList = {};
+
+    this.rom = {
+      codeName: null, // Name in ROM OFFSET
+      fileName: null,
+      gameType: null, // GB / GBA
+    };
+
+    this.emuApi = null;
   }
 
   start()
   {
     this.emulatorScreen = this.parent.screenRef.current;
-    this.gbApi = new GameBoy('', this.emulatorScreen);
-    this.gbApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
   }
 
   destroy()
   {
-    this.gbApi = null;
+    this.emuApi = null;
   }
 
   loadRomBuffer(buffer)
   {
+    console.log(this.rom);
+
     buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
 
-    this.gbApi.loadROMBuffer(buffer);
+    this.emuApi = new GameBoy('', this.emulatorScreen);
+    this.emuApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
+
+    this.emuApi.loadROMBuffer(buffer);
   }
 
   loadRomUrl(url)
@@ -58,6 +62,7 @@ class EmulatorManager
     hRequest.open('GET', url);
     hRequest.onload = function(e) {
       console.log(e);
+      // this.rom.fileName = fileName;
     };
     hRequest.send();
   }
@@ -67,34 +72,35 @@ class EmulatorManager
   {
     const self = this;
     const reader = new FileReader();
-    reader.addEventListener('load', function(e) {
+    reader.onload = function(e) {
       const buffer = e.target.result;
       if (fileObj.name.indexOf('.zip') !== -1)
       {
         self.loadRomZipFile(buffer);
         return;
       }
+
+      self.rom.fileName = fileObj.name;
       self.loadRomBuffer(buffer);
-    });
+    };
     reader.readAsArrayBuffer(fileObj);
   }
 
   // Buffer is Zip file ArrayBuffer
   loadRomZipFile(buffer)
   {
-    console.log(Zlib);
     const unzip = new Zlib.Unzip(new Buffer(buffer));
-    const filenames = unzip.getFilenames();
-    for (let i = 0; i < filenames.length; i++)
+    const fileNames = unzip.getFilenames();
+    for (let i = 0; i < fileNames.length; i++)
     {
-      const filename = filenames[i];
-      if (filename.indexOf('.gb') !== -1)
+      const fileName = fileNames[i];
+      if (fileName.indexOf('.gb') !== -1)
       {
-        this.loadRomBuffer(unzip.decompress(filename));
+        this.rom.fileName = fileName;
+        this.loadRomBuffer(unzip.decompress(fileName));
         break;
       }
     }
-    console.log(filenames);
   }
 
   onPressed(keyType)
@@ -107,6 +113,8 @@ class EmulatorManager
     this.pushedKeyList[key] = true;
 
     console.log('onPressed: %s', keyType);
+
+    this.updateKeyState();
   }
 
   onReleased(keyType)
@@ -119,6 +127,13 @@ class EmulatorManager
     this.pushedKeyList[key] = false;
 
     console.log('onRelease: %s', keyType);
+
+    this.updateKeyState();
+  }
+
+  // Update for each emulator
+  updateKeyState()
+  {
   }
 }
 

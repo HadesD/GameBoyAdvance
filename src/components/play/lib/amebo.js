@@ -1,53 +1,28 @@
 //"use strict"; despite my code conforming to strict mode, i'll keep it off because it just adds stupid extra checks which might slow things down
 
-window.GBMasterClass = function() {
+function GBMasterClass()
+{
+  this.gameboy = null;
 
-  this.gameboys = [];
+  let self = this;
+  self.frameId = null;
 
-  var gameboys = this.gameboys;
+  this.start = function()
+  {
+    self.frameId = window.requestAnimationFrame(update);
+  };
 
   function update()
   {
-    var gbl = gameboys.length;
-    if (gbl === 1)
-    {
-      gameboys[0].audioSyncUpdate();
-    }
-    else if (gbl > 1)
-    {
-      multiGBUpdate();
-    }
-    window.requestAnimationFrame(update);
+    self.gameboy.audioSyncUpdate();
+
+    self.frameId = window.requestAnimationFrame(update);
   }
 
-  function multiGBUpdate() {
-    var gbl = gameboys.length
-    var gbn;
-    for (gbn = 0; gbn < gbl; gbn++) {
-      if (!(gameboys[gbn].options.cButByte))
-      {
-        gameboys[gbn].prepareButtonByte();
-      }
-    }
-    var mostCycles = 0;
-    while (mostCycles < 70224)
-    {
-      for (gbn = 0; gbn < gbl; gbn++)
-      {
-        while (gameboys[gbn].frameCycles <= Math.min(mostCycles, 70223))
-        {
-          gameboys[gbn].cycle();
-        }
-        mostCycles = gameboys[gbn].frameCycles
-      }
-    }
-    for (gbn = 0; gbn < gbl; gbn++)
-    {
-      gameboys[gbn].frameCycles -= 70224;
-    }
+  this.destroy = function()
+  {
+    window.cancelAnimationFrame(self.frameId);
   }
-
-  window.requestAnimationFrame(update);
 };
 
 export default function GameBoy(file, canvas, options) {
@@ -65,14 +40,14 @@ export default function GameBoy(file, canvas, options) {
   }
   this.options = options;
 
-  window.GBMaster = window.GBMaster || (new window.GBMasterClass());
+  this.GBMaster = new GBMasterClass();
 
   this.RSToff = 0; //used by gbs player
   this.paused = false;
   this.loadState = loadState;
   this.saveState = saveState;
 
-  var GBObj = this;
+  let GBObj = this;
 
   /*
     this.loadROM = function(url, pauseAfter) {
@@ -119,7 +94,6 @@ export default function GameBoy(file, canvas, options) {
     */
 
   this.loadROMBuffer = function(buffer, battery) { //battery is an optional parameter
-    console.log(buffer);
     if (buffer instanceof ArrayBuffer)
     {
       game = new Uint8Array(buffer);
@@ -192,11 +166,10 @@ export default function GameBoy(file, canvas, options) {
     ctx = ctx || canvas.getContext('2d');
   }
 
-  if (typeof ctx.webkitImageSmoothingEnabled !== 'undefined') {
-    ctx.webkitImageSmoothingEnabled = false;
-  } else if (typeof ctx.imageSmoothingEnabled !== 'undefined') {
-    ctx.imageSmoothingEnabled = false;
-  } else {
+  ctx.imageSmoothingEnabled = ctx.imageSmoothingEnabled || ctx.webkitImageSmoothingEnabled;
+
+  if (!ctx.imageSmoothingEnabled)
+  {
     console.warn("imageSmoothingEnabled not supported, falling back to css scaling")
     canvas.style.width = canvas.width+"px";
     canvas.style.height = canvas.height+"px";
@@ -211,18 +184,18 @@ export default function GameBoy(file, canvas, options) {
   var biosLoaded = 0;
   var GBAudioContext = null;
 
-  var getGamepads = navigator.webkitGamepads || navigator.webkitGetGamepads || navigator.getGamepads;
+  // var getGamepads = navigator.webkitGamepads || navigator.webkitGetGamepads || navigator.getGamepads;
 
-  var NoAudioAPI = false;
-  if (typeof AudioContext !== 'undefined') {
-    GBAudioContext = new AudioContext();
-  } else if (typeof window.webkitAudioContext !== 'undefined') {
-    GBAudioContext = new window.webkitAudioContext();
-  } else {
-    NoAudioAPI = true;
+  var NoAudioAPI = true;
+  var stereo = true;
+
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (window.AudioContext)
+  {
+    GBAudioContext = new window.AudioContext();
+    NoAudioAPI = false;
   }
 
-  var stereo = true;
   //if (iOS) NoAudioAPI = true;
 
   if (NoAudioAPI) {
@@ -325,20 +298,20 @@ export default function GameBoy(file, canvas, options) {
     if (gameLoaded && (biosLoaded == 2)) init();
   }
 
-  var keysArray = new Array(256);
+  this.keysArray = new Array(256);
   for (var i=0; i<256; i++) {
-    keysArray[i] = 1;
+    this.keysArray[i] = 1;
   }
-  window.addEventListener("keydown", keyDownHandler, false);
-  window.addEventListener("keyup", keyUpHandler, false);
+  // window.addEventListener("keydown", keyDownHandler, false);
+  // window.addEventListener("keyup", keyUpHandler, false);
 
   function keyDownHandler(evt) {
-    keysArray[evt.keyCode] = 0;
+    this.keysArray[evt.keyCode] = 0;
 
     var stateNum = controlKeyConfig.STATES.indexOf(evt.keyCode)
     if (stateNum !== -1) {
       evt.preventDefault();
-      if (keysArray[16] === 0)
+      if (this.keysArray[16] === 0)
       {
         localStorage["states/"+stateNum] = JSON.stringify(saveState());
       }
@@ -352,7 +325,7 @@ export default function GameBoy(file, canvas, options) {
   }
 
   function keyUpHandler(evt) {
-    keysArray[evt.keyCode] = 1;
+    this.keysArray[evt.keyCode] = 1;
   }
 
   function getROMName() {
@@ -1108,7 +1081,7 @@ export default function GameBoy(file, canvas, options) {
     buf.set(targ.buffers[read]);
     targ.buffers[read].set(AudioEngine.emptyBuffer);
     if (stereo) {
-      var buf = evt.outputBuffer.getChannelData(1);
+      buf = evt.outputBuffer.getChannelData(1);
       buf.set(targ.buffersR[read]);
       targ.buffersR[read].set(AudioEngine.emptyBuffer);
     }
@@ -1903,7 +1876,7 @@ export default function GameBoy(file, canvas, options) {
     GBObj.onload = null;
     GBObj.ROMname = getROMName();
 
-    if (window.GBMaster.gameboys.indexOf(GBObj) == -1) window.GBMaster.gameboys.push(GBObj);
+    GBObj.GBMaster.gameboy = GBObj;
 
     GBObj.cycle = cycle; //expose certain functions
     GBObj.frameCycles = 0;
@@ -1918,6 +1891,8 @@ export default function GameBoy(file, canvas, options) {
     buttonByte = 255;
 
     reset(true);
+
+    GBObj.GBMaster.start();
   }
 
   var RAMsizes = [0, 0x800, 0x2000, 0x8000]
@@ -2050,38 +2025,38 @@ export default function GameBoy(file, canvas, options) {
   }
 
   this.prepareButtonByte = function() { //for default included controls system
-    buttonByte = ((keysArray[this.keyConfig.DOWN])<<3)+((keysArray[this.keyConfig.UP])<<2)+((keysArray[this.keyConfig.LEFT])<<1)+((keysArray[this.keyConfig.RIGHT])<<0)+ ((keysArray[this.keyConfig.START])<<7)+((keysArray[this.keyConfig.SELECT])<<6)+((keysArray[this.keyConfig.B])<<5)+(keysArray[this.keyConfig.A]<<4);
+    buttonByte = ((this.keysArray[this.keyConfig.DOWN])<<3)+((this.keysArray[this.keyConfig.UP])<<2)+((this.keysArray[this.keyConfig.LEFT])<<1)+((this.keysArray[this.keyConfig.RIGHT])<<0)+ ((this.keysArray[this.keyConfig.START])<<7)+((this.keysArray[this.keyConfig.SELECT])<<6)+((this.keysArray[this.keyConfig.B])<<5)+(this.keysArray[this.keyConfig.A]<<4);
 
     console.log(buttonByte);
 
-    if (getGamepads) { //gamepad support present!
-      //if (navigator.webkitGetGamepads) var gamepads = navigator.webkitGetGamepads();
-      //if (navigator.webkitGamepads) var gamepads = navigator.webkitGamepads();
-      if (navigator.getGamepads)
-      {
-        var gamepads = navigator.getGamepads();
-        var gpl = gamepads.length;
-        var i;
-        for (i = 0; i < gpl; i++) {
-          if (gamepads[i] != null) {
-            var j = gamepads[i];
+    // if (getGamepads) { //gamepad support present!
+    //if (navigator.webkitGetGamepads) var gamepads = navigator.webkitGetGamepads();
+    //if (navigator.webkitGamepads) var gamepads = navigator.webkitGamepads();
+    // if (navigator.getGamepads)
+    // {
+    //   var gamepads = navigator.getGamepads();
+    //   var gpl = gamepads.length;
+    //   var i;
+    //   for (i = 0; i < gpl; i++) {
+    //     if (gamepads[i] != null) {
+    //       var j = gamepads[i];
+    //
+    //       //TODO: custom bindings for controllers
+    //
+    //       if (j.axes[0] > 0.5 || j.buttons[15].pressed) buttonByte ^= 1<<0; //right
+    //       if (j.axes[0] < -0.5 || j.buttons[14].pressed) buttonByte ^= 1<<1; //left
+    //       if (j.axes[1] > 0.5 || j.buttons[13].pressed) buttonByte ^= 1<<3; //down
+    //       if (j.axes[1] < -0.5 || j.buttons[12].pressed) buttonByte ^= 1<<2; //up
+    //
+    //       if (j.buttons[9].pressed) buttonByte ^= 1<<7; //start
+    //       if (j.buttons[8].pressed) buttonByte ^= 1<<6; //select
+    //       if (j.buttons[0].pressed) buttonByte ^= 1<<5; //B
+    //       if (j.buttons[1].pressed) buttonByte ^= 1<<4; //A
+    //     }
+    //   }
+    // }
 
-            //TODO: custom bindings for controllers
-
-            if (j.axes[0] > 0.5 || j.buttons[15].pressed) buttonByte ^= 1<<0; //right
-            if (j.axes[0] < -0.5 || j.buttons[14].pressed) buttonByte ^= 1<<1; //left
-            if (j.axes[1] > 0.5 || j.buttons[13].pressed) buttonByte ^= 1<<3; //down
-            if (j.axes[1] < -0.5 || j.buttons[12].pressed) buttonByte ^= 1<<2; //up
-
-            if (j.buttons[9].pressed) buttonByte ^= 1<<7; //start
-            if (j.buttons[8].pressed) buttonByte ^= 1<<6; //select
-            if (j.buttons[0].pressed) buttonByte ^= 1<<5; //B
-            if (j.buttons[1].pressed) buttonByte ^= 1<<4; //A
-          }
-        }
-      }
-
-    }
+    // }
   }
 
 this.audioSyncUpdate = function() {

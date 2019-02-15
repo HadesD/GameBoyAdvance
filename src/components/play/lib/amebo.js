@@ -190,7 +190,6 @@ export default function GameBoy(file, canvas, options) {
   var NoAudioAPI = true;
   var stereo = true;
 
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
   if (window.AudioContext)
   {
     GBAudioContext = new window.AudioContext();

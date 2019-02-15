@@ -31,7 +31,6 @@ class Emulator extends React.Component
   componentWillUnMount()
   {
     this.emulatorManager.destroy();
-    this.emulatorManager = null;
   }
 
   onDragOver(e)

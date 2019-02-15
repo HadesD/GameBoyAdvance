@@ -28,7 +28,6 @@
 
 .console-dpad-btn .dpad-btn {
   background-color: transparent;
-  /* background-color: #FFF; */
 }
 
 .joystick button.active,
@@ -70,7 +69,7 @@
 }
 
 .portrait .console-dpad-btn {
-  bottom: 17%;
+  bottom: 14%;
 }
 
 .landscape .console-dpad-btn {
@@ -106,11 +105,14 @@
   right: 12.1%;
 }
 
-.portrait .circle-btn {
+.portrait button {
   background-color: #111;
+  color: #FFF;
+}
+
+.portrait .circle-btn {
   width: 15vw;
   height: 15vw;
-  color: #FFF;
   font-size: 6vw;
 }
 
@@ -121,40 +123,52 @@
 
 .portrait .circle-btn[data-joykey="A"] {
   right: 10px;
-  bottom: 27%;
+  bottom: 24%;
 }
 
 .portrait .circle-btn[data-joykey="B"] {
   right: calc(15vw + 10px + 10px);
-  bottom: 23%;
+  bottom: 20%;
 }
 
 .rectangle-btn {
-
+  /* background:  */
 }
 
-.rectangle-btn[data-joykey="R"],
-.rectangle-btn[data-joykey="L"] {
+.portrait .rectangle-btn[data-joykey="L"],
+.portrait .rectangle-btn[data-joykey="R"] {
+  bottom: 42%;
+  width: calc(100vw / 4);
+  height: calc(8vw);
+  font-size: 4vw;
 }
 
-.rectangle-btn[data-joykey="L"] {
+.portrait .rectangle-btn[data-joykey="L"] {
   left: 0;
 }
 
-.rectangle-btn[data-joykey="R"] {
+.portrait .rectangle-btn[data-joykey="R"] {
   right: 0;
 }
 
-.rectangle-btn[data-joykey="START"],
-.rectangle-btn[data-joykey="SELECT"] {
+.portrait .rectangle-btn[data-joykey="START"],
+.portrait .rectangle-btn[data-joykey="SELECT"] {
+  bottom: 5%;
+  left: 50%;
+  width: calc(7vw * 2);
+  height: calc(5vw);
+  font-size: 3vw;
+  border-radius: 30%;
 }
 
-.rectangle-btn[data-joykey="START"] {
-
+.portrait .rectangle-btn[data-joykey="START"] {
+  transform: translateX(50%);
+  margin-right: -2%;
 }
 
-.rectangle-btn[data-joykey="SELECT"] {
-
+.portrait .rectangle-btn[data-joykey="SELECT"] {
+  transform: translateX(-50%);
+  margin-left: -2%;
 }
 
 .landscape .rectangle-btn[data-joykey="R"],

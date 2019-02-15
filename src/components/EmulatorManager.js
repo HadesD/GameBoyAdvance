@@ -14,8 +14,8 @@ class EmulatorManager
 
   start()
   {
-    // this.gbApi = new GameBoy('', );
     this.emulatorScreen = this.parent.screenRef.current;
+    this.gbApi = new GameBoy('', this.emulatorScreen);
   }
 
   destroy()
@@ -45,10 +45,30 @@ class EmulatorManager
       romName += String.fromCharCode(charCode);
     }
     console.log('RomName: %s', romName);
+
+    this.gbApi.loadROMBuffer(buffer);
   }
 
   loadRomUrl(url)
   {
+  }
+
+  // Like input.type="file" / drag|drop.file
+  loadRomFile(fileObj)
+  {
+    const self = this;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      // let arrayBuffer = e.result;
+      console.log(e.target.result);
+      self.loadRomBuffer(e.target.result);
+      // let array = new Uint8Array(arrayBuffer);
+        // binaryString = String.fromCharCode.apply(null, array);
+
+      // console.log(binaryString);
+    }
+    console.log(fileObj);
+    reader.readAsArrayBuffer(fileObj);
   }
 }
 

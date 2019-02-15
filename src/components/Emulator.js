@@ -44,23 +44,11 @@ class Emulator extends React.Component
     const file = e.dataTransfer.files[0];
     if (!file)
     {
+      alert('File Object is empty');
       return;
     }
 
-    let emu = this.emulatorManager;
-
-    let reader = new FileReader();
-    reader.onload = function(e) {
-      // let arrayBuffer = e.result;
-      console.log(e.target.result);
-      emu.loadRomBuffer(e.target.result);
-      // let array = new Uint8Array(arrayBuffer);
-        // binaryString = String.fromCharCode.apply(null, array);
-
-      // console.log(binaryString);
-    }
-    console.log(file);
-    reader.readAsArrayBuffer(file);
+    this.emulatorManager.loadRomFile(file);
   }
 
   render()

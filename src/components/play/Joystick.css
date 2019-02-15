@@ -177,3 +177,24 @@
   right: calc(-5vh);
 }
 
+.landscape .rectangle-btn[data-joykey="START"],
+.landscape .rectangle-btn[data-joykey="SELECT"] {
+  background-color: transparent;
+  color: #FFF;
+  width: calc(100vw / 8.3);
+  transform: rotate(14deg);
+  border-radius: 20%;
+  height: calc(100vw / 1.75 / 14);
+  text-indent: -15px;
+}
+
+.landscape .rectangle-btn[data-joykey="SELECT"] {
+  top: calc(100vw / 1.75 / 1.57);
+  left: calc(8.54vw);
+}
+
+.landscape .rectangle-btn[data-joykey="START"] {
+  top: calc(100vw / 1.75 / 1.35);
+  left: calc(8.4vw);
+}
+

@@ -77,7 +77,7 @@ class EmulatorManager
         self.loadRomZipFile(buffer);
         return;
       }
-      this.loadRomBuffer(buffer);
+      self.loadRomBuffer(buffer);
     });
     console.log(fileObj);
     reader.readAsArrayBuffer(fileObj);
@@ -94,7 +94,7 @@ class EmulatorManager
       const filename = filenames[i];
       if (filename.indexOf('.gb') !== -1)
       {
-        this.loadRomBuffer(new Uint8Array(unzip.decompress(filename)));
+        this.loadRomBuffer(unzip.decompress(filename));
         break;
       }
     }

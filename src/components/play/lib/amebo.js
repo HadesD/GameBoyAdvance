@@ -7,9 +7,8 @@ function GBMasterClass()
   let self = this;
   self.frameId = null;
 
-  this.start = function()
-  {
-    self.frameId = window.requestAnimationFrame(update);
+  this.start = function() {
+    this.frameId = window.requestAnimationFrame(update);
   };
 
   function update()
@@ -19,10 +18,9 @@ function GBMasterClass()
     self.frameId = window.requestAnimationFrame(update);
   }
 
-  this.destroy = function()
-  {
-    window.cancelAnimationFrame(self.frameId);
-  }
+  this.destroy = function() {
+    window.cancelAnimationFrame(this.frameId);
+  };
 };
 
 export default function GameBoy(file, canvas, options) {
@@ -41,6 +39,9 @@ export default function GameBoy(file, canvas, options) {
   this.options = options;
 
   this.GBMaster = new GBMasterClass();
+  this.destroy = function() {
+    this.GBMaster.destroy();
+  };
 
   this.RSToff = 0; //used by gbs player
   this.paused = false;

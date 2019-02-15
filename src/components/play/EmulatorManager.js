@@ -41,7 +41,10 @@ class EmulatorManager
 
   destroy()
   {
-    this.emuApi = null;
+    if (this.emuApi && this.emuApi.destroy)
+    {
+      this.emuApi.destroy();
+    }
   }
 
   loadRomBuffer(buffer)
@@ -49,6 +52,8 @@ class EmulatorManager
     console.log(this.rom);
 
     buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
+
+    this.destroy();
 
     this.emuApi = new GameBoy('', this.emulatorScreen);
     this.emuApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;

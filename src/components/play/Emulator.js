@@ -37,8 +37,6 @@ class Emulator extends React.Component
   onDragOver(e)
   {
     e.preventDefault();
-
-    console.log(e.dataTransfer.files[0]);
   }
 
   onDrop(e)

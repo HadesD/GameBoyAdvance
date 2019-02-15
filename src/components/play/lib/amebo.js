@@ -2052,6 +2052,8 @@ export default function GameBoy(file, canvas, options) {
   this.prepareButtonByte = function() { //for default included controls system
     buttonByte = ((keysArray[this.keyConfig.DOWN])<<3)+((keysArray[this.keyConfig.UP])<<2)+((keysArray[this.keyConfig.LEFT])<<1)+((keysArray[this.keyConfig.RIGHT])<<0)+ ((keysArray[this.keyConfig.START])<<7)+((keysArray[this.keyConfig.SELECT])<<6)+((keysArray[this.keyConfig.B])<<5)+(keysArray[this.keyConfig.A]<<4);
 
+    console.log(buttonByte);
+
     if (getGamepads) { //gamepad support present!
       //if (navigator.webkitGetGamepads) var gamepads = navigator.webkitGetGamepads();
       //if (navigator.webkitGamepads) var gamepads = navigator.webkitGamepads();

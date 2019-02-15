@@ -14,6 +14,7 @@ class EmulatorManager
   {
     console.log('EmulatorManager.constructor called');
 
+    // Main key codes
     this.keyCodes = {
       A: 0,
       B: 1,
@@ -35,7 +36,6 @@ class EmulatorManager
     this.emulatorScreen = this.parent.screenRef.current;
     this.gbApi = new GameBoy('', this.emulatorScreen);
     this.gbApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
-    // console.log(this.parent.parent);
   }
 
   destroy()
@@ -46,25 +46,6 @@ class EmulatorManager
   loadRomBuffer(buffer)
   {
     buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
-    console.log(buffer);
-    console.log(
-      'RomType: %d, Size: %d', buffer[0x147],
-      buffer[0x148]
-    );
-
-    // For GB/GBC ROM
-    const OFFSET_NAME = 0x134;
-    let romName = '';
-    for (let i = OFFSET_NAME; i < (OFFSET_NAME + 16); i++)
-    {
-      let charCode = buffer[i];
-      if ((charCode === 0x80) || (charCode === 0xc0))
-      {
-        break;
-      }
-      romName += String.fromCharCode(charCode);
-    }
-    console.log('RomName: %s', romName);
 
     this.gbApi.loadROMBuffer(buffer);
   }
@@ -85,7 +66,6 @@ class EmulatorManager
     const self = this;
     const reader = new FileReader();
     reader.addEventListener('load', function(e) {
-      console.log(fileObj.name);
       const buffer = e.target.result;
       if (fileObj.name.indexOf('.zip') !== -1)
       {
@@ -94,7 +74,6 @@ class EmulatorManager
       }
       self.loadRomBuffer(buffer);
     });
-    console.log(fileObj);
     reader.readAsArrayBuffer(fileObj);
   }
 

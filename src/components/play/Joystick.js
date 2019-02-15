@@ -160,6 +160,12 @@ class Joystick extends React.Component
   {
     return (
       <div ref={this.selfRef} className="joystick">
+        <button className="rectangle-btn" data-joykey="L">
+          L
+        </button>
+        <button className="rectangle-btn" data-joykey="R">
+          R
+        </button>
         <div
           className="console-dpad-btn"
           style={{
@@ -176,6 +182,12 @@ class Joystick extends React.Component
         </button>
         <button className="circle-btn" data-joykey="B">
           B
+        </button>
+        <button className="rectangle-btn" data-joykey="START">
+          Start
+        </button>
+        <button className="rectangle-btn" data-joykey="SELECT">
+          Select
         </button>
       </div>
     );

@@ -1,3 +1,9 @@
+.joystick button {
+  position: absolute;
+  border: 0;
+  outline: none;
+}
+
 .console-dpad-btn {
   position: absolute;
   background-repeat: none;
@@ -23,9 +29,6 @@
 .console-dpad-btn .dpad-btn {
   background-color: transparent;
   /* background-color: #FFF; */
-  position: absolute;
-  border: 0;
-  outline: none;
 }
 
 .joystick button.active,
@@ -124,5 +127,53 @@
 .portrait .circle-btn[data-joykey="B"] {
   right: calc(15vw + 10px + 10px);
   bottom: 23%;
+}
+
+.rectangle-btn {
+
+}
+
+.rectangle-btn[data-joykey="R"],
+.rectangle-btn[data-joykey="L"] {
+}
+
+.rectangle-btn[data-joykey="L"] {
+  left: 0;
+}
+
+.rectangle-btn[data-joykey="R"] {
+  right: 0;
+}
+
+.rectangle-btn[data-joykey="START"],
+.rectangle-btn[data-joykey="SELECT"] {
+}
+
+.rectangle-btn[data-joykey="START"] {
+
+}
+
+.rectangle-btn[data-joykey="SELECT"] {
+
+}
+
+.landscape .rectangle-btn[data-joykey="R"],
+.landscape .rectangle-btn[data-joykey="L"] {
+  top: calc(100vw / 1.75 / 25);
+  width: calc(100vw / 4);
+  height: calc(100vw / 1.75 / 11);
+  border-radius: 30%;
+  font-size: calc(2vw);
+  background-color: transparent;
+}
+
+.landscape .rectangle-btn[data-joykey="L"] {
+  transform: rotate(-15deg);
+  left: calc(-5vh);
+}
+
+.landscape .rectangle-btn[data-joykey="R"] {
+  transform: rotate(15deg);
+  right: calc(-5vh);
 }
 

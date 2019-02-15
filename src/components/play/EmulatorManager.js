@@ -37,11 +37,14 @@ class EmulatorManager
     };
 
     this.emuApi = null;
+
+    this.isPaused = true;
   }
 
   start()
   {
     this.emulatorScreen = this.parent.screenRef.current;
+    this.keyboardManager = this.parent.parent.keyboardManager;
   }
 
   destroy()
@@ -61,9 +64,10 @@ class EmulatorManager
     this.rom.gameType = this.gameType.GB;
 
     this.emuApi = new GameBoy('', this.emulatorScreen);
-    this.emuApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
+    this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
 
     this.emuApi.loadROMBuffer(buffer);
+    this.isPaused = false;
     this.rom.codeName = this.emuApi.getROMName();
 
     console.log(this.rom);
@@ -118,6 +122,11 @@ class EmulatorManager
 
   onPressed(keyType)
   {
+    if (this.isPaused)
+    {
+      return;
+    }
+
     const key = this.keyCodes[keyType];
     if (!key)
     {
@@ -132,6 +141,11 @@ class EmulatorManager
 
   onReleased(keyType)
   {
+    if (this.isPaused)
+    {
+      return;
+    }
+
     const key = this.keyCodes[keyType];
     if (!key)
     {
@@ -147,6 +161,24 @@ class EmulatorManager
   // Update for each emulator
   updateKeyState(keyType, value)
   {
+    switch (this.rom.gameType)
+    {
+      case this.gameType.GB: {
+        this.emuApi.keysArray[this.keyboardManager.keyMapConfig[keyType]] = value ? 0 : 1;
+        break;
+      }
+      case this.gameType.GBA: {
+
+        break;
+      }
+      default:
+        return;
+    }
+  }
+
+  pause()
+  {
+    this.isPaused = true;
   }
 }
 

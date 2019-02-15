@@ -329,18 +329,19 @@ export default function GameBoy(file, canvas, options) {
     this.keysArray[evt.keyCode] = 1;
   }
 
-  function getROMName() {
+  this.getROMName = () => {
     let name = '';
     for (let i = 0x134; i <= 0x143; i++) {
       const charCode = game[i];
-      if ((charCode === 0x80) || (charCode === 0xC0))
+      if ((charCode === 0x80) || (charCode === 0xC0) || (charCode === 0x0))
       {
         break;
       }
+      // console.log(charCode);
       name += String.fromCharCode(charCode)
     }
     return name;
-  }
+  };
 
   function generateUniqueName()
   {
@@ -349,7 +350,7 @@ export default function GameBoy(file, canvas, options) {
     for (i = 0; i < game.length; i++) {
       sum = (sum + game[i])%4294967295
     }
-    return getROMName()+sum;
+    return GBObj.getROMName()+sum;
   }
 
   var Instructions = //cue ridiculously large table
@@ -1875,7 +1876,7 @@ export default function GameBoy(file, canvas, options) {
   function init() {
     if (typeof GBObj.onload == "function") GBObj.onload(GBObj);
     GBObj.onload = null;
-    GBObj.ROMname = getROMName();
+    GBObj.ROMname = GBObj.getROMName();
 
     GBObj.GBMaster.gameboy = GBObj;
 

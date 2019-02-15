@@ -25,6 +25,11 @@ class EmulatorManager
     };
     this.pushedKeyList = {};
 
+    this.gameType = {
+      GB: 1,
+      GBA: 2,
+    };
+
     this.rom = {
       codeName: null, // Name in ROM OFFSET
       fileName: null,
@@ -41,7 +46,7 @@ class EmulatorManager
 
   destroy()
   {
-    if (this.emuApi && this.emuApi.destroy)
+    if (this.emuApi/* && this.emuApi.destroy*/)
     {
       this.emuApi.destroy();
     }
@@ -49,16 +54,19 @@ class EmulatorManager
 
   loadRomBuffer(buffer)
   {
-    console.log(this.rom);
-
     buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
 
     this.destroy();
+
+    this.rom.gameType = this.gameType.GB;
 
     this.emuApi = new GameBoy('', this.emulatorScreen);
     this.emuApi.keyConfig = this.parent.parent.keyboardManager.keyMapConfig;
 
     this.emuApi.loadROMBuffer(buffer);
+    this.rom.codeName = this.emuApi.getROMName();
+
+    console.log(this.rom);
   }
 
   loadRomUrl(url)
@@ -119,7 +127,7 @@ class EmulatorManager
 
     console.log('onPressed: %s', keyType);
 
-    this.updateKeyState();
+    this.updateKeyState(keyType, this.pushedKeyList[key]);
   }
 
   onReleased(keyType)
@@ -133,11 +141,11 @@ class EmulatorManager
 
     console.log('onRelease: %s', keyType);
 
-    this.updateKeyState();
+    this.updateKeyState(keyType, this.pushedKeyList[key]);
   }
 
   // Update for each emulator
-  updateKeyState()
+  updateKeyState(keyType, value)
   {
   }
 }

@@ -155,19 +155,19 @@
 .portrait .rectangle-btn[data-joykey="SELECT"] {
   bottom: 5%;
   left: 50%;
-  width: calc(7vw * 2);
-  height: calc(5vw);
+  width: calc(9vw * 2);
+  height: calc(7vw);
   font-size: 3vw;
   border-radius: 30%;
 }
 
 .portrait .rectangle-btn[data-joykey="START"] {
-  transform: translateX(50%);
+  transform: translateX(0%);
   margin-right: -2%;
 }
 
 .portrait .rectangle-btn[data-joykey="SELECT"] {
-  transform: translateX(-50%);
+  transform: translateX(-100%);
   margin-left: -2%;
 }
 

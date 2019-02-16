@@ -204,7 +204,7 @@ window.doTimestep = function (frameNum, mustRender) {
     }
     // if (!isPaused) {
       VBAInterface.VBA_do_cycles(cyclesToDo);
-  console.log('dostep');
+    // console.log('dostep');
     // }
 
     // vbaPerf.deltaTimesThisSecond.push(deltaTime);
@@ -225,7 +225,7 @@ window.doTimestep = function (frameNum, mustRender) {
     document.querySelector(".ui").style.display = "block";
   }
 
-  console.log('loop');
+  // console.log('loop');
 };
 export default VBAInterface;
 

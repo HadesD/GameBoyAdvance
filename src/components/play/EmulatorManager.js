@@ -23,7 +23,7 @@ class EmulatorManager
       R: 9,
       L: 10,
     };
-    this.pushedKeyList = {};
+    this.pressedKeyList = {};
 
     this.gameType = {
       GB: 1,
@@ -52,6 +52,25 @@ class EmulatorManager
     if (this.emuApi/* && this.emuApi.destroy*/)
     {
       this.emuApi.destroy();
+    }
+  }
+
+  isKeyPressed(key)
+  {
+    const keyCode = this.keyCodes[key];
+    if (!keyCode)
+    {
+      return false;
+    }
+    return this.pressedKeyList[keyCode];
+  }
+
+  releaseAllKey()
+  {
+    const keys = Object.keys(this.keyCodes);
+    for (let i = 0; i < keys.length; i++)
+    {
+      this.onReleased(keys[i]);
     }
   }
 
@@ -132,11 +151,11 @@ class EmulatorManager
     {
       return;
     }
-    this.pushedKeyList[key] = true;
+    this.pressedKeyList[key] = true;
 
     console.log('onPressed: %s', keyType);
 
-    this.updateKeyState(keyType, this.pushedKeyList[key]);
+    this.updateKeyState(keyType, this.pressedKeyList[key]);
   }
 
   onReleased(keyType)
@@ -151,11 +170,11 @@ class EmulatorManager
     {
       return;
     }
-    this.pushedKeyList[key] = false;
+    this.pressedKeyList[key] = false;
 
     console.log('onRelease: %s', keyType);
 
-    this.updateKeyState(keyType, this.pushedKeyList[key]);
+    this.updateKeyState(keyType, this.pressedKeyList[key]);
   }
 
   // Update for each emulator

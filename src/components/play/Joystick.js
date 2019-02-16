@@ -6,7 +6,6 @@ import './Joystick.css';
 class Joystick extends React.Component
 {
   isPushed = false;
-  lastKey = null;
 
   hasSupportTouch = ('ontouchstart' in document.documentElement);
 
@@ -32,12 +31,18 @@ class Joystick extends React.Component
     // Mouse
     if (this.hasSupportTouch)
     {
+      // window.addEventListener('touchstart', this.onMouseDown);
+      // window.addEventListener('touchend', this.onMouseUp);
+
       current.addEventListener('touchstart', this.onMouseDown);
       current.addEventListener('touchmove', this.onMouseMove);
       current.addEventListener('touchend', this.onMouseUp);
     }
     else
     {
+      // window.addEventListener('mousedown', this.onMouseDown);
+      window.addEventListener('mouseup', this.onMouseUp);
+
       current.addEventListener('mousedown', this.onMouseDown);
       current.addEventListener('mousemove', this.onMouseMove);
       current.addEventListener('mouseup', this.onMouseUp);
@@ -55,12 +60,17 @@ class Joystick extends React.Component
     current.removeEventListener('touchstart', this.onMouseDown);
     current.removeEventListener('touchmove', this.onMouseMove);
     current.removeEventListener('touchend', this.onMouseUp);
+    // current.removeEventListener('touchcancel', this.onMouseUp);
+
+    window.removeEventListener('mousedown', this.onMouseDown);
+    window.removeEventListener('mouseup', this.onMouseUp);
+    window.removeEventListener('touchstart', this.onMouseDown);
+    window.removeEventListener('touchend', this.onMouseUp);
   }
 
   onMouseDown(e)
   {
-    // console.log('%s', e.type);
-    this.isPushed = true;
+    console.log('%s', e.type, e);
 
     const target = e.target;
     const key = target.getAttribute('data-joykey');
@@ -69,17 +79,26 @@ class Joystick extends React.Component
       return;
     }
 
-    this.lastKey = key;
+    e.preventDefault();
+    this.isPushed = true;
+
+    if (this.emulatorManager.isKeyPressed(key))
+    {
+      return;
+    }
+
     this.emulatorManager.onPressed(key);
   }
 
   onMouseMove(e)
   {
-    // console.log('%s', e.type);
+    console.log('%s', e.type);
     if (!this.isPushed)
     {
       return;
     }
+
+    e.preventDefault();
 
     let posX = e.clientX;
     let posY = e.clientY;
@@ -87,7 +106,38 @@ class Joystick extends React.Component
     if (e.type === 'touchmove')
     {
       // e.persist();
-      const touchPos = e.changedTouches[0];
+      const touches = e.changedTouches;
+
+      let touchedKeyList = [];
+      for (let i = 0; i < touches.length; i++)
+      {
+        const touch = touches[i];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (!target)
+        {
+          continue;
+        }
+        const key = target.getAttribute('data-joykey');
+        if (!key)
+        {
+          continue;
+        }
+        touchedKeyList.push(key);
+      }
+
+      const pressedKeyList = this.emulatorManager.pressedKeyList;
+      const keys = Object.keys(pressedKeyList);
+      for (let i = 0; i < keys.length; i++)
+      {
+        const key = keys[i];
+        if (key in touchedKeyList)
+        {
+          continue;
+        }
+        this.emulatorManager.onReleased(key);
+      }
+
+      const touchPos = touches[0];
       posX = touchPos.clientX;
       posY = touchPos.clientY;
     }
@@ -98,16 +148,21 @@ class Joystick extends React.Component
       return;
     }
     const key = target.getAttribute('data-joykey');
-    if (!key || key === this.lastKey)
+    if (!key)
     {
       return;
     }
-    this.lastKey = key;
+    if (this.emulatorManager.isKeyPressed(key))
+    {
+      return;
+    }
     this.emulatorManager.onPressed(key);
   }
 
   onMouseUp(e)
   {
+    console.log('%s', e.type, e);
+
     // If all key released
     if (!this.isPushed)
     {
@@ -115,7 +170,21 @@ class Joystick extends React.Component
     }
 
     this.isPushed = false;
-    this.lastKey = null;
+
+    // Because of one mouse only, so we release all
+    if (e.type === 'mouseup')
+    {
+      this.emulatorManager.releaseAllKey();
+      return;
+    }
+    else if (e.type === 'touchend')
+    {
+      if (e.touches.length <= 1)
+      {
+        this.emulatorManager.releaseAllKey();
+        return;
+      }
+    }
 
     const target = e.target;
     const key = target.getAttribute('data-joykey');

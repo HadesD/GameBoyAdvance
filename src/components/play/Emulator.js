@@ -12,8 +12,6 @@ class Emulator extends React.Component
     super(props);
 
     this.parent = props.parent;
-    this.screenRef = React.createRef();
-    this.inputFileRef = React.createRef();
 
     this.emulatorManager = new EmulatorManager(this);
 
@@ -55,7 +53,7 @@ class Emulator extends React.Component
   onClick(e)
   {
     e.preventDefault();
-    this.inputFileRef.current.click();
+    this.refs.inputFile.click();
   }
 
   inputFileOnChange(e)
@@ -104,14 +102,15 @@ class Emulator extends React.Component
           }
             `}
         </script>
-        <canvas
-          ref={this.screenRef}
+        <div
+          ref="screen"
+          className="screen"
           onClick={this.onClick}
           onDrop={this.onDrop}
           onDragOver={this.onDragOver}
         />
         <input
-          ref={this.inputFileRef}
+          ref="inputFile"
           type="file"
           accept=".gb,.gba,.gbc,.zip"
           style={{

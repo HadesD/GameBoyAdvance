@@ -50,7 +50,6 @@ class EmulatorManager
 
   start()
   {
-    this.emulatorScreen = this.parent.screenRef.current;
     this.keyboardManager = this.parent.parent.keyboardManager;
 
     const self = this;
@@ -75,19 +74,13 @@ class EmulatorManager
 
     if (!window.gbaninja || !this.apiReady.GBA)
     {
-      let loadedNeed = 0;
-      const needLoad = 3;
       load(`${process.env.PUBLIC_URL}/lib/gbaninja.js`, function(err, script) {
         if (err)
         {
           console.log(err);
           return;
         }
-        loadedNeed++;
-        if (loadedNeed === needLoad)
-        {
-          self.apiReady.GBA = true;
-        }
+        self.apiReady.GBA = true;
 
         console.log(script);
         console.log(window.gbaninja);
@@ -154,12 +147,20 @@ class EmulatorManager
 
     this.destroy();
 
+    const graphic = document.createElement('canvas');
+    const screen = this.parent.refs.screen;
+    while (screen.hasChildNodes())
+    {
+      screen.removeChild(screen.lastChild);
+    }
+    screen.appendChild(graphic);
+
     if (this.isGBRom(buffer))
     {
       console.log('GB Rom');
       this.rom.gameType = this.gameType.GB;
 
-      this.emuApi = new window.amebo('', this.emulatorScreen);
+      this.emuApi = new window.amebo('', graphic);
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       this.emuApi.loadROMBuffer(buffer);
       this.rom.codeName = this.emuApi.getROMName();
@@ -169,7 +170,7 @@ class EmulatorManager
       console.log('GB Rom');
       this.rom.gameType = this.gameType.GBA;
 
-      this.emuApi = new VBAGraphics(window.gbaninja, this.emulatorScreen);
+      this.emuApi = new VBAGraphics(window.gbaninja, graphic);
       if (!this.emuApi.initScreen())
       {
         console.error('You need to enable WebGL!');

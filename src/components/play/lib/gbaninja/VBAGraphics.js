@@ -24,7 +24,6 @@ var util = {
 
   createShaderFromScript: function (gl, scriptId, opt_shaderType) {
     // look up the script tag by id.
-    console.log(gl, scriptId, opt_shaderType);
     var shaderScript = document.getElementById(scriptId);
     var shaderSource = shaderScript.text;
     if (!opt_shaderType) {
@@ -199,6 +198,10 @@ VBAGraphics.prototype.onResize = function (/*windowWidth, windowHeight*/) {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
   this.gl.viewport(0, 0, canvas.width, canvas.height);
+};
+
+VBAGraphics.prototype.destroy = function() {
+
 };
 
 export default VBAGraphics;

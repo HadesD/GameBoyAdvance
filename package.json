@@ -6,6 +6,7 @@
   "dependencies": {
     "antd": "^3.13.2",
     "body-scroll-lock": "^2.6.1",
+    "load-script": "^1.0.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-router-dom": "^4.3.1",

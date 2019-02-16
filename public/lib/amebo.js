@@ -1,29 +1,28 @@
 //"use strict"; despite my code conforming to strict mode, i'll keep it off because it just adds stupid extra checks which might slow things down
 
-function GBMasterClass()
-{
-  this.gameboy = null;
-
-  let self = this;
-  this.frameId = null;
-
-  this.start = function() {
-    this.frameId = window.requestAnimationFrame(update);
-  };
-
-  function update()
+window.amebo = function(file, canvas, options) {
+  function GBMasterClass()
   {
-    self.gameboy.audioSyncUpdate();
+    this.gameboy = null;
 
-    self.frameId = window.requestAnimationFrame(update);
-  }
+    let self = this;
+    this.frameId = null;
 
-  this.destroy = function() {
-    window.cancelAnimationFrame(this.frameId);
+    this.start = function() {
+      this.frameId = window.requestAnimationFrame(update);
+    };
+
+    function update()
+    {
+      self.gameboy.audioSyncUpdate();
+
+      self.frameId = window.requestAnimationFrame(update);
+    }
+
+    this.destroy = function() {
+      window.cancelAnimationFrame(this.frameId);
+    };
   };
-};
-
-export default function GameBoy(file, canvas, options) {
 
   //alert(checkEndian());
 

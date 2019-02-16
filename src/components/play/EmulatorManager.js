@@ -1,5 +1,5 @@
-import GameBoy from './lib/amebo';
 import { Zlib } from 'zlibjs/bin/unzip.min';
+import load from 'load-script';
 
 class EmulatorManager
 {
@@ -8,6 +8,11 @@ class EmulatorManager
     console.log('EmulatorManager.constructor called');
 
     this.parent = parent;
+
+    this.apiReady = {
+      GB: false,
+      GBA: false,
+    };
 
     // Main key codes
     // keyCode<KeyType, Code>
@@ -45,6 +50,46 @@ class EmulatorManager
   {
     this.emulatorScreen = this.parent.screenRef.current;
     this.keyboardManager = this.parent.parent.keyboardManager;
+
+    const self = this;
+
+    if (!window.amebo)
+    {
+      load(`${process.env.PUBLIC_URL}/lib/amebo.js`, function(err, script) {
+        if (err)
+        {
+          console.log(err);
+          return;
+        }
+        self.apiReady.GB = true;
+        console.log(script);
+        console.log(window.amebo);
+      });
+    }
+    else
+    {
+      console.log(window.amebo);
+    }
+
+    if (!window.gbaninja || !this.apiReady.GBA)
+    {
+      load(`${process.env.PUBLIC_URL}/lib/gbaninja.js`, function(err, script) {
+        if (err)
+        {
+          console.log(err);
+          return;
+        }
+        self.apiReady.GBA = true;
+
+        console.log(script);
+        console.log(window.gbaninja);
+      });
+    }
+    else
+    {
+      console.log(window.gbaninja);
+    }
+
   }
 
   destroy()
@@ -101,7 +146,7 @@ class EmulatorManager
       console.log('GB Rom');
       this.rom.gameType = this.gameType.GB;
 
-      this.emuApi = new GameBoy('', this.emulatorScreen);
+      this.emuApi = new window.amebo('', this.emulatorScreen);
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       this.emuApi.loadROMBuffer(buffer);
       this.rom.codeName = this.emuApi.getROMName();

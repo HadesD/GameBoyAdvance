@@ -106,7 +106,7 @@ class Joystick extends React.Component
     if (e.type === 'touchmove')
     {
       // e.persist();
-      const touches = e.changedTouches;
+      const touches = e.touches;
 
       let touchedKeyList = [];
       for (let i = 0; i < touches.length; i++)
@@ -118,14 +118,15 @@ class Joystick extends React.Component
           continue;
         }
         const key = target.getAttribute('data-joykey');
-        if (!key)
+        if (!key || (key in touchedKeyList))
         {
           continue;
         }
         touchedKeyList.push(key);
+        // alert('pushed:' + key);
       }
 
-      const pressedKeyList = this.emulatorManager.pressedKeyList;
+      const pressedKeyList = this.emulatorManager.keyCodes;
       const keys = Object.keys(pressedKeyList);
       for (let i = 0; i < keys.length; i++)
       {
@@ -134,10 +135,16 @@ class Joystick extends React.Component
         {
           continue;
         }
+        if (!this.emulatorManager.isKeyPressed(key))
+        {
+          continue;
+        }
         this.emulatorManager.onReleased(key);
+        // alert(key);
       }
 
-      const touchPos = touches[0];
+      const changedTouches = e.changedTouches;
+      const touchPos = changedTouches[0];
       posX = touchPos.clientX;
       posY = touchPos.clientY;
     }

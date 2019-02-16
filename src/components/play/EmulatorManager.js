@@ -2,6 +2,8 @@ import { Zlib } from 'zlibjs/bin/unzip.min';
 import load from 'load-script';
 
 import VBAGraphics from './lib/gbaninja/VBAGraphics';
+import VBAInterface from './lib/gbaninja/VBAInterface';
+import VBASound from './lib/gbaninja/VBASound';
 
 class EmulatorManager
 {
@@ -41,6 +43,7 @@ class EmulatorManager
       codeName: null, // Name in ROM OFFSET
       fileName: null,
       gameType: null, // GB / GBA
+      buffer: null,
     };
 
     this.emuApi = null;
@@ -143,26 +146,26 @@ class EmulatorManager
       return;
     }
 
-    buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
+    this.rom.buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
 
     this.destroy();
 
-    const graphic = document.createElement('canvas');
     const screen = this.parent.refs.screen;
     while (screen.hasChildNodes())
     {
       screen.removeChild(screen.lastChild);
     }
+    const graphic = document.createElement('canvas');
     screen.appendChild(graphic);
 
-    if (this.isGBRom(buffer))
+    if (this.isGBRom(this.rom.buffer))
     {
       console.log('GB Rom');
       this.rom.gameType = this.gameType.GB;
 
       this.emuApi = new window.amebo('', graphic);
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
-      this.emuApi.loadROMBuffer(buffer);
+      this.emuApi.loadROMBuffer(this.rom.buffer);
       this.rom.codeName = this.emuApi.getROMName();
     }
     else if (this.isGBARom(buffer))
@@ -171,11 +174,20 @@ class EmulatorManager
       this.rom.gameType = this.gameType.GBA;
 
       this.emuApi = new VBAGraphics(window.gbaninja, graphic);
+      window.vbaGraphics = this.emuApi;
       if (!this.emuApi.initScreen())
       {
         console.error('You need to enable WebGL!');
         return;
       }
+      this.emuApi.drawFrame();
+
+      window.vbaSound = window.vbaSound || new VBASound(window.gbaninja);
+
+      console.log(VBAInterface);
+      VBAInterface.setRomBuffer(this.rom.buffer);
+      VBAInterface.VBA_start();
+      window.doTimestep(window.frameNum + 1);
       // this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       // this.emuApi.loadROMBuffer(buffer);
       // this.rom.codeName = this.emuApi.getROMName();

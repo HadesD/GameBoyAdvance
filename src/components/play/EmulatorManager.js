@@ -1,6 +1,8 @@
 import { Zlib } from 'zlibjs/bin/unzip.min';
 import load from 'load-script';
 
+import VBAGraphics from './lib/gbaninja/VBAGraphics';
+
 class EmulatorManager
 {
   constructor(parent)
@@ -73,13 +75,19 @@ class EmulatorManager
 
     if (!window.gbaninja || !this.apiReady.GBA)
     {
+      let loadedNeed = 0;
+      const needLoad = 3;
       load(`${process.env.PUBLIC_URL}/lib/gbaninja.js`, function(err, script) {
         if (err)
         {
           console.log(err);
           return;
         }
-        self.apiReady.GBA = true;
+        loadedNeed++;
+        if (loadedNeed === needLoad)
+        {
+          self.apiReady.GBA = true;
+        }
 
         console.log(script);
         console.log(window.gbaninja);
@@ -130,6 +138,11 @@ class EmulatorManager
     return (gbMagic === 'ce,ed,66,66,cc,d,0,b');
   }
 
+  isGBARom(buffer)
+  {
+    return true;
+  }
+
   loadRomBuffer(buffer)
   {
     if (this.rom.fileName.indexOf('.gb') === -1)
@@ -150,6 +163,21 @@ class EmulatorManager
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       this.emuApi.loadROMBuffer(buffer);
       this.rom.codeName = this.emuApi.getROMName();
+    }
+    else if (this.isGBARom(buffer))
+    {
+      console.log('GB Rom');
+      this.rom.gameType = this.gameType.GBA;
+
+      this.emuApi = new VBAGraphics(window.gbaninja, this.emulatorScreen);
+      if (!this.emuApi.initScreen())
+      {
+        console.error('You need to enable WebGL!');
+        return;
+      }
+      // this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
+      // this.emuApi.loadROMBuffer(buffer);
+      // this.rom.codeName = this.emuApi.getROMName();
     }
 
     this.isPaused = false;

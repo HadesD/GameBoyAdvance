@@ -28,8 +28,10 @@ class Emulator extends React.Component
     this.emulatorManager.start();
   }
 
-  componentWillUnMount()
+  componentWillUnmount()
   {
+    console.log('Emulator.componentWillUnmount');
+
     this.emulatorManager.destroy();
   }
 

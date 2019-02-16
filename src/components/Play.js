@@ -48,6 +48,8 @@ class Play extends React.Component
 
   componentWillUnmount()
   {
+    console.log('Play.componentWillUnmount');
+
     window.removeEventListener('resize', this.updateWindowDimensions);
 
     if (this.gamePadManager)

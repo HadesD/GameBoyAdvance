@@ -5,7 +5,7 @@ function GBMasterClass()
   this.gameboy = null;
 
   let self = this;
-  self.frameId = null;
+  this.frameId = null;
 
   this.start = function() {
     this.frameId = window.requestAnimationFrame(update);

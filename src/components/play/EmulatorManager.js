@@ -74,20 +74,40 @@ class EmulatorManager
     }
   }
 
+  isGBRom(buffer)
+  {
+    let gbMagic = [
+      buffer[0x0104], buffer[0x0105], buffer[0x0106], buffer[0x0107],
+      buffer[0x0108], buffer[0x0109], buffer[0x010A], buffer[0x010B],
+    ].map(function (v) {
+      return v.toString(16);
+    }).join();
+    return (gbMagic === 'ce,ed,66,66,cc,d,0,b');
+  }
+
   loadRomBuffer(buffer)
   {
+    if (this.rom.fileName.indexOf('.gb') === -1)
+    {
+      return;
+    }
+
     buffer = (buffer instanceof ArrayBuffer) ? (new Uint8Array(buffer)) : buffer;
 
     this.destroy();
 
-    this.rom.gameType = this.gameType.GB;
+    if (this.isGBRom(buffer))
+    {
+      console.log('GB Rom');
+      this.rom.gameType = this.gameType.GB;
 
-    this.emuApi = new GameBoy('', this.emulatorScreen);
-    this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
+      this.emuApi = new GameBoy('', this.emulatorScreen);
+      this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
+      this.emuApi.loadROMBuffer(buffer);
+      this.rom.codeName = this.emuApi.getROMName();
+    }
 
-    this.emuApi.loadROMBuffer(buffer);
     this.isPaused = false;
-    this.rom.codeName = this.emuApi.getROMName();
 
     console.log(this.rom);
   }
@@ -96,6 +116,7 @@ class EmulatorManager
   {
     const hRequest = new XMLHttpRequest();
     hRequest.open('GET', url);
+    hRequest.responseType = 'arraybuffer';
     hRequest.onload = function(e) {
       console.log(e);
       // this.rom.fileName = fileName;

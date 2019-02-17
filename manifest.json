@@ -1,0 +1,15 @@
+{
+  "short_name": "GBA Emu",
+  "name": "GameBoy Advance for Browser",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

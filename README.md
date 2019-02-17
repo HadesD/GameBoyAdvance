@@ -8,7 +8,7 @@ An emulator uses API of Amebo and VBA-m (gbaninja) as interface to run Gameboy /
 
 ## Features
 
-- Support GB/GBC/GBA roms
+- Support GB/GBC/GBA roms and .zip file which includes a rom
 - Support Gamepad, Keyboard, Joystick, Fake UI input (for mobile players)
 - Support mobile (IOS prefer Safari)
 - Support Audio on mobile devices

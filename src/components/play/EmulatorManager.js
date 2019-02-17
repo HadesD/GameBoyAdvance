@@ -1,9 +1,7 @@
 import { Zlib } from 'zlibjs/bin/unzip.min';
 import load from 'load-script';
 
-import VBAGraphics from './lib/gbaninja/VBAGraphics';
 import VBAInterface from './lib/gbaninja/VBAInterface';
-import VBASound from './lib/gbaninja/VBASound';
 
 class EmulatorManager
 {
@@ -173,24 +171,11 @@ class EmulatorManager
       console.log('GB Rom');
       this.rom.gameType = this.gameType.GBA;
 
-      this.emuApi = new VBAGraphics(window.gbaninja, graphic);
-      window.vbaGraphics = this.emuApi;
-      if (!this.emuApi.initScreen())
-      {
-        console.error('You need to enable WebGL!');
-        return;
-      }
-      this.emuApi.drawFrame();
+      this.emuApi = new VBAInterface(window.gbaninja, graphic);
 
-      window.vbaSound = window.vbaSound || new VBASound(window.gbaninja);
-
-      console.log(VBAInterface);
-      VBAInterface.emulatorManager = this;
-      VBAInterface.setRomBuffer(this.rom.buffer);
-      VBAInterface.VBA_start();
-      window.doTimestep(window.frameNum + 1);
-      // this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
-      // this.emuApi.loadROMBuffer(buffer);
+      this.emuApi.emulatorManager = this;
+      this.emuApi.setRomBuffer(this.rom.buffer);
+      this.emuApi.start();
       // this.rom.codeName = this.emuApi.getROMName();
     }
 

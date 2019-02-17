@@ -1,276 +1,320 @@
-var VBAInterface = {};
+import VBAGraphics from './VBAGraphics';
+import VBASound from './VBASound';
 
-window.VBAInterface = VBAInterface;
+function VBAInterface(wasmEmu, graphic)
+{
+  window.VBAInterface = this;
 
-window.gbaninja = window.gbaninja || {};
-const gbaninja = window.gbaninja;
+  this.vbaGraphics = new VBAGraphics(wasmEmu, graphic);
 
-VBAInterface.setRomBuffer = function(buffer) {
-  this.romBuffer8 = buffer;
-};
+  const GBA_CYCLES_PER_SECOND = 16777216;
+  // var TARGET_FRAMERATE = 500;
+  const lastFrameTime = window.performance.now();
+  // window.frameTimeout = null;
+  let animationFrameRequest = null;
+  // window.frameNum = 1;
+  // window.lastFocusTime = 0;
+  const self = this;
 
-VBAInterface.VBA_get_emulating = function () {
-  return gbaninja.ccall("VBA_get_emulating", "int", [], []);
-};
+  const gbaninja = wasmEmu;
 
-VBAInterface.VBA_start = function () {
-  return gbaninja.ccall("VBA_start", "int", [], []);
-};
+  this.setRomBuffer = function(buffer) {
+    this.romBuffer8 = buffer;
+  };
 
-VBAInterface.VBA_do_cycles = function (cycles) {
-  return gbaninja.ccall("VBA_do_cycles", "int", ["int"], [cycles]);
-};
+  this.VBA_get_emulating = function () {
+    return gbaninja.ccall("VBA_get_emulating", "int", [], []);
+  };
 
-VBAInterface.VBA_stop = function () {
-  return gbaninja.ccall("VBA_stop", "int", [], []);
-};
+  this.VBA_start = function () {
+    return gbaninja.ccall("VBA_start", "int", [], []);
+  };
 
-VBAInterface.VBA_get_bios = function () {
-  return gbaninja.ccall("VBA_get_bios", "int", [], []);
-};
+  this.VBA_do_cycles = function (cycles) {
+    return gbaninja.ccall("VBA_do_cycles", "int", ["int"], [cycles]);
+  };
 
-VBAInterface.VBA_get_rom = function () {
-  return gbaninja.ccall("VBA_get_rom", "int", [], []);
-};
+  this.VBA_stop = function () {
+    return gbaninja.ccall("VBA_stop", "int", [], []);
+  };
 
-VBAInterface.VBA_get_internalRAM = function () {
-  return gbaninja.ccall("VBA_get_internalRAM", "int", [], []);
-};
+  this.VBA_get_bios = function () {
+    return gbaninja.ccall("VBA_get_bios", "int", [], []);
+  };
 
-VBAInterface.VBA_get_workRAM = function () {
-  return gbaninja.ccall("VBA_get_workRAM", "int", [], []);
-};
+  this.VBA_get_rom = function () {
+    return gbaninja.ccall("VBA_get_rom", "int", [], []);
+  };
 
-VBAInterface.VBA_get_paletteRAM = function () {
-  return gbaninja.ccall("VBA_get_paletteRAM", "int", [], []);
-};
+  this.VBA_get_internalRAM = function () {
+    return gbaninja.ccall("VBA_get_internalRAM", "int", [], []);
+  };
 
-VBAInterface.VBA_get_vram = function () {
-  return gbaninja.ccall("VBA_get_vram", "int", [], []);
-};
+  this.VBA_get_workRAM = function () {
+    return gbaninja.ccall("VBA_get_workRAM", "int", [], []);
+  };
 
-VBAInterface.VBA_get_pix = function () {
-  return gbaninja.ccall("VBA_get_pix", "int", [], []);
-};
+  this.VBA_get_paletteRAM = function () {
+    return gbaninja.ccall("VBA_get_paletteRAM", "int", [], []);
+  };
 
-VBAInterface.VBA_get_oam = function () {
-  return gbaninja.ccall("VBA_get_oam", "int", [], []);
-};
+  this.VBA_get_vram = function () {
+    return gbaninja.ccall("VBA_get_vram", "int", [], []);
+  };
 
-VBAInterface.VBA_get_ioMem = function () {
-  return gbaninja.ccall("VBA_get_ioMem", "int", [], []);
-};
+  this.VBA_get_pix = function () {
+    return gbaninja.ccall("VBA_get_pix", "int", [], []);
+  };
 
-VBAInterface.VBA_get_systemColorMap16 = function () {
-  return gbaninja.ccall("VBA_get_systemColorMap16", "int", [], []);
-};
+  this.VBA_get_oam = function () {
+    return gbaninja.ccall("VBA_get_oam", "int", [], []);
+  };
 
-VBAInterface.VBA_get_systemColorMap32 = function () {
-  return gbaninja.ccall("VBA_get_systemColorMap32", "int", [], []);
-};
+  this.VBA_get_ioMem = function () {
+    return gbaninja.ccall("VBA_get_ioMem", "int", [], []);
+  };
 
-VBAInterface.VBA_get_systemFrameSkip = function () {
-  return gbaninja.ccall("VBA_get_systemFrameSkip", "int", [], []);
-};
+  this.VBA_get_systemColorMap16 = function () {
+    return gbaninja.ccall("VBA_get_systemColorMap16", "int", [], []);
+  };
 
-VBAInterface.VBA_set_systemFrameSkip = function (n) {
-  return gbaninja.ccall("VBA_set_systemFrameSkip", "int", ["int"], [n]);
-};
+  this.VBA_get_systemColorMap32 = function () {
+    return gbaninja.ccall("VBA_get_systemColorMap32", "int", [], []);
+  };
 
-VBAInterface.VBA_get_systemSaveUpdateCounter = function () {
-  return gbaninja.ccall("VBA_get_systemSaveUpdateCounter", "int", [], []);
-};
+  this.VBA_get_systemFrameSkip = function () {
+    return gbaninja.ccall("VBA_get_systemFrameSkip", "int", [], []);
+  };
 
-VBAInterface.VBA_reset_systemSaveUpdateCounter = function () {
-  return gbaninja.ccall("VBA_reset_systemSaveUpdateCounter", "int", [], []);
-};
+  this.VBA_set_systemFrameSkip = function (n) {
+    return gbaninja.ccall("VBA_set_systemFrameSkip", "int", ["int"], [n]);
+  };
 
-VBAInterface.VBA_emuWriteBattery = function () {
-  return gbaninja.ccall("VBA_emuWriteBattery", "int", [], []);
-};
+  this.VBA_get_systemSaveUpdateCounter = function () {
+    return gbaninja.ccall("VBA_get_systemSaveUpdateCounter", "int", [], []);
+  };
 
-VBAInterface.VBA_agbPrintFlush = function () {
-  return gbaninja.ccall("VBA_agbPrintFlush", "int", [], []);
-};
+  this.VBA_reset_systemSaveUpdateCounter = function () {
+    return gbaninja.ccall("VBA_reset_systemSaveUpdateCounter", "int", [], []);
+  };
 
-// ------- VBA EXIT POINTS --------
+  this.VBA_emuWriteBattery = function () {
+    return gbaninja.ccall("VBA_emuWriteBattery", "int", [], []);
+  };
 
-VBAInterface.NYI = function (feature) {
-  console.log("Feature is NYI: ", feature);
-};
+  this.VBA_agbPrintFlush = function () {
+    return gbaninja.ccall("VBA_agbPrintFlush", "int", [], []);
+  };
 
-VBAInterface.getAudioSampleRate = function () {
-  return window.vbaSound.getSampleRate();
-};
+  // ------- VBA EXIT POINTS --------
 
-VBAInterface.getRomSize = function (startPointer8) {
-  return this.romBuffer8.byteLength;
-};
+  this.NYI = function (feature) {
+    console.log("Feature is NYI: ", feature);
+  };
 
-VBAInterface.copyRomToMemory = function (startPointer8) {
-  var gbaHeap8 = gbaninja.HEAP8;
-  var byteLength = this.romBuffer8.byteLength;
-  for (var i = 0; i < byteLength; i++) {
-    gbaHeap8[startPointer8 + i] = this.romBuffer8[i];
-  }
-};
+  this.getAudioSampleRate = function () {
+    return this.vbaSound.getSampleRate();
+  };
 
-VBAInterface.renderFrame = function (pixPointer8) {
-  window.vbaGraphics.drawGBAFrame(pixPointer8);
-};
+  this.getRomSize = function (startPointer8) {
+    return this.romBuffer8.byteLength;
+  };
 
-VBAInterface.initSound = function () {
-};
+  this.copyRomToMemory = function (startPointer8) {
+    var gbaHeap8 = gbaninja.HEAP8;
+    var byteLength = this.romBuffer8.byteLength;
+    for (var i = 0; i < byteLength; i++) {
+      gbaHeap8[startPointer8 + i] = this.romBuffer8[i];
+    }
+  };
 
-VBAInterface.pauseSound = function () {
-};
+  this.renderFrame = function (pixPointer8) {
+    this.vbaGraphics.drawGBAFrame(pixPointer8);
+  };
 
-VBAInterface.resetSound = function () {
-  window.vbaSound.resetSound();
-};
+  this.initSound = function () {
+  };
 
-VBAInterface.resumeSound = function () {
-};
+  this.pauseSound = function () {
+  };
 
-VBAInterface.writeSound = function (pointer8, length16) {
-  return window.vbaSound.writeSound(pointer8, length16);
-};
+  this.resetSound = function () {
+    this.vbaSound.resetSound();
+  };
 
-VBAInterface.setThrottleSound = function (pointer8, length16) {
-};
+  this.resumeSound = function () {
+  };
 
-VBAInterface.getSaveSize = function () {
-  return 0;
-  // return vbaSaves.getSaveSize();
-};
+  this.writeSound = function (pointer8, length16) {
+    return this.vbaSound.writeSound(pointer8, length16);
+  };
 
-VBAInterface.commitFlash = VBAInterface.commitEeprom = function (pointer8, size) {
-  return 0;
-  // return vbaSaves.softCommit(pointer8, size);
-};
+  this.setThrottleSound = function (pointer8, length16) {
+  };
 
-VBAInterface.restoreSaveMemory = function (pointer8, targetBufferSize) {
-  return 0;
-  // return vbaSaves.restoreSaveMemory(pointer8, targetBufferSize);
-};
+  this.getSaveSize = function () {
+    return 0;
+    // return vbaSaves.getSaveSize();
+  };
 
-VBAInterface.isKeyDown = function (key) {
-  return this.emulatorManager.isKeyPressed(key);
-};
+  this.commitFlash = this.commitEeprom = function (pointer8, size) {
+    return 0;
+    // return vbaSaves.softCommit(pointer8, size);
+  };
 
-VBAInterface.getJoypad = function (joypadNum) {
-  var res = 0;
+  this.restoreSaveMemory = function (pointer8, targetBufferSize) {
+    return 0;
+    // return vbaSaves.restoreSaveMemory(pointer8, targetBufferSize);
+  };
 
-  if (this.isKeyDown('A')) {
-    res |= 1;
-  }
-  if (this.isKeyDown('B')) {
-    res |= 2;
-  }
-  if (this.isKeyDown('SELECT')) {
-    res |= 4;
-  }
-  if (this.isKeyDown('START')) {
-    res |= 8;
-  }
-  if (this.isKeyDown('RIGHT')) {
-    res |= 16;
-  }
-  if (this.isKeyDown('LEFT')) {
-    res |= 32;
-  }
-  if (this.isKeyDown('UP')) {
-    res |= 64;
-  }
-  if (this.isKeyDown('DOWN')) {
-    res |= 128;
-  }
-  if (this.isKeyDown('R')) {
-    res |= 256;
-  }
-  if (this.isKeyDown('L')) {
-    res |= 512;
-  }
+  this.isKeyDown = function (key) {
+    return this.emulatorManager.isKeyPressed(key);
+  };
 
-  // disallow L+R or U+D from being pressed at the same time
-  if ((res & 48) === 48) {
-    res &= ~48;
-  }
-  if ((res & 192) === 192) {
-    res &= ~192;
-  }
+  this.getJoypad = function (joypadNum) {
+    var res = 0;
 
-  // return vbaInput.getJoypad(joypadNum);
-  return res;
-};
+    if (this.isKeyDown('A')) {
+      res |= 1;
+    }
+    if (this.isKeyDown('B')) {
+      res |= 2;
+    }
+    if (this.isKeyDown('SELECT')) {
+      res |= 4;
+    }
+    if (this.isKeyDown('START')) {
+      res |= 8;
+    }
+    if (this.isKeyDown('RIGHT')) {
+      res |= 16;
+    }
+    if (this.isKeyDown('LEFT')) {
+      res |= 32;
+    }
+    if (this.isKeyDown('UP')) {
+      res |= 64;
+    }
+    if (this.isKeyDown('DOWN')) {
+      res |= 128;
+    }
+    if (this.isKeyDown('R')) {
+      res |= 256;
+    }
+    if (this.isKeyDown('L')) {
+      res |= 512;
+    }
 
-VBAInterface.dbgOutput = function (textPointer8, unknownPointer8) {
-  return console.log("dbgOutput", textPointer8, unknownPointer8);
-};
+    // disallow L+R or U+D from being pressed at the same time
+    if ((res & 48) === 48) {
+      res &= ~48;
+    }
+    if ((res & 192) === 192) {
+      res &= ~192;
+    }
 
-// Do step
-var GBA_CYCLES_PER_SECOND = 16777216;
-var TARGET_FRAMERATE = 500;
-window.lastFrameTime = window.performance.now();
-window.frameTimeout = null;
-window.animationFrameRequest = null;
-window.frameNum = 1;
-window.lastFocusTime = 0;
+    // return vbaInput.getJoypad(joypadNum);
+    return res;
+  };
 
-window.doTimestep = function (frameNum, mustRender) {
+  this.dbgOutput = function (textPointer8, unknownPointer8) {
+    return console.log("dbgOutput", textPointer8, unknownPointer8);
+  };
 
-  if (frameNum !== window.frameNum + 1) {
-    return;
-  }
-  window.frameNum = frameNum;
+  // Do step
+  function update()
+  {
+    const currentTime = window.performance.now();
+    const deltaTime = currentTime - lastFrameTime;
+    const clampedDeltaTime = Math.min(50, deltaTime);
 
-  var currentTime = window.performance.now();
-  var deltaTime = currentTime - window.lastFrameTime;
-  var clampedDeltaTime = Math.min(50, deltaTime);
-
-  if (currentTime - window.lastFocusTime > 100 || deltaTime < 0.1) {
-    window.animationFrameRequest = window.requestAnimationFrame(function () {
-      window.doTimestep(frameNum + 1);
-    });
-    // console.log(1);
-    // return;
-  }
-  window.lastFrameTime = currentTime;
-
-  if (true /* isRunning */) {
-    // vbaSaves.checkSaves();
-
-    var cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
-    if (window.vbaSound.spareSamplesAtLastEvent > 1000) {
+    let cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
+    if (self.vbaSound.spareSamplesAtLastEvent > 1000) {
       cyclesToDo -= Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
     }
-    if (window.vbaSound.spareSamplesAtLastEvent < 700) {
+    if (self.vbaSound.spareSamplesAtLastEvent < 700) {
       cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
     }
-    // if (!isPaused) {
-    VBAInterface.VBA_do_cycles(cyclesToDo);
-    // console.log('dostep');
-    // }
 
-    // vbaPerf.deltaTimesThisSecond.push(deltaTime);
-    // vbaPerf.cyclesThisSecond.push(cyclesToDo);
+    self.VBA_do_cycles(cyclesToDo);
 
-    clearTimeout(window.frameTimeout);
-    window.frameTimeout = setTimeout(function () {
-      window.doTimestep(frameNum + 1);
-    }, 1000 / TARGET_FRAMERATE);
-    cancelAnimationFrame(window.animationFrameRequest);
-    window.animationFrameRequest = window.requestAnimationFrame(function () {
-      window.doTimestep(frameNum + 1);
-    });
-
-  } else if (VBAInterface.VBA_get_emulating()) {
-    VBAInterface.VBA_stop();
-    document.querySelector(".pixels").style.display = "none";
-    document.querySelector(".ui").style.display = "block";
+    animationFrameRequest = window.requestAnimationFrame(update);
   }
 
+  this.start = function () {
+    if (!this.vbaGraphics.initScreen())
+    {
+      console.error('You need to enable WebGL!');
+      return;
+    }
+    this.vbaGraphics.drawFrame();
+
+    this.vbaSound = new VBASound(window.gbaninja);
+
+    this.VBA_start();
+
+    animationFrameRequest = window.requestAnimationFrame(update);
+  }
+
+  this.destroy = function () {
+    window.cancelAnimationFrame(animationFrameRequest);
+    window.VBAInterface = null;
+  }
+}
+
+// window.doTimestep = function (/* frameNum, mustRender */) {
+
+  // if (frameNum !== window.frameNum + 1) {
+  //   return;
+  // }
+  // window.frameNum = frameNum;
+
+  // var currentTime = window.performance.now();
+  // var deltaTime = currentTime - window.lastFrameTime;
+  // var clampedDeltaTime = Math.min(50, deltaTime);
+
+  // if (currentTime - window.lastFocusTime > 100 || deltaTime < 0.1) {
+  //   window.animationFrameRequest = window.requestAnimationFrame(function () {
+  //     window.doTimestep(frameNum + 1);
+  //   });
+  // console.log(1);
+  // return;
+  // }
+  // window.lastFrameTime = currentTime;
+
+  // if (true /* isRunning */) {
+  // vbaSaves.checkSaves();
+
+  // var cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
+  // if (window.vbaSound.spareSamplesAtLastEvent > 1000) {
+  //   cyclesToDo -= Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
+  // }
+  // if (window.vbaSound.spareSamplesAtLastEvent < 700) {
+  //   cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
+  // }
+  // // if (!isPaused) {
+  // VBAInterface.VBA_do_cycles(cyclesToDo);
+  // console.log('dostep');
+  // }
+
+  // vbaPerf.deltaTimesThisSecond.push(deltaTime);
+  // vbaPerf.cyclesThisSecond.push(cyclesToDo);
+
+  // clearTimeout(window.frameTimeout);
+  // window.frameTimeout = setTimeout(function () {
+  //   window.doTimestep(frameNum + 1);
+  // }, 1000 / TARGET_FRAMERATE);
+  // cancelAnimationFrame(window.animationFrameRequest);
+  // window.animationFrameRequest = window.requestAnimationFrame(window.doTimestep);
+
+  // } else if (VBAInterface.VBA_get_emulating()) {
+  //   VBAInterface.VBA_stop();
+  //   document.querySelector(".pixels").style.display = "none";
+  //   document.querySelector(".ui").style.display = "block";
+  // }
+
   // console.log('loop');
-};
+// };
+
 export default VBAInterface;
 

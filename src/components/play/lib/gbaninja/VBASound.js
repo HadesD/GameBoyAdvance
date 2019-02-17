@@ -14,6 +14,7 @@ function VBASound(emscriptenModule) {
   this.spareSamplesAtLastEvent = 0;
 
 }
+
 VBASound.prototype = Object.create(Object.prototype);
 VBASound.prototype.constructor = VBASound;
 
@@ -93,10 +94,10 @@ VBASound.prototype.handleAudioEvent = function (event) {
 
   // vbaPerf.audioDeadlineResultsThisSecond.push(deadlineResult);
 
-  var frameNum = window.frameNum;
-  setTimeout(function () {
-    window.doTimestep(frameNum + 1);
-  }, 0);
+  // var frameNum = window.frameNum;
+  // setTimeout(function () {
+  //   window.doTimestep(frameNum + 1);
+  // }, 0);
 
 
 };

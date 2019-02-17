@@ -1,8 +1,9 @@
 import VBAGraphics from './VBAGraphics';
 import VBASound from './VBASound';
 
-function VBAInterface(wasmEmu, graphic)
+function VBAInterface(graphic)
 {
+  const wasmEmu = window.gbaninja;
   window.VBAInterface = this;
 
   this.vbaGraphics = new VBAGraphics(wasmEmu, graphic);
@@ -264,8 +265,8 @@ function VBAInterface(wasmEmu, graphic)
   }
 
   this.destroy = function () {
-    this.VBA_stop();
     window.cancelAnimationFrame(animationFrameRequest);
+    this.VBA_stop();
     window.VBAInterface = null;
   }
 }

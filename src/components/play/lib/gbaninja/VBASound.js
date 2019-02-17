@@ -13,6 +13,17 @@ function VBASound(emscriptenModule) {
   this.audioSpareReadPtr = 0;
   this.spareSamplesAtLastEvent = 0;
 
+  const self = this;
+
+  // Support IOS
+  window.addEventListener('touchstart', function(evt) {
+    const buffer = self.audioCtx.createBuffer(1, 1, 22050);
+    const source = self.audioCtx.createBufferSource();
+    source.buffer = buffer;
+
+    source.connect(self.audioCtx.destination);
+    source.start(0);
+  }, false);
 }
 
 VBASound.prototype = Object.create(Object.prototype);
@@ -35,6 +46,7 @@ VBASound.prototype.resetSound = function () {
 };
 
 VBASound.prototype.writeSound = function (pointer8, length16) {
+  // console.log(1);
 
   if (pointer8 % 2 === 1) {
     console.error("Audio pointer must be 16 bit aligned.");
@@ -62,7 +74,8 @@ VBASound.prototype.writeSound = function (pointer8, length16) {
 
 VBASound.prototype.handleAudioEvent = function (event) {
 
-  if (!window.gbaninja || !window.VBAInterface.VBA_get_emulating()) {
+  // console.log(event);
+  if (!window.gbaninja || !window.VBAInterface || !window.VBAInterface.VBA_get_emulating()) {
     return;
   }
 

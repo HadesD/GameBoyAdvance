@@ -163,7 +163,7 @@ class EmulatorManager
     {
       this.rom.gameType = this.gameType.GB;
 
-      this.emuApi = new window.amebo('', graphic);
+      this.emuApi = new window.amebo(graphic);
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       this.emuApi.loadROMBuffer(this.rom.buffer);
     }
@@ -171,7 +171,7 @@ class EmulatorManager
     {
       this.rom.gameType = this.gameType.GBA;
 
-      this.emuApi = new VBAInterface(window.gbaninja, graphic);
+      this.emuApi = new VBAInterface(graphic);
       this.emuApi.emulatorManager = this;
       this.emuApi.setRomBuffer(this.rom.buffer);
     }

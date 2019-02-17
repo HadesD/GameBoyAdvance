@@ -1,6 +1,6 @@
 //"use strict"; despite my code conforming to strict mode, i'll keep it off because it just adds stupid extra checks which might slow things down
 
-window.amebo = function(file, canvas, options) {
+window.amebo = function(canvas, options) {
   function GBMasterClass()
   {
     this.gameboy = null;
@@ -182,7 +182,6 @@ window.amebo = function(file, canvas, options) {
 
   this.ctx = ctx;
   var colours = [[219, 255, 134, 255], [194, 226, 33, 255], [73, 156, 27, 255], [15, 86, 47, 255]]
-  this.file = file;
   var gameLoaded = false;
   var biosLoaded = 0;
   var GBAudioContext = null;
@@ -252,11 +251,6 @@ window.amebo = function(file, canvas, options) {
 
   var controlKeyConfig = {
     STATES: [112, 113, 114, 115, /* 116,  */117, 118, 119, 120, 121]
-  }
-
-  if (file)
-  {
-    this.loadROM(file);
   }
 
   if (options.enableLoadBios)

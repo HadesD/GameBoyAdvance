@@ -258,7 +258,6 @@ function VBAInterface(graphic)
     this.vbaGraphics.drawFrame();
 
     this.vbaSound = new VBASound(window.gbaninja);
-
     this.VBA_start();
 
     animationFrameRequest = window.requestAnimationFrame(update);

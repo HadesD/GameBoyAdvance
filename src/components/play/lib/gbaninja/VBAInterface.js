@@ -268,22 +268,6 @@ function VBAInterface(wasmEmu, graphic)
     window.cancelAnimationFrame(animationFrameRequest);
     window.VBAInterface = null;
   }
-
-  this.getRomName = function () {
-    const startOffset = 0xA0;
-    let name = '';
-    for (let i = startOffset; i < (startOffset + 18); i++)
-    {
-      const charCode = this.romBuffer8[i];
-      console.log(charCode);
-      if (charCode === 0x00)
-      {
-        break;
-      }
-      name += String.fromCharCode(charCode);
-    }
-    return name;
-  }
 }
 
 export default VBAInterface;

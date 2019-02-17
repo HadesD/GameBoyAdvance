@@ -12,8 +12,8 @@ class EmulatorManager
     this.parent = parent;
 
     this.apiReady = {
-      GB: false,
-      GBA: false,
+      GB: window.amebo ? true : false,
+      GBA: window.gbaninja ? true : false,
     };
 
     // Main key codes
@@ -55,48 +55,34 @@ class EmulatorManager
 
     const self = this;
 
-    if (!window.amebo)
+    if (!this.apiReady.GB)
     {
       load(`${process.env.PUBLIC_URL}/lib/amebo.js`, function(err, script) {
         if (err)
         {
-          console.log(err);
+          console.error(err);
           return;
         }
         self.apiReady.GB = true;
-        console.log(script);
-        console.log(window.amebo);
       });
     }
-    else
-    {
-      console.log(window.amebo);
-    }
 
-    if (!window.gbaninja || !this.apiReady.GBA)
+    if (!this.apiReady.GBA)
     {
       load(`${process.env.PUBLIC_URL}/lib/gbaninja.js`, function(err, script) {
         if (err)
         {
-          console.log(err);
+          console.error(err);
           return;
         }
         self.apiReady.GBA = true;
-
-        console.log(script);
-        console.log(window.gbaninja);
       });
     }
-    else
-    {
-      console.log(window.gbaninja);
-    }
-
   }
 
   destroy()
   {
-    if (this.emuApi/* && this.emuApi.destroy*/)
+    if (this.emuApi)
     {
       this.emuApi.destroy();
     }
@@ -132,6 +118,23 @@ class EmulatorManager
     return (gbMagic === 'ce,ed,66,66,cc,d,0,b');
   }
 
+  getRomName() {
+    const isGBA = (this.rom.gameType === this.gameType.GBA);
+    const startOffset = isGBA ? 0xA0 : 0x134;
+    const endOffset = startOffset + 16;
+    let name = '';
+    for (let i = startOffset; i < endOffset; i++)
+    {
+      const charCode = this.rom.buffer[i];
+      if ((charCode === 0x80) || (charCode === 0xC0) || (charCode === 0x0))
+      {
+        break;
+      }
+      name += String.fromCharCode(charCode);
+    }
+    return name;
+  }
+
   isGBARom(buffer)
   {
     return true;
@@ -158,26 +161,24 @@ class EmulatorManager
 
     if (this.isGBRom(this.rom.buffer))
     {
-      console.log('GB Rom');
       this.rom.gameType = this.gameType.GB;
 
       this.emuApi = new window.amebo('', graphic);
       this.emuApi.keyConfig = this.keyboardManager.keyMapConfig;
       this.emuApi.loadROMBuffer(this.rom.buffer);
-      this.rom.codeName = this.emuApi.getROMName();
     }
     else if (this.isGBARom(buffer))
     {
-      console.log('GB Rom');
       this.rom.gameType = this.gameType.GBA;
 
       this.emuApi = new VBAInterface(window.gbaninja, graphic);
-
       this.emuApi.emulatorManager = this;
       this.emuApi.setRomBuffer(this.rom.buffer);
-      this.emuApi.start();
-      this.rom.codeName = this.emuApi.getRomName();
     }
+
+    this.rom.codeName = this.getRomName();
+
+    this.emuApi.start();
 
     this.isPaused = false;
 

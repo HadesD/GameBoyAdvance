@@ -111,11 +111,14 @@ window.amebo = function(file, canvas, options) {
       CRAM = new Uint8Array(battery);
       saveBattery();
     }
+  }
+
+  this.start = function() {
     if (biosLoaded === 2)
     {
       init();
     };
-  }
+  };
 
   var internalCanvas = document.createElement("canvas");
   internalCanvas.width = 160;

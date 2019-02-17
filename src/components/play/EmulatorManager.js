@@ -185,6 +185,7 @@ class EmulatorManager
       window.vbaSound = window.vbaSound || new VBASound(window.gbaninja);
 
       console.log(VBAInterface);
+      VBAInterface.emulatorManager = this;
       VBAInterface.setRomBuffer(this.rom.buffer);
       VBAInterface.VBA_start();
       window.doTimestep(window.frameNum + 1);

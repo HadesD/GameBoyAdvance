@@ -154,9 +154,54 @@ VBAInterface.restoreSaveMemory = function (pointer8, targetBufferSize) {
   // return vbaSaves.restoreSaveMemory(pointer8, targetBufferSize);
 };
 
+VBAInterface.isKeyDown = function (key) {
+  return this.emulatorManager.isKeyPressed(key);
+};
+
 VBAInterface.getJoypad = function (joypadNum) {
-  return 0;
+  var res = 0;
+
+  if (this.isKeyDown('A')) {
+    res |= 1;
+  }
+  if (this.isKeyDown('B')) {
+    res |= 2;
+  }
+  if (this.isKeyDown('SELECT')) {
+    res |= 4;
+  }
+  if (this.isKeyDown('START')) {
+    res |= 8;
+  }
+  if (this.isKeyDown('RIGHT')) {
+    res |= 16;
+  }
+  if (this.isKeyDown('LEFT')) {
+    res |= 32;
+  }
+  if (this.isKeyDown('UP')) {
+    res |= 64;
+  }
+  if (this.isKeyDown('DOWN')) {
+    res |= 128;
+  }
+  if (this.isKeyDown('R')) {
+    res |= 256;
+  }
+  if (this.isKeyDown('L')) {
+    res |= 512;
+  }
+
+  // disallow L+R or U+D from being pressed at the same time
+  if ((res & 48) === 48) {
+    res &= ~48;
+  }
+  if ((res & 192) === 192) {
+    res &= ~192;
+  }
+
   // return vbaInput.getJoypad(joypadNum);
+  return res;
 };
 
 VBAInterface.dbgOutput = function (textPointer8, unknownPointer8) {
@@ -203,7 +248,7 @@ window.doTimestep = function (frameNum, mustRender) {
       cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
     }
     // if (!isPaused) {
-      VBAInterface.VBA_do_cycles(cyclesToDo);
+    VBAInterface.VBA_do_cycles(cyclesToDo);
     // console.log('dostep');
     // }
 

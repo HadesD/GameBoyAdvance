@@ -9,7 +9,7 @@ function VBAInterface(wasmEmu, graphic)
 
   const GBA_CYCLES_PER_SECOND = 16777216;
   // var TARGET_FRAMERATE = 500;
-  const lastFrameTime = window.performance.now();
+  let lastFrameTime = window.performance.now();
   // window.frameTimeout = null;
   let animationFrameRequest = null;
   // window.frameNum = 1;
@@ -226,17 +226,24 @@ function VBAInterface(wasmEmu, graphic)
   {
     const currentTime = window.performance.now();
     const deltaTime = currentTime - lastFrameTime;
-    const clampedDeltaTime = Math.min(50, deltaTime);
 
-    let cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
-    if (self.vbaSound.spareSamplesAtLastEvent > 1000) {
-      cyclesToDo -= Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
-    }
-    if (self.vbaSound.spareSamplesAtLastEvent < 700) {
-      cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
-    }
+    console.log(currentTime, deltaTime);
 
-    self.VBA_do_cycles(cyclesToDo);
+    if (deltaTime >= 0.1)
+    {
+      const clampedDeltaTime = Math.min(50, deltaTime);
+
+      let cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
+      if (self.vbaSound.spareSamplesAtLastEvent > 1000) {
+        cyclesToDo -= Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
+      }
+      if (self.vbaSound.spareSamplesAtLastEvent < 700) {
+        cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
+      }
+
+      self.VBA_do_cycles(cyclesToDo);
+      lastFrameTime = currentTime;
+    }
 
     animationFrameRequest = window.requestAnimationFrame(update);
   }
@@ -257,64 +264,11 @@ function VBAInterface(wasmEmu, graphic)
   }
 
   this.destroy = function () {
+    this.VBA_stop();
     window.cancelAnimationFrame(animationFrameRequest);
     window.VBAInterface = null;
   }
 }
-
-// window.doTimestep = function (/* frameNum, mustRender */) {
-
-  // if (frameNum !== window.frameNum + 1) {
-  //   return;
-  // }
-  // window.frameNum = frameNum;
-
-  // var currentTime = window.performance.now();
-  // var deltaTime = currentTime - window.lastFrameTime;
-  // var clampedDeltaTime = Math.min(50, deltaTime);
-
-  // if (currentTime - window.lastFocusTime > 100 || deltaTime < 0.1) {
-  //   window.animationFrameRequest = window.requestAnimationFrame(function () {
-  //     window.doTimestep(frameNum + 1);
-  //   });
-  // console.log(1);
-  // return;
-  // }
-  // window.lastFrameTime = currentTime;
-
-  // if (true /* isRunning */) {
-  // vbaSaves.checkSaves();
-
-  // var cyclesToDo = Math.floor(GBA_CYCLES_PER_SECOND / (1000 / clampedDeltaTime));
-  // if (window.vbaSound.spareSamplesAtLastEvent > 1000) {
-  //   cyclesToDo -= Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
-  // }
-  // if (window.vbaSound.spareSamplesAtLastEvent < 700) {
-  //   cyclesToDo += Math.floor(Math.min(cyclesToDo * 0.03, GBA_CYCLES_PER_SECOND / 10000));
-  // }
-  // // if (!isPaused) {
-  // VBAInterface.VBA_do_cycles(cyclesToDo);
-  // console.log('dostep');
-  // }
-
-  // vbaPerf.deltaTimesThisSecond.push(deltaTime);
-  // vbaPerf.cyclesThisSecond.push(cyclesToDo);
-
-  // clearTimeout(window.frameTimeout);
-  // window.frameTimeout = setTimeout(function () {
-  //   window.doTimestep(frameNum + 1);
-  // }, 1000 / TARGET_FRAMERATE);
-  // cancelAnimationFrame(window.animationFrameRequest);
-  // window.animationFrameRequest = window.requestAnimationFrame(window.doTimestep);
-
-  // } else if (VBAInterface.VBA_get_emulating()) {
-  //   VBAInterface.VBA_stop();
-  //   document.querySelector(".pixels").style.display = "none";
-  //   document.querySelector(".ui").style.display = "block";
-  // }
-
-  // console.log('loop');
-// };
 
 export default VBAInterface;
 

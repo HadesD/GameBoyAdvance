@@ -176,7 +176,7 @@ class EmulatorManager
       this.emuApi.emulatorManager = this;
       this.emuApi.setRomBuffer(this.rom.buffer);
       this.emuApi.start();
-      // this.rom.codeName = this.emuApi.getROMName();
+      this.rom.codeName = this.emuApi.getRomName();
     }
 
     this.isPaused = false;

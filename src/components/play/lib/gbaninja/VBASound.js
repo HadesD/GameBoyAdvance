@@ -2,8 +2,8 @@ function VBASound(emscriptenModule) {
 
   this.emscriptenModule = emscriptenModule;
 
-  var AudioContext = window.AudioContext || window.webkitAudioContext;
-  this.audioCtx = new AudioContext();
+  // window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  this.audioCtx = new window.AudioContext();
   this.audioChannels = 2;
   this.audioScriptNode = this.audioCtx.createScriptProcessor(512, 2);
   this.audioScriptNode.onaudioprocess = this.handleAudioEvent.bind(this);
@@ -56,6 +56,8 @@ VBASound.prototype.writeSound = function (pointer8, length16) {
     }
   }
 
+  // console.log('write.sound');
+
 };
 
 VBASound.prototype.handleAudioEvent = function (event) {
@@ -90,16 +92,6 @@ VBASound.prototype.handleAudioEvent = function (event) {
   }
 
   this.spareSamplesAtLastEvent = this.getNumExtraSamples();
-  // vbaPerf.spareAudioSamplesThisSecond.push(this.spareSamplesAtLastEvent);
-
-  // vbaPerf.audioDeadlineResultsThisSecond.push(deadlineResult);
-
-  // var frameNum = window.frameNum;
-  // setTimeout(function () {
-  //   window.doTimestep(frameNum + 1);
-  // }, 0);
-
-
 };
 
 // Implementation for browsers without audio support

@@ -227,7 +227,7 @@ function VBAInterface(wasmEmu, graphic)
     const currentTime = window.performance.now();
     const deltaTime = currentTime - lastFrameTime;
 
-    console.log(currentTime, deltaTime);
+    // console.log(currentTime, deltaTime);
 
     if (deltaTime >= 0.1)
     {
@@ -267,6 +267,22 @@ function VBAInterface(wasmEmu, graphic)
     this.VBA_stop();
     window.cancelAnimationFrame(animationFrameRequest);
     window.VBAInterface = null;
+  }
+
+  this.getRomName = function () {
+    const startOffset = 0xA0;
+    let name = '';
+    for (let i = startOffset; i < (startOffset + 18); i++)
+    {
+      const charCode = this.romBuffer8[i];
+      console.log(charCode);
+      if (charCode === 0x00)
+      {
+        break;
+      }
+      name += String.fromCharCode(charCode);
+    }
+    return name;
   }
 }
 

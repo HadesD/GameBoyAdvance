@@ -10,6 +10,8 @@ An emulator uses API of Amebo and VBA-m (gbaninja) as interface to run Gameboy /
 
 - Support GB/GBC/GBA roms
 - Support Gamepad, Keyboard, Joystick, Fake UI input (for mobile players)
+- Support mobile (IOS prefer Safari)
+- Support Audio on mobile devices
 - Heavy optimized (Render, Update, User 's event)
 - Use Single Page App (Reactjs)
 - Updating in roadmap ...
@@ -22,7 +24,12 @@ An emulator uses API of Amebo and VBA-m (gbaninja) as interface to run Gameboy /
 
 ## Roadmap
 
-- 
+- Manager save file (battery / state) - use IndexDB / localStorage
+- Download Rom from URL
+- Fix dropframe of GBA
+- Fix Audio output on Iphone <= 6
+- Map user custom input keyboard
+- Have a setting page
 
 ## License
 

@@ -10,8 +10,8 @@ import Main from './components/Main';
 import Footer from './components/Footer';
 import Sider from './components/Footer';
 
-import './App.css';
-import 'antd/dist/antd.css';
+//import './App.css';
+//import 'antd/dist/antd.css';
 
 class App extends Component
 {

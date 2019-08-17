@@ -1,7 +1,7 @@
 import React from 'react';
 import dpadIcon from '../../images/dpad.svg';
 
-import './Joystick.css';
+//import './Joystick.css';
 
 class Joystick extends React.Component
 {
